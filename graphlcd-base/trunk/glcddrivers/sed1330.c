@@ -459,16 +459,16 @@ void cDriverSED1330::WriteCmd(unsigned char cmd)
 	if (interface == kInterface6800)
 	{
 		// set A0 high (instruction), RW low (write) and E low
-		port->WriteControl(A0HI | RWLO | ENLO);
+		port->WriteControl(A0HI | CSLO | RWLO | ENLO);
 //		nSleep(140 - timeForPortCmdInNs + 100 * config->adjustTiming);
 		// Output the actual command
 		port->WriteData(cmd);
 //		nSleep(140 - timeForPortCmdInNs + 100 * config->adjustTiming);
 		// set E high
-		port->WriteControl(A0HI | RWLO | ENHI);
+		port->WriteControl(A0HI | CSLO | RWLO | ENHI);
 //		nSleep(450 - timeForPortCmdInNs + 100 * config->adjustTiming);
 		// set E low
-		port->WriteControl(A0HI | RWLO | ENLO);
+		port->WriteControl(A0HI | CSLO | RWLO | ENLO);
 //		nSleep(450 - timeForPortCmdInNs + 100 * config->adjustTiming);
 	}
 	else
@@ -499,16 +499,16 @@ void cDriverSED1330::WriteData(unsigned char data)
 	if (interface == kInterface6800)
 	{
 		// set A0 low (data), RW low (write) and E low
-		port->WriteControl(A0LO | RWLO | ENLO);
+		port->WriteControl(A0LO | CSLO | RWLO | ENLO);
 //		nSleep(140 - timeForPortCmdInNs + 100 * config->adjustTiming);
 		// Output the actual data
 		port->WriteData(data);
 //		nSleep(140 - timeForPortCmdInNs + 100 * config->adjustTiming);
 		// set E high
-		port->WriteControl(A0LO | RWLO | ENHI);
+		port->WriteControl(A0LO | CSLO | RWLO | ENHI);
 //		nSleep(450 - timeForPortCmdInNs + 100 * config->adjustTiming);
 		// set E low
-		port->WriteControl(A0LO | RWLO | ENLO);
+		port->WriteControl(A0LO | CSLO | RWLO | ENLO);
 //		nSleep(450 - timeForPortCmdInNs + 100 * config->adjustTiming);
 	}
 	else
