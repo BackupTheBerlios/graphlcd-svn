@@ -162,11 +162,6 @@ bool cPluginGraphLCD::ProcessArgs(int argc, char * argv[])
 
 bool cPluginGraphLCD::Initialize()
 {
-	return true;
-}
-
-bool cPluginGraphLCD::Start()
-{
 	const char * cfgDir;
 
 	RegisterI18n(Phrases);
@@ -179,6 +174,28 @@ bool cPluginGraphLCD::Start()
 		return false;
 
 	return true;
+}
+
+bool cPluginGraphLCD::Start()
+{
+	int count;
+
+	dsyslog("graphlcd: waiting for display thread to get ready");
+	for (count = 0; count < 50; count++)
+	{
+		if (Display.Active())
+		{
+			dsyslog ("graphlcd: display thread ready");
+			return true;
+		}
+#if VDRVERSNUM < 10314
+		usleep(100000);
+#else
+		cCondWait::SleepMs(100);
+#endif
+	}
+	dsyslog ("graphlcd: timeout while waiting for display thread");
+	return false;
 }
 
 void cPluginGraphLCD::Housekeeping()
