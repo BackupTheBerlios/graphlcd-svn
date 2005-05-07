@@ -30,7 +30,20 @@ VDR Plugin 'graphlcd' Revision History
 - replaced usleep with cCondWait::SleepMs() for vdr version 1.3.14 or greater
 - adapted to changes in vdr 1.3.18
 - now using verdana fonts converted by genfont as default for large displays.
-						
+- moved plugin initialisation to cPluginGraphLCD::Initialize and added a wait
+  for the start of the display thread to cPluginGraphLCD::Start to don't miss
+  first channel switch (thanks to wofritz from vdrportal.de)
+- added rumanian translations (thanks to Lucian Muresan)
+- Added support for Freetype2 fonts based on the patch by Lucian Muresan.
+-- the fonts used by the plugin are no longer specified through symbolic
+   links to the font files but in a config file named fonts.conf that is
+   located in the graphlcd config directory (where logonames.alias is)
+-- the entries in the fonts.conf file are defined in a URL like way, a prefix
+   gives the type of the font and a absolute or relative path gives the
+   font file, plus the size in case of freetype2
+-- I provided several sample fonts.conf files as a replacement for the old
+   symbolic links
+
 
 
 2004-09-26: Version 0.1.1
