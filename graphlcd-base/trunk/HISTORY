@@ -54,4 +54,12 @@ GraphLCD base package Revision History
   compile on x86-64 (thanks to Stefan Bergler).
 - glcddrivers: fixed a bug in serdisp.c. When using direct IO the port
   string was truncated (thanks to Stefan Bergler).
+- glcddrivers: Added method cConfig::GetConfigIndex for getting a
+  configuration by its name (thanks to Lucian Muresan).
+- Added some $(DESTDIR) all over the Makefiles (thanks to Lucian Muresan).
+- glcddrivers: sed1330: Added setting of CS line in 6800 mode (thanks to
+  Wolfgang Astleitner).
+- glcdgraphics: Added FreeType2 support based on patch by Lucian Muresan.
+  - You have to set HAVE_FREETYPE2 in Make.config to enable this
+  - Added some helper functions to GLCD::cFont class
 

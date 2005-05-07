@@ -3,7 +3,7 @@
 #
 
 PROJECT = graphlcd-base
-VERSION = 0.1.2-pre5
+VERSION = 0.1.2-pre6
 ARCHIVE = $(PROJECT)-$(VERSION)
 PACKAGE = $(ARCHIVE)
 TMPDIR = /tmp
@@ -35,7 +35,7 @@ dist: clean
 	@-rm -rf $(TMPDIR)/$(ARCHIVE)
 	@mkdir $(TMPDIR)/$(ARCHIVE)
 	@cp -a * $(TMPDIR)/$(ARCHIVE)
-	@tar czf $(PACKAGE).tgz -C $(TMPDIR) $(ARCHIVE)
+	@tar czf $(PACKAGE).tgz --exclude .svn -C $(TMPDIR) $(ARCHIVE)
 	@-rm -rf $(TMPDIR)/$(ARCHIVE)
 	@echo Distribution package created as $(PACKAGE).tgz
 
