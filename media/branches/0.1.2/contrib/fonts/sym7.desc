@@ -1,0 +1,9 @@
+version:1
+fontheight:7
+fontascent:7
+lineheight:7
+spacebetween:1
+spacewidth:2
+0 32 12 D 24 T 36 C 48 A 60 B 72
+0 1 12 2 24 3 36 4 48 5 60 6 72
+0 V 12 X 24 M 36 S 48 7 60 8 72

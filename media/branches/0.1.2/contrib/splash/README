@@ -1,0 +1,43 @@
+You can use there pictures as a little startup/shutdown-gimmik. Using the splashscreen-script 
+(contrib/scripts/splash_lcd_image.sh) you can add your VDR an animated startup and shutdown-picture
+on your LCD. (Refering to an Idea of HULK (vdr-portal)).
+
+All you need is to edit the paths and the config in contrib/scripts/splash_lcd_image.sh:
+- SHOWPIC= your path to showpic
+- IMAGEPATH= path to the "splash"-directory, where all the folders with spashscreen-glcds are stored
+  (should be /video/plugins/graphlcd/splash or /etc/vdr/plugins/graphlcd/splash) - in the sources they are in graphlcd/splash
+- CONFIGOPTS= the configuration Options you need for your Display (p.e. "-c ks0108 -d /dev/parport0 -x 128 -y 64 -i")
+- DISPLAYED_TIME= the time each picture is displayed
+
+Copy splash_lcd_image.sh to /usr/local/bin (or whereever you like it /usr/local/scripts - or wherever)
+
+Test it and run from shell /usr/local/bin/splash_lcd_image.sh start
+
+The script displays all the images found in the IMAGEPATHs subdirectory you typed - meaning that "splash_lcd_image.sh start"
+displayes all the pictures found in IMAGEPATH/start in alphabethical order.
+IMAGEPATH/start should be a Symlink, defaulting to a 128x64 animation. If you want to try a different animation type the 
+dirs name of it, for example: "splash_lcd_image.sh vdr-logo_240x128".
+If you like it better, just symlink this one to "start" or "stop".
+
+
+For daily run on bootsequence
+add follow Lines to /etc/inittab (at head)
+
+####################################################
+# show LCD-splash animation
+we:12345:once:/usr/local/bin/splash_lcd_image.sh start
+wf:06:once:/usr/local/bin/splash_lcd_image.sh stop
+####################################################
+
+You can also use a /etc/rcXY.d - Script for this job, but I experianced that it starts earlier with /etc/inittab. 
+Unfortunatly the animation starts after the firmware is loaded - so you just have a small animation sequence at 
+the end of booting.
+
+
+Normally the sequence is only played once - if you want to have a looped animation you have to edit your splash_lcd_image.sh 
+and ad a "-r" to the showpic-options. 
+In this case you need to kill showpic before starting VDR. Just add the following lines to e.g runvdr.sh (at head)
+
+##################################################
+# Stop LCD Splash
+killall showpic &>/dev/null
