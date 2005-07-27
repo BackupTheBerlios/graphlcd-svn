@@ -244,13 +244,13 @@ bool cFont::LoadFT2(const std::string & fileName, const std::string & encoding,
 	totalAscent = face->size->metrics.ascender >> 6;
 	lineHeight = face->size->metrics.height >> 6;
 	spaceBetween = 0;
-
+#if 0
 	syslog(LOG_DEBUG, "cFont::LoadFT2: totalHeight = %d", totalHeight);
 	syslog(LOG_DEBUG, "cFont::LoadFT2: totalWidth = %d", totalWidth);
 	syslog(LOG_DEBUG, "cFont::LoadFT2: totalAscent = %d", totalAscent);
 	syslog(LOG_DEBUG, "cFont::LoadFT2: lineHeight = %d", lineHeight);
 	syslog(LOG_DEBUG, "cFont::LoadFT2: spaceBetween = %d", spaceBetween);
-
+#endif
 	// render glyphs for ASCII codes 0 to 255 in our bitmap class
 	FT_UInt glyph_index;
 	int num_char;
