@@ -370,14 +370,14 @@ int cDriverGU256X64_3900::InitParallelPort()
 
 	syslog(LOG_DEBUG, "%s: benchmark started.\n", config->name.c_str());
 	gettimeofday(&tv1, 0);
-	for (int x = 0; x < 10000; x++)
+	for (int x = 0; x < 1000; x++)
 	{
 		port->WriteData(x % 0x100);
 	}
 	gettimeofday(&tv2, 0);
 	nSleepDeInit();
-	m_nTimingAdjustCmd = ((tv2.tv_sec - tv1.tv_sec) * 10000 + (tv2.tv_usec - tv1.tv_usec)) / 1000;
-	syslog(LOG_DEBUG, "%s: benchmark stopped. Time for Port Command: %ldns\n", config->name.c_str(), m_nTimingAdjustCmd);
+	m_nTimingAdjustCmd = (tv2.tv_sec - tv1.tv_sec) * 1000000 + (tv2.tv_usec - tv1.tv_usec);
+	syslog(LOG_INFO, "%s: benchmark stopped. Time for Port Command: %ldns\n", config->name.c_str(), m_nTimingAdjustCmd);
 
 	return 0;
 }
@@ -571,9 +571,12 @@ void cDriverGU256X64_3900::Refresh(bool refreshAll)
 		}
 	}
   
-	m_nRefreshCounter = (m_nRefreshCounter + 1) % config->refreshDisplay;
-	if (!refreshAll && !m_nRefreshCounter)
-		refreshAll = true;
+	if (config->refreshDisplay > 0)
+	{
+		m_nRefreshCounter = (m_nRefreshCounter + 1) % config->refreshDisplay;
+		if (!refreshAll && !m_nRefreshCounter)
+			refreshAll = true;
+	}
 
 	if(refreshAll || doRefresh)
 	{
