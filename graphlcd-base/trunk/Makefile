@@ -3,7 +3,7 @@
 #
 
 PROJECT = graphlcd-base
-VERSION = 0.1.2-pre6
+VERSION = 0.1.2-pre7
 ARCHIVE = $(PROJECT)-$(VERSION)
 PACKAGE = $(ARCHIVE)
 TMPDIR = /tmp
