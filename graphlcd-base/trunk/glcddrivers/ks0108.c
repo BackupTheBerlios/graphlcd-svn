@@ -263,34 +263,41 @@ void cDriverKS0108::KS0108Cmd(unsigned char data, int cs)
 		nSleepInit();
 	switch (cs) {
 		case 1:
-			// set Command Register on, CS2 on, CS1 off, Chip Enable on;
-			port->WriteControl(CDHI | CS1 | CEHI);
+			port->WriteControl(CDHI | CS1 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteData(data);
+			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+			port->WriteControl(CDHI | CS1 | CEHI);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteControl(CDHI | CS1 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			break;
 		case 2:
-			port->WriteControl(CDHI | CS2 | CEHI);
+			port->WriteControl(CDHI | CS2 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteData(data);
+			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+			port->WriteControl(CDHI | CS2 | CEHI);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteControl(CDHI | CS2 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			break;
 		case 3:
-			port->WriteControl(CDHI | CS3 | CEHI);
+			port->WriteControl(CDHI | CS3 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteData(data);
+			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+			port->WriteControl(CDHI | CS3 | CEHI);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteControl(CDHI | CS3 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			break;
 		case 4:
-			port->WriteControl(CDHI | CS4 | CEHI);
+			port->WriteControl(CDHI | CS4 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteData(data);
+			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+			port->WriteControl(CDHI | CS4 | CEHI);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteControl(CDHI | CS4 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
@@ -306,33 +313,41 @@ void cDriverKS0108::KS0108Data(unsigned char data, int cs)
 		nSleepInit();
 	switch (cs) {
 		case 1:
-			port->WriteControl(CDLO | CS1 | CEHI);
+			port->WriteControl(CDLO | CS1 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteData(data);
+			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+			port->WriteControl(CDLO | CS1 | CEHI);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteControl(CDLO | CS1 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			break;
 		case 2:
-			port->WriteControl(CDLO | CS2 | CEHI);
+			port->WriteControl(CDLO | CS2 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteData(data);
+			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+			port->WriteControl(CDLO | CS2 | CEHI);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteControl(CDLO | CS2 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			break;
 		case 3:
-			port->WriteControl(CDLO | CS3 | CEHI);
+			port->WriteControl(CDLO | CS3 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteData(data);
+			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+			port->WriteControl(CDLO | CS3 | CEHI);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteControl(CDLO | CS3 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			break;
 		case 4:
-			port->WriteControl(CDLO | CS4 | CEHI);
+			port->WriteControl(CDLO | CS4 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteData(data);
+			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+			port->WriteControl(CDLO | CS4 | CEHI);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteControl(CDLO | CS4 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
