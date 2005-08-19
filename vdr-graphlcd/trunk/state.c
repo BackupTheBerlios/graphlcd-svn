@@ -20,7 +20,8 @@
 
 
 cGraphLCDState::cGraphLCDState()
-:	first(true)
+:	first(true),
+	tickUsed(false)
 {
 	channel.number = 0;
 	channel.str = "";
@@ -297,6 +298,31 @@ void cGraphLCDState::SetVolume(int Volume, bool Absolute)
 			first = false;
 			mutex.Unlock();
 		}
+	}
+}
+
+void cGraphLCDState::Tick()
+{
+//	printf("graphlcd plugin: cGraphLCDState::Tick\n");
+	if (GraphLCDSetup.PluginActive)
+	{
+		mutex.Lock();
+
+		tickUsed = true;
+
+		if (replay.control)
+		{
+			if (replay.control->GetIndex(replay.current, replay.total, false))
+			{
+				replay.total = (replay.total == 0) ? 1 : replay.total;
+			}
+			else
+			{
+				replay.control = NULL;
+			}
+		}
+
+		mutex.Unlock();
 	}
 }
 
@@ -669,24 +695,41 @@ tReplayState cGraphLCDState::GetReplayState()
 	tReplayState ret;
 
 	mutex.Lock();
-	if (replay.control)
+
+	if (tickUsed)
 	{
-		if (replay.control->GetIndex(replay.current, replay.total, false))
+		if (replay.control)
 		{
-			replay.total = (replay.total == 0) ? 1 : replay.total;
 			ret = replay;
 			replay.currentLast = replay.current;
 			replay.totalLast = replay.total;
 		}
 		else
 		{
-			replay.control = NULL;
 			ret = replay;
 		}
 	}
 	else
 	{
-		ret = replay;
+		if (replay.control)
+		{
+			if (replay.control->GetIndex(replay.current, replay.total, false))
+			{
+				replay.total = (replay.total == 0) ? 1 : replay.total;
+				ret = replay;
+				replay.currentLast = replay.current;
+				replay.totalLast = replay.total;
+			}
+			else
+			{
+				replay.control = NULL;
+				ret = replay;
+			}
+		}
+		else
+		{
+			ret = replay;
+		}
 	}
 	mutex.Unlock();
 

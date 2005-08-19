@@ -81,6 +81,7 @@ class cGraphLCDState : public cStatus
 {
 private:
 	bool first;
+	bool tickUsed;
 
 	cMutex mutex;
 
@@ -98,6 +99,7 @@ protected:
 	virtual void Recording(const cDevice *Device, const char *Name);
 	virtual void Replaying(const cControl *Control, const char *Name);
 	virtual void SetVolume(int Volume, bool Absolute);
+	virtual void Tick();
 	virtual void OsdClear();
 	virtual void OsdTitle(const char *Title);
 	virtual void OsdStatusMessage(const char *Message);
