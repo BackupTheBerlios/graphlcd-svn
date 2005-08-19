@@ -381,6 +381,7 @@ void cGraphLCDDisplay::Action(void)
 								// but only, if something has changed
 								if (replay.total / FRAMESPERSEC != replay.totalLast / FRAMESPERSEC ||
 									replay.current / FRAMESPERSEC != replay.currentLast / FRAMESPERSEC ||
+									CurrTime/60 != LastTime/60 ||
 									update)
 								{
 									timerclear(&UpdateAt);
@@ -1210,7 +1211,11 @@ void cGraphLCDDisplay::DisplayProgramme()
 			str += buffer;
 			showTimeBar = true;
 			timeBarWidth = normalFont->Width(str) - 1;
-			timeBarValue = (timeBarValue < 0) ? 0 : (time(NULL) - event.presentTime) * timeBarWidth / (event.followingTime - event.presentTime);
+			timeBarValue = (time(NULL) - event.presentTime) * timeBarWidth / (event.followingTime - event.presentTime);
+			if (timeBarValue > timeBarWidth)
+				timeBarValue = timeBarWidth;
+			if (timeBarValue < 0)
+				timeBarValue = 0;
 		}
 		else
 		{
