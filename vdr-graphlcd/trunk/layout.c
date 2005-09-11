@@ -13,13 +13,13 @@
 
 #include <fstream>
 
-#include <vdr/config.h>
-#include <vdr/i18n.h>
-#include <vdr/plugin.h>
-
 #include "global.h"
 #include "layout.h"
 #include "strfct.h"
+
+#include <vdr/config.h>
+#include <vdr/i18n.h>
+#include <vdr/plugin.h>
 
 
 cFontElement::cFontElement(const std::string & fontName)
