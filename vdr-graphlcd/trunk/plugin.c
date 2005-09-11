@@ -50,7 +50,8 @@ class cPluginGraphLCD : public cPlugin
 {
 private:
 	// Add any member variables or functions you may need here.
-	unsigned int displayNumber;
+	std::string configName;
+	std::string displayName;
 
 public:
 	cPluginGraphLCD();
@@ -69,6 +70,8 @@ public:
 };
 
 cPluginGraphLCD::cPluginGraphLCD()
+:	configName(""),
+	displayName("")
 {
 	LCD = NULL;
 }
@@ -95,10 +98,6 @@ bool cPluginGraphLCD::ProcessArgs(int argc, char * argv[])
 		{ NULL}
 	};
 
-	std::string configName = "";
-	std::string displayName = "";
-	displayNumber = 0;
-
 	int c;
 	int option_index = 0;
 	while ((c = getopt_long(argc, argv, "c:d:", long_options, &option_index)) != -1)
@@ -118,12 +117,21 @@ bool cPluginGraphLCD::ProcessArgs(int argc, char * argv[])
 		}
 	}
 
+	return true;
+}
+
+bool cPluginGraphLCD::Initialize()
+{
+	unsigned int displayNumber = 0;
+	const char * cfgDir;
+
+	RegisterI18n(Phrases);
+
 	if (configName.length() == 0)
 	{
 		configName = kDefaultConfigFile;
 		isyslog("graphlcd: No config file specified, using default (%s).\n", configName.c_str());
 	}
-
 	if (GLCD::Config.Load(configName) == false)
 	{
 		esyslog("graphlcd: Error loading config file!\n");
@@ -156,15 +164,6 @@ bool cPluginGraphLCD::ProcessArgs(int argc, char * argv[])
 		esyslog("graphlcd: ERROR: No displays specified in config file!\n");
 		return false;
 	}
-
-	return true;
-}
-
-bool cPluginGraphLCD::Initialize()
-{
-	const char * cfgDir;
-
-	RegisterI18n(Phrases);
 
 	cfgDir = ConfigDirectory(PLUGIN_NAME);
 	if (!cfgDir)
