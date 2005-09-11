@@ -14,6 +14,7 @@
 #include "state.h"
 #include "strfct.h"
 
+#include <vdr/eitscan.h>
 #include <vdr/i18n.h>
 
 #include "compat.h"
@@ -70,7 +71,7 @@ void cGraphLCDState::ChannelSwitch(const cDevice * Device, int ChannelNumber)
 //	printf("graphlcd plugin: cGraphLCDState::ChannelSwitch %d %d\n", Device->CardIndex(), ChannelNumber);
 	if (GraphLCDSetup.PluginActive)
 	{
-		if (ChannelNumber > 0 && Device->IsPrimaryDevice())
+		if (ChannelNumber > 0 && Device->IsPrimaryDevice() && !EITScanner.UsesDevice(Device))
 		{
 			if (ChannelNumber == cDevice::CurrentChannel())
 			{
@@ -119,11 +120,12 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name)
 			{
 				if (GraphLCDSetup.IdentifyReplayType)
 				{
+					int slen = strlen(Name);
 					bool bFound = false;
 					///////////////////////////////////////////////////////////////////////
 					//Looking for mp3-Plugin Replay : [LS] (444/666) title
 					//
-					if (strlen(Name) > 6 &&
+					if (slen > 6 &&
 					    *(Name+0)=='[' &&
 					    *(Name+3)==']' &&
 					    *(Name+5)=='(')
@@ -173,7 +175,7 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name)
 					//                         titleinfo, audiolang,  spulang, aspect, title
 					if (!bFound)
 					{
-						if(strlen(Name)>7)
+						if(slen>7)
 						{
 							unsigned int i,n;
 							for(n=0,i=0;*(Name+i) != '\0';++i) 
@@ -222,14 +224,24 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name)
 					if (!bFound)
 					{
 						int i;
-						for(i=strlen(Name)-1;i>0;--i) 
+						for(i=slen-1;i>0;--i) 
 						{ //Reversesearch last Subtitle 
 							// - filename contains '~' => subdirectory
 							// or filename contains '/' => subdirectory
 							switch(*(Name+i))
 							{
 								case '/':
-									replay.mode = eReplayFile;
+								{
+									// look for file extentsion like .xxx or .xxxx
+									if(slen>5 && ((*(Name+slen-4) == '.') || (*(Name+slen-5) == '.')))
+									{
+										replay.mode = eReplayFile;
+									}
+									else
+									{
+										break;
+									}
+								}
 								case '~':
 								{
 									replay.name = Name + i + 1;
