@@ -1,7 +1,7 @@
 VDR Plugin 'graphlcd' Revision History
 -------------------------------------
 
-2004-03-XX: Version 0.1.2-pre5
+2004-09-17: Version 0.1.2
 - split off drivers to GraphLCD base package (libglcddrivers)
 - split off graphics and font handling to GraphLCD base package
   (libglcdgraphics)
@@ -43,6 +43,21 @@ VDR Plugin 'graphlcd' Revision History
    font file, plus the size in case of freetype2
 -- I provided several sample fonts.conf files as a replacement for the old
    symbolic links
+- Fixed length of timebar in case event lasts longer.
+- Added a patch for VDR 1.3.29 and up that adds a new method Tick() to the
+  cStatus class. This method is called from vdr's main task every second. The
+  patch should apply to older versions too, maybe small changes are needed.
+- Now querying the replay state in the cStatus::Tick() method if available.
+- Now loading config file in cPluginGraphLCD::Initialize and not in
+  ProcessArgs. So it is possible to view the help page without specifying
+  config file and display.
+- Rearranged includes to prevent an compiler error regardings the swap
+  function.
+- Added a check for EIT scanner activity in cGraphLCDState::ChannelSwitch
+  function to prevent showing channel logos during replay.
+- Added a check for file extension in replay type identification (thanks to
+  Andreas Brachold).
+- Added channel logos for Radio Eins (thanks to Andreas Brachold).
 
 
 
