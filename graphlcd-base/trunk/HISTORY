@@ -1,7 +1,7 @@
 GraphLCD base package Revision History
 --------------------------------------
 
-2005-04-XX: Version 0.1.2-pre6
+2005-09-17: Version 0.1.2
 - split off drivers from graphlcd plugin to GraphLCD driver library
   (libglcddrivers)
 - split off graphics and font handling from graphlcd plugin to GraphLCD
@@ -62,4 +62,12 @@ GraphLCD base package Revision History
 - glcdgraphics: Added FreeType2 support based on patch by Lucian Muresan.
   - You have to set HAVE_FREETYPE2 in Make.config to enable this
   - Added some helper functions to GLCD::cFont class
+- glcddrivers: ks0108: Improved timings: Made setting of display control
+  lines like defined in the controller's data sheet. This fixes problems
+  with some display types. Thanks to Matthias Breitbach for providing a
+  LCD of that type.
+- glcddrivers: gu256x64-3900:
+  - Corrected calculation of m_nTimingAdjustCmd.
+  - Added a test for RefreshDisplay config value to prevent a floating
+    point exception to occur when it is set to zero.
 
