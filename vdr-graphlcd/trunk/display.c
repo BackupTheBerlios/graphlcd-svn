@@ -538,6 +538,7 @@ void cGraphLCDDisplay::SetClear()
 	mutex.Lock();
 
 	textItemLines.clear();
+  textItemTop = 0;
 	tabCount = 0;
 	for (int i = 0; i < kMaxTabCount; i++)
 		tab[i] = 0;
@@ -679,11 +680,11 @@ void cGraphLCDDisplay::SetOsdTextItem(const char * Text, bool Scroll)
 	{
 		if (osd.textItem.length() == 0)
 			lastText = NULL;
+		int maxTextLen = bitmap->Width() - 2 * FRAME_SPACE_X - 2 * TEXT_OFFSET_X;
+		WrapText(osd.textItem, textItemLines, normalFont, maxTextLen);
+		textItemLines.push_back("");
 		if (lastText != Text)
 		{
-			int maxTextLen = bitmap->Width() - 2 * FRAME_SPACE_X - 2 * TEXT_OFFSET_X;
-			WrapText(osd.textItem, textItemLines, normalFont, maxTextLen);
-			textItemLines.push_back("");
 			lastText = Text;
 			textItemTop = 0;
 		}
@@ -1907,67 +1908,63 @@ int cGraphLCDDisplay::WrapText(std::string & text, std::vector <std::string> & l
 {
   int lineCount;
   int textWidth;
-  int pos;
-  int posLast;
+  std::string::size_type start;
+  std::string::size_type pos;
+  std::string::size_type posLast;
 
   lines.clear();
-  lines.push_back(text);
-  lineCount = 1;
+  lineCount = 0;
 
   pos = 0;
+  start = 0;
   posLast = 0;
-  while (pos < (int) lines[lineCount - 1].length() && (lineCount < maxLines))
+  textWidth = 0;
+  while (pos < text.length() && lineCount < maxLines)
   {
-    if (lines[lineCount - 1][pos] == '\n')
+    if (text[pos] == '\n')
     {
-      lines.push_back(trim(lines[lineCount - 1].substr(pos + 1)));
-      lines[lineCount - 1].resize(pos);
-      pos = 0;
+      lines.push_back(trim(text.substr(start, pos - start)));
+      start = pos + 1;
+      posLast = pos + 1;
+      textWidth = 0;
       lineCount++;
     }
-    else if (lines[lineCount - 1][pos] == ' ')
+    else if (textWidth > maxTextWidth)
     {
-      textWidth = font->Width(lines[lineCount - 1], pos);
-
-      if (textWidth <= maxTextWidth)
+      if (posLast > start)
       {
-        posLast = pos;
-        pos++;
+        lines.push_back(trim(text.substr(start, posLast - start)));
+        start = posLast + 1;
+        posLast = start;
+        textWidth = font->Width(text.substr(start, pos - start + 1));
       }
       else
       {
-        if (posLast > 0)
-        {
-          lines.push_back(trim(lines[lineCount - 1].substr(posLast + 1)));
-          lines[lineCount - 1].resize(posLast);
-        }
-        else
-        {
-          lines.push_back(trim(lines[lineCount - 1].substr(pos + 1)));
-          lines[lineCount - 1].resize(pos);
-        }
-        pos = 0;
-        posLast = 0;
-        lineCount++;
+        lines.push_back(trim(text.substr(start, pos - start)));
+        start = pos + 1;
+        posLast = start;
+        textWidth = font->Width(text[pos]);
       }
+      lineCount++;
+    }
+    else if (text[pos] == ' ')
+    {
+      posLast = pos;
+      textWidth += font->Width(text[pos]);
     }
     else
     {
-      pos++;
+      textWidth += font->Width(text[pos]);
     }
+    pos++;
   }
 
   if (lineCount < maxLines)
   {
-    textWidth = font->Width(lines[lineCount - 1], pos);
-    if (textWidth > maxTextWidth)
+    if (pos > start)
     {
-      if (posLast > 0)
-      {
-        lines.push_back(trim(lines[lineCount - 1].substr(posLast + 1)));
-        lines[lineCount - 1].resize(posLast);
-        lineCount++;
-      }
+      lines.push_back(trim(text.substr(start)));
+      lineCount++;
     }
   }
   else if (cutTooLong)
@@ -1976,10 +1973,10 @@ int cGraphLCDDisplay::WrapText(std::string & text, std::vector <std::string> & l
     while (font->Width(lines[lineCount - 1], pos) > maxTextWidth)
     {
       pos = lines[lineCount - 1].rfind(' ', pos - 1);
-      if (pos == -1)
+      if (pos == std::string::npos)
         break;
     }
-    if (pos != -1)
+    if (pos != std::string::npos)
       lines[lineCount - 1].resize(pos);
   }
   else
