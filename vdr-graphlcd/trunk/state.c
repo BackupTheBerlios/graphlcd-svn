@@ -522,10 +522,12 @@ void cGraphLCDState::OsdTextItem(const char * Text, bool Scroll)
 		if (Text)
 		{
 			osd.textItem = trim(Text);
+#if 0
 			// replace '\n' with ' '
 			for (unsigned int i = 0; i < osd.textItem.length(); i++)
 				if (osd.textItem[i] == '\n' && (i + 1) < osd.textItem.length() && osd.textItem[i + 1] != '\n')
 					osd.textItem[i] = ' ';
+#endif
 		}
 		mutex.Unlock();
 		Display.SetOsdTextItem(Text, Scroll);
