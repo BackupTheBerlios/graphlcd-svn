@@ -4,8 +4,13 @@
 
 -include ../Make.config
 
+VERMAJOR = 1
+VERMINOR = 0
+VERMICRO = 0
 
-LIBNAME = libglcddrivers.so
+BASENAME = libglcddrivers.so
+
+LIBNAME = $(BASENAME).$(VERMAJOR).$(VERMINOR).$(VERMICRO)
 
 OBJS = common.o config.o driver.o drivers.o port.o simlcd.o framebuffer.o gu140x32f.o gu256x64-372.o gu256x64-3900.o hd61830.o ks0108.o image.o sed1330.o sed1520.o t6963c.o noritake800.o serdisp.o
 
@@ -31,21 +36,22 @@ $(DEPFILE): Makefile
 all: $(LIBNAME)
 
 $(LIBNAME): $(OBJS)
-	$(CXX) $(CXXFLAGS) -shared $(OBJS) $(LIBS) -ldl -o $@
+	$(CXX) $(CXXFLAGS) -shared $(OBJS) $(LIBS) -ldl -Wl,-soname="$(BASENAME).$(VERMAJOR)" -o $@
 
 install: all
 	install -d $(DESTDIR)$(LIBDIR)
-	install -m 644 $(LIBNAME) $(DESTDIR)$(LIBDIR)/
+	install -m 755 $(LIBNAME) $(DESTDIR)$(LIBDIR)/
 	install -d $(DESTDIR)$(INCDIR)/glcddrivers
 	install -m 644 $(HEADERS) $(DESTDIR)$(INCDIR)/glcddrivers/
-	$(LDCONFIG)
+	( cd $(DESTDIR)$(LIBDIR); ln -sf $(LIBNAME) $(BASENAME).$(VERMAJOR); ln -sf $(LIBNAME) $(BASENAME) )
 
 uninstall:
+	rm -f $(DESTDIR)$(LIBDIR)/$(BASENAME)
+	rm -f $(DESTDIR)$(LIBDIR)/$(BASENAME).$(VERMAJOR)
 	rm -f $(DESTDIR)$(LIBDIR)/$(LIBNAME)
 	(for i in $(HEADERS); do rm -f $(DESTDIR)$(INCDIR)/glcddrivers/$$i; done)
 	rmdir $(DESTDIR)$(INCDIR)/glcddrivers
-	$(LDCONFIG)
 
 clean:
-	rm -f $(OBJS) $(DEPFILE) *.so *.a *~
+	rm -f $(OBJS) $(DEPFILE) $(LIBNAME) *~
 
