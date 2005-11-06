@@ -30,12 +30,22 @@ $(DEPFILE): Makefile
 
 -include $(DEPFILE)
 
-### Targets:
+ifdef HAVE_FREETYPE2
+	ifneq ($(shell which freetype-config),)
+		INCLUDES += $(shell freetype-config --cflags)
+		LIBS += $(shell freetype-config --libs)
+	else
+		INCLUDES += -I/usr/include/freetype -I/usr/local/include/freetype
+		LIBS += -lfreetype
+	endif
+	DEFINES += -DHAVE_FREETYPE2
+endif### Targets:
 
 all: $(LIBNAME)
 
 $(LIBNAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) -shared $(OBJS) $(LIBS) -Wl,-soname="$(BASENAME).$(VERMAJOR)" -o $@
+	ln -sf $(LIBNAME) $(BASENAME)
 
 install: all
 	install -d $(LIBDIR)
@@ -52,5 +62,5 @@ uninstall:
 	rmdir $(INCDIR)/glcdgraphics
 
 clean:
-	rm -f $(OBJS) $(DEPFILE) $(LIBNAME) *~
+	rm -f $(OBJS) $(DEPFILE) $(LIBNAME) $(BASENAME) *~
 

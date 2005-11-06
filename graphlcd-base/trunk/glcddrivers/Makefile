@@ -37,6 +37,7 @@ all: $(LIBNAME)
 
 $(LIBNAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) -shared $(OBJS) $(LIBS) -ldl -Wl,-soname="$(BASENAME).$(VERMAJOR)" -o $@
+	ln -sf $(LIBNAME) $(BASENAME)
 
 install: all
 	install -d $(LIBDIR)
@@ -53,5 +54,5 @@ uninstall:
 	rmdir $(INCDIR)/glcddrivers
 
 clean:
-	rm -f $(OBJS) $(DEPFILE) $(LIBNAME) *~
+	rm -f $(OBJS) $(DEPFILE) $(LIBNAME) $(BASENAME) *~
 
