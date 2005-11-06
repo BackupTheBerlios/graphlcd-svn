@@ -39,18 +39,18 @@ $(LIBNAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) -shared $(OBJS) $(LIBS) -ldl -Wl,-soname="$(BASENAME).$(VERMAJOR)" -o $@
 
 install: all
-	install -d $(DESTDIR)$(LIBDIR)
-	install -m 755 $(LIBNAME) $(DESTDIR)$(LIBDIR)/
-	install -d $(DESTDIR)$(INCDIR)/glcddrivers
-	install -m 644 $(HEADERS) $(DESTDIR)$(INCDIR)/glcddrivers/
-	( cd $(DESTDIR)$(LIBDIR); ln -sf $(LIBNAME) $(BASENAME).$(VERMAJOR); ln -sf $(LIBNAME) $(BASENAME) )
+	install -d $(LIBDIR)
+	install -m 755 $(LIBNAME) $(LIBDIR)/
+	install -d $(INCDIR)/glcddrivers
+	install -m 644 $(HEADERS) $(INCDIR)/glcddrivers/
+	( cd $(LIBDIR); ln -sf $(LIBNAME) $(BASENAME).$(VERMAJOR); ln -sf $(LIBNAME) $(BASENAME) )
 
 uninstall:
-	rm -f $(DESTDIR)$(LIBDIR)/$(BASENAME)
-	rm -f $(DESTDIR)$(LIBDIR)/$(BASENAME).$(VERMAJOR)
-	rm -f $(DESTDIR)$(LIBDIR)/$(LIBNAME)
-	(for i in $(HEADERS); do rm -f $(DESTDIR)$(INCDIR)/glcddrivers/$$i; done)
-	rmdir $(DESTDIR)$(INCDIR)/glcddrivers
+	rm -f $(LIBDIR)/$(BASENAME)
+	rm -f $(LIBDIR)/$(BASENAME).$(VERMAJOR)
+	rm -f $(LIBDIR)/$(LIBNAME)
+	(for i in $(HEADERS); do rm -f $(INCDIR)/glcddrivers/$$i; done)
+	rmdir $(INCDIR)/glcddrivers
 
 clean:
 	rm -f $(OBJS) $(DEPFILE) $(LIBNAME) *~

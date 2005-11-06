@@ -34,11 +34,11 @@ $(PRGNAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) -rdynamic $(OBJS) $(LIBDIRS) -lglcdgraphics -lstdc++ -o $(PRGNAME)
 
 install: $(PRGNAME)
-	install -d $(DESTDIR)$(BINDIR)
-	install -m 755 -o root -g root -s $(PRGNAME) $(DESTDIR)$(BINDIR)
+	install -d $(BINDIR)
+	install -m 755 -o root -g root -s $(PRGNAME) $(BINDIR)
 
 uninstall:
-	rm -f $(DESTDIR)$(BINDIR)/$(PRGNAME)
+	rm -f $(BINDIR)/$(PRGNAME)
 
 clean:
 	@-rm -f $(OBJS) $(DEPFILE) $(PRGNAME) *~
