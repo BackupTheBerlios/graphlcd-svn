@@ -29,6 +29,9 @@ private:
 
 	long  serdisp_version;
 
+  int   supports_options;
+  long  fg_colour;
+
 	void* sdhnd; // serdisplib handle
 	void* dd;    // display descriptor
 	void* sdcd;  // serdisp connect descriptor
@@ -44,8 +47,10 @@ private:
 	void  (*fp_serdisp_rewrite)        (void* dd);
 	void  (*fp_serdisp_update)         (void* dd);
 	void  (*fp_serdisp_clearbuffer)    (void* dd);
-	void  (*fp_serdisp_setpixel)       (void* dd, int x, int y, long colour);
+	void  (*fp_serdisp_setpixcol)      (void* dd, int x, int y, long colour);  // serdisp_setpixel or serdisp_setcolour
 	int   (*fp_serdisp_feature)        (void* dd, int feature, int value);
+	int   (*fp_serdisp_isoption)       (void* dd, const char* optionname);
+	void  (*fp_serdisp_setoption)      (void* dd, const char* optionname, long value);
 	int   (*fp_serdisp_getwidth)       (void* dd);
 	int   (*fp_serdisp_getheight)      (void* dd);
 	void  (*fp_serdisp_quit)           (void* dd);
