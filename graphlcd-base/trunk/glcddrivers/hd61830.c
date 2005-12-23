@@ -79,10 +79,10 @@ int cDriverHD61830::Init()
 	struct timeval tv1, tv2;
 
 	width = config->width;
-	if (width < 0)
+	if (width <= 0)
 		width = 240;
 	height = config->height;
-	if (height < 0)
+	if (height <= 0)
 		height = 128;
 
 	for (unsigned int i = 0; i < config->options.size(); i++)

@@ -117,10 +117,10 @@ int cDriverGU140X32F::Init()
 
 	// default values
 	width = config->width;
-	if (width < 0)
+	if (width <= 0)
 		width = 140;
 	height = config->height;
-	if (height < 0)
+	if (height <= 0)
 		height = 32;
 	m_iSizeYb = ((height + 7) / 8); // 4
 	m_WiringRS = nSTRB;

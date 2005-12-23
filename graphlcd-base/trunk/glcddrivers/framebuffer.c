@@ -42,10 +42,10 @@ int cDriverFramebuffer::Init()
 {
 	// default values
 	width = config->width;
-	if (width < 0)
+	if (width <= 0)
 		width = 320;
 	height = config->height;
-	if (height < 0)
+	if (height <= 0)
 		height = 240;
 	zoom = 1;
 

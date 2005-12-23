@@ -77,9 +77,9 @@ int cDriverSED1520::Init()
 		height = config->height;
 	}
 
-	if (width < 0)
+	if (width <= 0)
 		width = 120;
-	if (height < 0)
+	if (height <= 0)
 		height = 32;
 
 	SEAD = kSEAD;

@@ -35,10 +35,10 @@ cDriverImage::~cDriverImage()
 int cDriverImage::Init()
 {
 	width = config->width;
-	if (width < 0)
+	if (width <= 0)
 		width = 240;
 	height = config->height;
-	if (height < 0)
+	if (height <= 0)
 		height = 128;
 	lineSize = (width + 7) / 8;
 

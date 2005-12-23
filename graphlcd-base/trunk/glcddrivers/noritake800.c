@@ -105,7 +105,11 @@ cDriverNoritake800::cDriverNoritake800(cDriverConfig * config)
   m_nRefreshCounter = 0;
 
   width = m_Config->width;      // 128
+	if (width <= 0)
+		width = 128;
   height = m_Config->height;    //  64
+	if (height <= 0)
+		height = 64;
   m_iSizeYb = (height + 7)/8;   //   8
 
   //

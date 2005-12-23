@@ -119,10 +119,10 @@ int cDriverGU256X64_3900::Init()
 	int x;
 	
 	width = config->width;
-	if (width < 0)
+	if (width <= 0)
 		width = 256;
 	height = config->height;
-	if (height < 0)
+	if (height <= 0)
 		height = 64;
 	m_iSizeYb = ((height + 7) / 8);
 

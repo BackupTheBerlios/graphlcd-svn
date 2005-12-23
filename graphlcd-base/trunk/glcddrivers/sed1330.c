@@ -148,10 +148,10 @@ int cDriverSED1330::Init()
 	struct timeval tv1, tv2;
 
 	width = config->width;
-	if (width < 0)
+	if (width <= 0)
 		width = 320;
 	height = config->height;
-	if (height < 0)
+	if (height <= 0)
 		height = 240;
 
 	// default values
