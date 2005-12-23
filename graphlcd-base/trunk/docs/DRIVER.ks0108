@@ -117,3 +117,8 @@ RefreshDisplay
  Possible values: 0 <= x <= 50
  Default value: 5
 
+Control
+ Sets the variant of setting the display control lines.
+ Possible values: 0, 1
+ Default value: 1
+ 
