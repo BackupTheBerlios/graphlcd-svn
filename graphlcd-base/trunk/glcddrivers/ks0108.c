@@ -48,6 +48,7 @@ cDriverKS0108::cDriverKS0108(cDriverConfig * config)
 
 	refreshCounter = 0;
 	timeForLCDInNs = 50;
+  control = 0;
 }
 
 cDriverKS0108::~cDriverKS0108()
@@ -102,8 +103,15 @@ int cDriverKS0108::Init()
 
 	for (unsigned int i = 0; i < config->options.size(); i++)
 	{
-		if (config->options[i].name == "")
+		if (config->options[i].name == "control")
 		{
+			if (config->options[i].value == "0")
+				control = 0;
+			else if (config->options[i].value == "1")
+				control = 1;
+			else
+				syslog(LOG_ERR, "%s error: unknown control setting %s, using default (%d)!\n",
+						config->name.c_str(), config->options[i].value.c_str(), control);
 		}
 	}
 
@@ -263,42 +271,66 @@ void cDriverKS0108::KS0108Cmd(unsigned char data, int cs)
 		nSleepInit();
 	switch (cs) {
 		case 1:
-			port->WriteControl(CDHI | CS1 | CELO);
+      if (control == 1)
+        port->WriteControl(CDHI | CS1 | CELO);
+      else
+        port->WriteControl(CDHI | CS1 | CEHI);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteData(data);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
-			port->WriteControl(CDHI | CS1 | CEHI);
-			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+      if (control == 1)
+      {
+        port->WriteControl(CDHI | CS1 | CEHI);
+        nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+      }
 			port->WriteControl(CDHI | CS1 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			break;
 		case 2:
-			port->WriteControl(CDHI | CS2 | CELO);
+      if (control == 1)
+        port->WriteControl(CDHI | CS2 | CELO);
+      else
+        port->WriteControl(CDHI | CS2 | CEHI);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteData(data);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
-			port->WriteControl(CDHI | CS2 | CEHI);
-			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+      if (control == 1)
+      {
+        port->WriteControl(CDHI | CS2 | CEHI);
+        nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+      }
 			port->WriteControl(CDHI | CS2 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			break;
 		case 3:
-			port->WriteControl(CDHI | CS3 | CELO);
+      if (control == 1)
+        port->WriteControl(CDHI | CS3 | CELO);
+      else
+        port->WriteControl(CDHI | CS3 | CEHI);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteData(data);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
-			port->WriteControl(CDHI | CS3 | CEHI);
-			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+      if (control == 1)
+      {
+        port->WriteControl(CDHI | CS3 | CEHI);
+        nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+      }
 			port->WriteControl(CDHI | CS3 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			break;
 		case 4:
-			port->WriteControl(CDHI | CS4 | CELO);
+      if (control == 1)
+        port->WriteControl(CDHI | CS4 | CELO);
+      else
+        port->WriteControl(CDHI | CS4 | CEHI);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteData(data);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
-			port->WriteControl(CDHI | CS4 | CEHI);
-			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+      if (control == 1)
+      {
+        port->WriteControl(CDHI | CS4 | CEHI);
+        nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+      }
 			port->WriteControl(CDHI | CS4 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			break;
@@ -313,42 +345,66 @@ void cDriverKS0108::KS0108Data(unsigned char data, int cs)
 		nSleepInit();
 	switch (cs) {
 		case 1:
-			port->WriteControl(CDLO | CS1 | CELO);
+      if (control == 1)
+        port->WriteControl(CDLO | CS1 | CELO);
+      else
+        port->WriteControl(CDLO | CS1 | CEHI);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteData(data);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
-			port->WriteControl(CDLO | CS1 | CEHI);
-			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+      if (control == 1)
+      {
+        port->WriteControl(CDLO | CS1 | CEHI);
+        nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+      }
 			port->WriteControl(CDLO | CS1 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			break;
 		case 2:
-			port->WriteControl(CDLO | CS2 | CELO);
+      if (control == 1)
+        port->WriteControl(CDLO | CS2 | CELO);
+      else
+        port->WriteControl(CDLO | CS2 | CEHI);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteData(data);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
-			port->WriteControl(CDLO | CS2 | CEHI);
-			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+      if (control == 1)
+      {
+        port->WriteControl(CDLO | CS2 | CEHI);
+        nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+      }
 			port->WriteControl(CDLO | CS2 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			break;
 		case 3:
-			port->WriteControl(CDLO | CS3 | CELO);
+      if (control == 1)
+        port->WriteControl(CDLO | CS3 | CELO);
+      else
+        port->WriteControl(CDLO | CS3 | CEHI);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteData(data);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
-			port->WriteControl(CDLO | CS3 | CEHI);
-			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+      if (control == 1)
+      {
+        port->WriteControl(CDLO | CS3 | CEHI);
+        nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+      }
 			port->WriteControl(CDLO | CS3 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			break;
 		case 4:
-			port->WriteControl(CDLO | CS4 | CELO);
+      if (control == 1)
+        port->WriteControl(CDLO | CS4 | CELO);
+      else
+        port->WriteControl(CDLO | CS4 | CEHI);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			port->WriteData(data);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
-			port->WriteControl(CDLO | CS4 | CEHI);
-			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+      if (control == 1)
+      {
+        port->WriteControl(CDLO | CS4 | CEHI);
+        nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
+      }
 			port->WriteControl(CDLO | CS4 | CELO);
 			nSleep((timeForLCDInNs + timeForPortCmdInNs) + 100 * config->adjustTiming);
 			break;

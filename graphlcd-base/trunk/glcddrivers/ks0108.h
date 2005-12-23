@@ -59,6 +59,8 @@ private:
 	int CS3;
 	int CS4;
 
+  unsigned char control;
+
 public:
 	cDriverKS0108(cDriverConfig * config);
 	virtual ~cDriverKS0108();
