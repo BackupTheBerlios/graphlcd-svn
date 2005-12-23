@@ -103,7 +103,7 @@ int cDriverKS0108::Init()
 
 	for (unsigned int i = 0; i < config->options.size(); i++)
 	{
-		if (config->options[i].name == "control")
+		if (config->options[i].name == "Control")
 		{
 			if (config->options[i].value == "0")
 				control = 0;
