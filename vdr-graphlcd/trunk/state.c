@@ -60,6 +60,8 @@ cGraphLCDState::cGraphLCDState()
 
 	volume.value = -1;
 	volume.lastChange = 0;
+
+	SetChannel(cDevice::CurrentChannel());
 }
 
 cGraphLCDState::~cGraphLCDState()
