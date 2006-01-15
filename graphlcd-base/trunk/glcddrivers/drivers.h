@@ -36,7 +36,8 @@ enum eDriver
 	kDriverFramebuffer   = 10,
 	kDriverImage         = 11,
 	kDriverNoritake800   = 12,
-	kDriverSerDisp       = 100,
+	kDriverAvrCtl        = 13,
+	kDriverSerDisp       = 100
 };
 
 struct tDriver

@@ -24,6 +24,7 @@
 #include "framebuffer.h"
 #include "image.h"
 #include "noritake800.h"
+#include "avrctl.h"
 #include "serdisp.h"
 
 namespace GLCD
@@ -43,6 +44,7 @@ tDriver drivers[] =
 	{"framebuffer",   kDriverFramebuffer},
 	{"image",         kDriverImage},
 	{"noritake800",   kDriverNoritake800},
+	{"avrctl",        kDriverAvrCtl},
 	{"serdisp",       kDriverSerDisp},
 	{"",              kDriverUnknown}
 };
@@ -78,6 +80,7 @@ cDriver * CreateDriver(int driverID, cDriverConfig * config)
 		case kDriverFramebuffer  : return new cDriverFramebuffer(config);
 		case kDriverImage        : return new cDriverImage(config);
 		case kDriverNoritake800  : return new cDriverNoritake800(config);
+		case kDriverAvrCtl       : return new cDriverAvrCtl(config);
 		case kDriverSerDisp      : return new cDriverSerDisp(config);
 		case kDriverUnknown      :
 		default                  : return NULL;
