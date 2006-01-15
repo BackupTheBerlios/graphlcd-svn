@@ -56,6 +56,23 @@ public:
 	void WriteData(unsigned char data);
 };
 
+class cSerialPort
+{
+private:
+	int fd;
+
+public:
+	cSerialPort();
+	~cSerialPort();
+
+	int Open(const char * device);
+	int Close();
+
+	int ReadData(unsigned char * data);
+	void WriteData(unsigned char data);
+	void WriteData(unsigned char * data, unsigned short length);
+};
+
 } // end of namespace
 
 #endif

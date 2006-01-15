@@ -15,10 +15,13 @@
 #include <string.h>
 #include <syslog.h>
 #include <unistd.h>
+#include <termios.h>
 #include <sys/io.h>
 #include <sys/ioctl.h>
 #include <linux/ppdev.h>
 #include <linux/parport.h>
+
+
 
 #include "port.h"
 
@@ -266,6 +269,82 @@ void cParallelPort::WriteData(unsigned char data)
 	{
 		port_out(port, data);
 	}
+}
+
+
+
+cSerialPort::cSerialPort()
+:	fd(-1)
+{
+}
+
+cSerialPort::~cSerialPort()
+{
+}
+
+int cSerialPort::Open(const char * device)
+{
+  struct termios options;
+
+  fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
+  if (fd == -1)
+  {
+    printf("error opening port\n");
+    return -1;
+  }
+  //fcntl(fd, F_SETFL, FNDELAY);
+  fcntl(fd, F_SETFL, 0);
+
+  tcgetattr(fd, &options);
+
+  cfsetispeed(&options, B921600);
+  cfsetospeed(&options, B921600);
+
+  options.c_cflag &= ~PARENB;
+  options.c_cflag &= ~CSTOPB;
+  options.c_cflag &= ~CSIZE;
+  options.c_cflag |= CS8;
+  
+  options.c_cflag &= ~CRTSCTS;
+  
+  options.c_cflag |= (CLOCAL | CREAD);
+
+  options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+
+  options.c_iflag &= ~(IXON | IXOFF | IXANY);
+
+  options.c_oflag &= ~OPOST;
+
+  tcsetattr(fd, TCSANOW, &options);
+
+  return 0;
+}
+
+int cSerialPort::Close()
+{
+  if (fd == -1)
+    return -1;
+  close(fd);
+  return 0;
+}
+
+int cSerialPort::ReadData(unsigned char * data)
+{
+  if (fd == -1)
+    return 0;
+  return read(fd, data, 1);
+}
+
+void cSerialPort::WriteData(unsigned char data)
+{
+  WriteData(&data, 1);
+}
+
+void cSerialPort::WriteData(unsigned char * data, unsigned short length)
+{
+  if (fd == -1)
+    return;
+  write(fd, data, length);
 }
 
 } // end of namespace
