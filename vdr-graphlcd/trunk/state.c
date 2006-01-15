@@ -83,16 +83,28 @@ void cGraphLCDState::ChannelSwitch(const cDevice * Device, int ChannelNumber)
 	}
 }
 
+#if VDRVERSNUM < 10338
 void cGraphLCDState::Recording(const cDevice * Device, const char * Name)
+#else
+void cGraphLCDState::Recording(const cDevice * Device, const char * Name, const char *FileName, bool On)
+#endif
 {
 //	printf("graphlcd plugin: cGraphLCDState::Recording %d %s\n", Device->CardIndex(), Name);
 	if (GraphLCDSetup.PluginActive)
 	{
 		mutex.Lock();
+#if VDRVERSNUM < 10338
 		if (Name)
+#else
+		if (On)
+#endif
 		{
 			card[Device->DeviceNumber()].recordingCount++;
+#if VDRVERSNUM < 10338
 			card[Device->DeviceNumber()].recordingName = Name;
+#else
+			card[Device->DeviceNumber()].recordingName = Name ? Name : "";
+#endif
 		}
 		else
 		{
@@ -106,19 +118,31 @@ void cGraphLCDState::Recording(const cDevice * Device, const char * Name)
 	}
 }
 
+#if VDRVERSNUM < 10338
 void cGraphLCDState::Replaying(const cControl * Control, const char * Name)
+#else
+void cGraphLCDState::Replaying(const cControl * Control, const char * Name, const char *FileName, bool On)
+#endif
 {
 //	printf("graphlcd plugin: cGraphLCDState::Replaying %s\n", Name);
 	if (GraphLCDSetup.PluginActive)
 	{
+#if VDRVERSNUM < 10338
 		if (Name)
+#else
+		if (On)
+#endif
 		{
 			mutex.Lock();
 			replay.control = (cControl *) Control;
 			replay.mode = eReplayNormal;
 			replay.name = "";
 			replay.loopmode = "";
+#if VDRVERSNUM < 10338
 			if (!isempty(Name))
+#else
+			if (Name && !isempty(Name))
+#endif
 			{
 				if (GraphLCDSetup.IdentifyReplayType)
 				{
@@ -288,7 +312,11 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name)
 			mutex.Unlock();
 			SetChannel(channel.number); 
 		}
+#if VDRVERSNUM < 10338
 		Display.Replaying(Name ? true : false, replay.mode);
+#else
+		Display.Replaying(On, replay.mode);
+#endif
 	}
 }
 

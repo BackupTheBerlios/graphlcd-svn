@@ -96,8 +96,13 @@ private:
 	void GetProgramme();
 protected:
 	virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber);
+#if VDRVERSNUM < 10338
 	virtual void Recording(const cDevice *Device, const char *Name);
 	virtual void Replaying(const cControl *Control, const char *Name);
+#else
+	virtual void Recording(const cDevice *Device, const char *Name, const char *FileName, bool On);
+	virtual void Replaying(const cControl *Control, const char *Name, const char *FileName, bool On);
+#endif
 	virtual void SetVolume(int Volume, bool Absolute);
 	virtual void Tick();
 	virtual void OsdClear();
