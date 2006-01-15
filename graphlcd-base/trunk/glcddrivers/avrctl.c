@@ -9,6 +9,7 @@
  * (c) 2005 Andreas Regel <andreas.regel AT powarman.de>
  */
 
+#include <stdint.h>
 #include <syslog.h>
 
 #include "common.h"
