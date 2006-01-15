@@ -180,7 +180,7 @@ bool cPluginGraphLCD::Start()
 	int count;
 
 	dsyslog("graphlcd: waiting for display thread to get ready");
-	for (count = 0; count < 50; count++)
+	for (count = 0; count < 1200; count++)
 	{
 		if (Display.Active())
 		{
