@@ -377,6 +377,41 @@ void cBitmap::DrawEllipse(int x1, int y1, int x2, int y2, eColor color, bool fil
 	}
 }
 
+void cBitmap::DrawSlope(int x1, int y1, int x2, int y2, eColor color, int type)
+{
+  bool upper    = type & 0x01;
+  bool falling  = type & 0x02;
+  bool vertical = type & 0x04;
+  if (vertical)
+  {
+    for (int y = y1; y <= y2; y++)
+    {
+      double c = cos((y - y1) * M_PI / (y2 - y1 + 1));
+      if (falling)
+        c = -c;
+      int x = int((x2 - x1 + 1) * c / 2);
+      if (upper && !falling || !upper && falling)
+        DrawRectangle(x1, y, (x1 + x2) / 2 + x, y, color, true);
+      else
+        DrawRectangle((x1 + x2) / 2 + x, y, x2, y, color, true);
+    }
+  }
+  else
+  {
+    for (int x = x1; x <= x2; x++)
+    {
+      double c = cos((x - x1) * M_PI / (x2 - x1 + 1));
+      if (falling)
+        c = -c;
+      int y = int((y2 - y1 + 1) * c / 2);
+      if (upper)
+        DrawRectangle(x, y1, x, (y1 + y2) / 2 + y, color, true);
+      else
+        DrawRectangle(x, (y1 + y2) / 2 + y, x, y2, color, true);
+    }
+  }
+}
+
 void cBitmap::DrawBitmap(int x, int y, const cBitmap & bitmap, eColor color)
 {
 	unsigned char cl = 0;

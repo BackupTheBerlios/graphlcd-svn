@@ -54,6 +54,7 @@ public:
 	void DrawRectangle(int x1, int y1, int x2, int y2, eColor color, bool filled);
 	void DrawRoundRectangle(int x1, int y1, int x2, int y2, eColor color, bool filled, int size);
 	void DrawEllipse(int x1, int y1, int x2, int y2, eColor color, bool filled, int quadrants);
+  void DrawSlope(int x1, int y1, int x2, int y2, eColor color, int type);
 	void DrawBitmap(int x, int y, const cBitmap & bitmap, eColor color);
 	int DrawText(int x, int y, int xmax, const std::string & text, const cFont * font,
 	             eColor color = clrBlack, bool proportional = true, int skipPixels = 0);
