@@ -24,10 +24,10 @@ class cImage;
 class cGLCDFile
 {
 public:
-	cGLCDFile();
-	~cGLCDFile();
-	bool Load(cImage & image, const std::string & fileName);
-	bool Save(cImage & image, const std::string & fileName);
+  cGLCDFile();
+  ~cGLCDFile();
+  bool Load(cImage & image, const std::string & fileName);
+  bool Save(cImage & image, const std::string & fileName);
 };
 
 } // end of namespace

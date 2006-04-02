@@ -20,19 +20,19 @@ static const char * kFontFileSign = "FNT3";
 #pragma pack(1)
 struct tFontHeader
 {
-	char sign[4];          // = FONTFILE_SIGN
-	unsigned short height; // total height of the font
-	unsigned short ascent; // ascender of the font
-	unsigned short line;   // line height
-	unsigned short reserved;
-	unsigned short space;  // space between characters of a string
-	unsigned short count;  // number of chars in this file
+  char sign[4];          // = FONTFILE_SIGN
+  unsigned short height; // total height of the font
+  unsigned short ascent; // ascender of the font
+  unsigned short line;   // line height
+  unsigned short reserved;
+  unsigned short space;  // space between characters of a string
+  unsigned short count;  // number of chars in this file
 };
 
 struct tCharHeader
 {
-	unsigned short character;
-	unsigned short width;
+  unsigned short character;
+  unsigned short width;
 };
 #pragma pack()
 

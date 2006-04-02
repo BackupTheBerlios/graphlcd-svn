@@ -25,39 +25,39 @@ namespace GLCD
 class cFont
 {
 private:
-	int totalWidth;
-	int totalHeight;
-	int totalAscent;
-	int spaceBetween;
-	int lineHeight;
+  int totalWidth;
+  int totalHeight;
+  int totalAscent;
+  int spaceBetween;
+  int lineHeight;
 
-	cBitmap * characters[256];
+  cBitmap * characters[256];
 protected:
-	void Init();
-	void Unload();
+  void Init();
+  void Unload();
 public:
-	cFont();
-	~cFont();
+  cFont();
+  ~cFont();
 
-	bool LoadFNT(const std::string & fileName);
-	bool SaveFNT(const std::string & fileName) const;
-	bool LoadFT2(const std::string & fileName, const std::string & encoding,
-		int size, bool dingBats = false);
-	int TotalWidth() const { return totalWidth; };
-	int TotalHeight() const { return totalHeight; };
-	int TotalAscent() const { return totalAscent; };
-	int SpaceBetween() const { return spaceBetween; };
-	int LineHeight() const { return lineHeight; };
+  bool LoadFNT(const std::string & fileName);
+  bool SaveFNT(const std::string & fileName) const;
+  bool LoadFT2(const std::string & fileName, const std::string & encoding,
+    int size, bool dingBats = false);
+  int TotalWidth() const { return totalWidth; };
+  int TotalHeight() const { return totalHeight; };
+  int TotalAscent() const { return totalAscent; };
+  int SpaceBetween() const { return spaceBetween; };
+  int LineHeight() const { return lineHeight; };
 
-	int Width(char ch) const;
-	int Width(const std::string & str) const;
-	int Width(const std::string & str, unsigned int len) const;
-	int Height(char ch) const;
-	int Height(const std::string & str) const;
-	int Height(const std::string & str, unsigned int len) const;
+  int Width(char ch) const;
+  int Width(const std::string & str) const;
+  int Width(const std::string & str, unsigned int len) const;
+  int Height(char ch) const;
+  int Height(const std::string & str) const;
+  int Height(const std::string & str, unsigned int len) const;
 
-	const cBitmap * GetCharacter(char ch) const;
-	void SetCharacter(char ch, cBitmap * bitmapChar);
+  const cBitmap * GetCharacter(char ch) const;
+  void SetCharacter(char ch, cBitmap * bitmapChar);
 };
 
 } // end of namespace

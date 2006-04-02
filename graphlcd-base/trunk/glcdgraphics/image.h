@@ -27,27 +27,27 @@ class cImage
 friend class cGLCDFile;
 
 private:
-	unsigned int width;
-	unsigned int height;
-	unsigned int delay;
-	unsigned int curBitmap;
-	unsigned long long lastChange;
-	std::vector <cBitmap *> bitmaps;
+  unsigned int width;
+  unsigned int height;
+  unsigned int delay;
+  unsigned int curBitmap;
+  unsigned long long lastChange;
+  std::vector <cBitmap *> bitmaps;
 public:
-	cImage();
-	~cImage();
+  cImage();
+  ~cImage();
 
-	unsigned int Width() const { return width; }
-	unsigned int Height() const { return height; }
-	unsigned int Count() const { return bitmaps.size(); }
-	unsigned int Delay() const { return delay; }
-	unsigned long long LastChange() const { return lastChange; }
-	void First(unsigned long long t) { lastChange = t; curBitmap = 0; }
-	bool Next(unsigned long long t) { lastChange = t; curBitmap++; return curBitmap < bitmaps.size(); }
-	void SetDelay(unsigned int d) { delay = d; }
-	const cBitmap * GetBitmap(unsigned int nr) const;
-	const cBitmap * GetBitmap() const;
-	void Clear();
+  unsigned int Width() const { return width; }
+  unsigned int Height() const { return height; }
+  unsigned int Count() const { return bitmaps.size(); }
+  unsigned int Delay() const { return delay; }
+  unsigned long long LastChange() const { return lastChange; }
+  void First(unsigned long long t) { lastChange = t; curBitmap = 0; }
+  bool Next(unsigned long long t) { lastChange = t; curBitmap++; return curBitmap < bitmaps.size(); }
+  void SetDelay(unsigned int d) { delay = d; }
+  const cBitmap * GetBitmap(unsigned int nr) const;
+  const cBitmap * GetBitmap() const;
+  void Clear();
 };
 
 } // end of namespace
