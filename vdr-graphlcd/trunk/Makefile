@@ -35,6 +35,10 @@ export INSTALLDOCDIR = $(INSTALLPREFIX)/share/doc
 ### The version number of VDR (taken from VDR's "config.h"):
 
 VDRVERSION = $(shell grep 'define VDRVERSION ' $(VDRDIR)/config.h | awk '{ print $$3 }' | sed -e 's/"//g')
+APIVERSION = $(shell grep 'define APIVERSION ' $(VDRDIR)/config.h | awk '{ print $$3 }' | sed -e 's/"//g')
+ifeq ($(strip $(APIVERSION)),)
+  APIVERSION = $(VDRVERSION)
+endif
 
 
 ### The name of the distribution archive:
@@ -80,7 +84,7 @@ all: libvdr-$(PLUGIN).so
 
 libvdr-$(PLUGIN).so: $(OBJS)
 	$(CXX) $(CXXFLAGS) -L$(INSTALLPREFIX)/lib -shared $(OBJS) -lglcddrivers -lglcdgraphics -lstdc++ -o $@
-	@cp $@ $(LIBDIR)/$@.$(VDRVERSION)
+	@cp $@ $(LIBDIR)/$@.$(APIVERSION)
 
 dist: clean
 	@-rm -rf $(TMPDIR)/$(ARCHIVE)
