@@ -620,6 +620,9 @@ void cGraphLCDState::SetChannel(int ChannelNumber)
 {
 	char tmp[16];
 
+	if (ChannelNumber == 0)
+		return;
+
 	mutex.Lock();
 
 	channel.number = ChannelNumber;
