@@ -37,7 +37,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Affichage sur un écran LCD",// Français
 		"",// TODO Norsk
 		"Ohjaa graafista LCD-näyttöä",// Suomi
 		"",// TODO Polski
@@ -61,7 +61,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Plugin actif",
 		"",// TODO Norsk
 		"Laajennos aktiivinen",// Suomi
 		"",// TODO Polski
@@ -85,7 +85,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"JanFevMarAvrMaiJunJuiAouSepOctNovDec",
 		"",// TODO Norsk
 		"TamHelMaaHuhTouKesHeiEloSyyLokMarJou",// Suomi
 		"",// TODO Polski
@@ -109,7 +109,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Afficher Date/Heure",
 		"",// TODO Norsk
 		"Näytä päivämäärä/kello",// Suomi
 		"",// TODO Polski
@@ -133,7 +133,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"pas dans le menu"
 		"",// TODO Norsk
 		"ei valikossa",// Suomi
 		"",// TODO Polski
@@ -157,7 +157,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Afficher le nom de la Chaine",
 		"",// TODO Norsk
 		"Näytä kanava",// Suomi
 		"",// TODO Polski
@@ -181,7 +181,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Afficher le Logo",
 		"",// TODO Norsk
 		"Näytä logo",// Suomi
 		"",// TODO Polski
@@ -205,7 +205,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Afficher le Logo en lecture",
 		"",// TODO Norsk
 		"Näytä logo toistotilassa",// Suomi
 		"",// TODO Polski
@@ -229,7 +229,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Afficher les Symboles",
 		"",// TODO Norsk
 		"Näytä symbolit",// Suomi
 		"",// TODO Polski
@@ -253,7 +253,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Afficher les Symboles ET",
 		"",// TODO Norsk
 		"Näytä ET-symbolit",// Suomi
 		"",// TODO Polski
@@ -277,7 +277,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Afficher les programmes",
 		"",// TODO Norsk
 		"Näytä ohjelma",// Suomi
 		"",// TODO Polski
@@ -301,7 +301,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Afficher la barre de progression",
 		"",// TODO Norsk
 		"Näytä aikajana",// Suomi
 		"",// TODO Polski
@@ -325,7 +325,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Afficher le menu",
 		"",// TODO Norsk
 		"Näytä valikko",// Suomi
 		"",// TODO Polski
@@ -349,7 +349,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Afficher les messages",
 		"",// TODO Norsk
 		"Näytä viestit",// Suomi
 		"",// TODO Polski
@@ -373,7 +373,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Afficher les boutons couleurs",
 		"",// TODO Norsk
 		"Näytä väripainikkeet",// Suomi
 		"",// TODO Polski
@@ -397,7 +397,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Afficher le Volume",
 		"",// TODO Norsk
 		"Näytä äänenvoimakkuus",// Suomi
 		"",// TODO Polski
@@ -421,7 +421,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Compressé",
 		"",// TODO Norsk
 		"pakattu",// Suomi
 		"",// TODO Polski
@@ -445,7 +445,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"auto",
 		"",// TODO Norsk
 		"automaattinen",// Suomi
 		"",// TODO Polski
@@ -469,7 +469,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"moyen",
 		"",// TODO Norsk
 		"keskikokoinen",// Suomi
 		"",// TODO Polski
@@ -493,7 +493,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"grand",
 		"",// TODO Norsk
 		"suuri",// Suomi
 		"",// TODO Polski
@@ -517,7 +517,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Afficher les cartes disponibles",
 		"",// TODO Norsk
 		"Näytä vapaat vastaanottimet",// Suomi
 		"",// TODO Polski
@@ -541,7 +541,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Lecture",
 		"",// TODO Norsk
 		"Toistotila",// Suomi
 		"",// TODO Polski
@@ -565,7 +565,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"DVD",
 		"",// TODO Norsk
 		"DVD",// Suomi
 		"",// TODO Polski
@@ -589,7 +589,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Musique",
 		"",// TODO Norsk
 		"Musiikki",// Suomi
 		"",// TODO Polski
@@ -613,7 +613,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Fichier:",
 		"",// TODO Norsk
 		"Tiedostot",// Suomi
 		"",// TODO Polski
@@ -637,7 +637,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Image",
 		"",// TODO Norsk
 		"Kuvat",// Suomi
 		"",// TODO Polski
@@ -661,7 +661,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"CD",
 		"",// TODO Norsk
 		"CD",// Suomi
 		"",// TODO Polski
@@ -685,7 +685,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Titre inconnu",
 		"",// TODO Norsk
 		"Tuntematon nimi",// Suomi
 		"",// TODO Polski
@@ -709,7 +709,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Identifier le type de lecture",
 		"",// TODO Norsk
 		"Tunnista toistotilan tyyppi",// Suomi
 		"",// TODO Polski
@@ -733,7 +733,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Modifier la chaine de lecture",
 		"",// TODO Norsk
 		"Muokkaa toistotilan merkkijonoa",// Suomi
 		"",// TODO Polski
@@ -757,7 +757,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Faire défiler le texte",
 		"",// TODO Norsk
 		"Vieritä tekstirivejä",// Suomi
 		"",// TODO Polski
@@ -781,7 +781,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Vitesse de défilement",
 		"",// TODO Norsk
 		"Vieritysnopeus",// Suomi
 		"",// TODO Polski
@@ -805,7 +805,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Intervalle de défilement",
 		"",// TODO Norsk
 		"Vierityksen päivitysväli",// Suomi
 		"",// TODO Polski
@@ -829,7 +829,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"jamais",
 		"",// TODO Norsk
 		"ei koskaan",// Suomi
 		"",// TODO Polski
@@ -853,7 +853,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"une fois",
 		"",// TODO Norsk
 		"kerran",// Suomi
 		"",// TODO Polski
@@ -877,7 +877,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"toujours",
 		"",// TODO Norsk
 		"aina",// Suomi
 		"",// TODO Polski
@@ -901,7 +901,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Luminosité en utilisation",
 		"",// TODO Norsk
 		"",// TODO Suomi
 		"",// TODO Polski
@@ -925,7 +925,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Luminosité en non-utilisation",
 		"",// TODO Norsk
 		"",// TODO Suomi
 		"",// TODO Polski
@@ -949,7 +949,7 @@ const tI18nPhrase Phrases[] =
 		"",// TODO Italiano
 		"",// TODO Nederlands
 		"",// TODO Português
-		"",// TODO Français
+		"Delai de Luminosité [s]",
 		"",// TODO Norsk
 		"",// TODO Suomi
 		"",// TODO Polski
