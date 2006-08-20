@@ -95,7 +95,9 @@ static const std::string kWiringWindows  = "Windows";
 
 
 cDriverGU140X32F::cDriverGU140X32F(cDriverConfig * config)
-:	config(config)
+: config(config)
+, m_pDrawMem(0)
+, m_pVFDMem(0)
 {
 	oldConfig = new cDriverConfig(*config);
 
