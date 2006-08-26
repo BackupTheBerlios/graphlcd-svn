@@ -1,12 +1,16 @@
 #
-# Makefile for the GraphLCD tool showpic
+# Makefile for the GraphLCD tool convpic
 #
 
 -include ../../Make.config
 
 PRGNAME = convpic
 
-OBJS = $(PRGNAME).o logo.o glcd.o bmp.o tiff.o tuxbox.o
+OBJS = $(PRGNAME).o bmp.o tiff.o tuxbox.o
+
+INCLUDES += -I../../
+LIBDIRS += -L../../glcdgraphics/
+
 
 all: $(PRGNAME)
 .PHONY: all
@@ -28,7 +32,7 @@ $(DEPFILE): Makefile
 # The main program:
 
 $(PRGNAME): $(OBJS)
-	$(CXX) $(CXXFLAGS) -rdynamic $(OBJS) $(LIBDIRS) -lstdc++ -o $(PRGNAME)
+	$(CXX) $(CXXFLAGS) -rdynamic $(OBJS) $(LIBS) $(LIBDIRS) -lglcdgraphics -lstdc++ -o $(PRGNAME)
 
 install: $(PRGNAME)
 	install -d $(BINDIR)
