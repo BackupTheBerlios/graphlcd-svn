@@ -12,19 +12,20 @@
 #ifndef _GLCDGRAPHICS_PBM_H_
 #define _GLCDGRAPHICS_PBM_H_
 
+#include "imagefile.h"
 
 namespace GLCD
 {
 
 class cImage;
 
-class cPBMFile
+class cPBMFile : public cImageFile
 {
 public:
     cPBMFile();
-    ~cPBMFile();
-    bool Load(cImage & image, const std::string & fileName);
-    bool Save(cImage & image, const std::string & fileName);
+    virtual ~cPBMFile();
+    virtual bool Load(cImage & image, const std::string & fileName);
+    virtual bool Save(cImage & image, const std::string & fileName);
 };
 
 } // end of namespace

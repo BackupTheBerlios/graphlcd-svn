@@ -15,19 +15,20 @@
 #ifndef _GLCDGRAPHICS_GLCD_H_
 #define _GLCDGRAPHICS_GLCD_H_
 
+#include "imagefile.h"
 
 namespace GLCD
 {
 
 class cImage;
 
-class cGLCDFile
+class cGLCDFile : public cImageFile
 {
 public:
     cGLCDFile();
-    ~cGLCDFile();
-    bool Load(cImage & image, const std::string & fileName);
-    bool Save(cImage & image, const std::string & fileName);
+    virtual ~cGLCDFile();
+    virtual bool Load(cImage & image, const std::string & fileName);
+    virtual bool Save(cImage & image, const std::string & fileName);
 };
 
 } // end of namespace
