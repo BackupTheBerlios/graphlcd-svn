@@ -12,9 +12,9 @@ BASENAME = libglcdgraphics.so
 
 LIBNAME = $(BASENAME).$(VERMAJOR).$(VERMINOR).$(VERMICRO)
 
-OBJS = bitmap.o common.o font.o glcd.o image.o pbm.o
+OBJS = bitmap.o common.o font.o glcd.o image.o imagefile.o pbm.o
 
-HEADERS = bitmap.h font.h glcd.h image.h pbm.h
+HEADERS = bitmap.h font.h glcd.h image.h imagefile.h pbm.h
 
 ### Implicit rules:
 
