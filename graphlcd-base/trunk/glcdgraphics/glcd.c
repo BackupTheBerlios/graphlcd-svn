@@ -5,7 +5,7 @@
  *
  * based on graphlcd plugin 0.1.1 for the Video Disc Recorder
  *  (c) 2001-2004 Carsten Siebholz <c.siebholz AT t-online.de>
- *  
+ *
  * This file is released under the GNU General Public License. Refer
  * to the COPYING file distributed with this package.
  *
@@ -29,18 +29,20 @@ using namespace std;
 
 const char * kGLCDFileSign = "GLC";
 
+/*
 #pragma pack(1)
 struct tGLCDHeader
 {
-  char sign[3];          // = "GLC"
-  char format;           // D - single image, A - animation
-  unsigned short width;  // width in pixels
-  unsigned short height; // height in pixels
-  // only for animations
-  unsigned short count;  // number of pictures
-  unsigned long delay;   // delay in ms
+    char sign[3];    // = "GLC"
+    char format;     // D - single image, A - animation
+    uint16_t width;  // width in pixels
+    uint16_t height; // height in pixels
+    // only for animations
+    uint16_t count;  // number of pictures
+    uint32_t delay;  // delay in ms
 };
 #pragma pack()
+*/
 
 cGLCDFile::cGLCDFile()
 {
@@ -52,122 +54,144 @@ cGLCDFile::~cGLCDFile()
 
 bool cGLCDFile::Load(cImage & image, const string & fileName)
 {
-  bool ret = false;
-  FILE * fp;
-  long fileSize;
+    bool ret = false;
+    FILE * fp;
+    long fileSize;
+    char sign[4];
+    uint8_t buf[6];
+    uint16_t width;
+    uint16_t height;
+    uint16_t count;
+    uint32_t delay;
 
-  fp = fopen(fileName.c_str(), "rb");
-  if (fp)
-  {
-    // get len of file
-    if (fseek(fp, 0, SEEK_END) != 0)
+    fp = fopen(fileName.c_str(), "rb");
+    if (fp)
     {
-      fclose(fp);
-      return false;
-    }
-    fileSize = ftell(fp);
-
-    // rewind and get Header
-    if (fseek(fp, 0, SEEK_SET) != 0)
-    {
-      fclose(fp);
-      return false;
-    }
-
-    tGLCDHeader hdr;
-    const unsigned int singleHeaderSize = sizeof(hdr.sign) + sizeof(hdr.format) + sizeof(hdr.width) + sizeof(hdr.height);
-
-    // Read standard header
-    if (fread(&hdr, singleHeaderSize, 1, fp) != 1)
-    {
-      fclose(fp);
-      return false;
-    }
-
-    // check Header
-    if (strncmp(hdr.sign, kGLCDFileSign, sizeof(hdr.sign)) != 0 || hdr.width == 0 || hdr.height == 0)
-    {
-      syslog(LOG_ERR, "glcdgraphics: load %s failed, wrong header (cGLCDFile::Load).", fileName.c_str());
-      fclose(fp);
-      return false;
-    }
-
-    if (hdr.format == 'D')
-    {
-      hdr.count = 1;
-      hdr.delay = 10;
-      // check file length
-      if (fileSize != (long) (hdr.height * ((hdr.width + 7) / 8) + singleHeaderSize))
-      {
-        syslog(LOG_ERR, "glcdgraphics: load %s failed, wrong size (cGLCDFile::Load).", fileName.c_str());
-        fclose(fp);
-        return false;
-      }
-    }
-    else if (hdr.format == 'A')
-    {
-      // rewind and get Header
-      if (fseek(fp, 0, SEEK_SET) != 0)
-      {
-        fclose(fp);
-        return false;
-      }
-      if (fread(&hdr, sizeof(hdr), 1, fp) != 1)
-      {
-        syslog(LOG_ERR, "glcdgraphics: load %s failed, wrong header (cGLCDFile::Load).", fileName.c_str());
-        fclose(fp);
-        return false;
-      }
-      // check file length
-      if (hdr.count == 0 ||
-          fileSize != (long) (hdr.count * (hdr.height * ((hdr.width + 7) / 8)) + sizeof(hdr)))
-      {
-        syslog(LOG_ERR, "glcdgraphics: load %s failed, wrong size (cGLCDFile::Load).", fileName.c_str());
-        fclose(fp);
-        return false;
-      }
-      // Set minimal limit for next image 
-      if (hdr.delay < 10)
-        hdr.delay = 10;
-    }
-
-    image.Clear();
-    image.width = hdr.width;
-    image.height = hdr.height;
-    image.delay = hdr.delay;
-    unsigned char * bmpdata = new unsigned char[hdr.height * ((hdr.width + 7) / 8)];
-    if (bmpdata)
-    {
-      for (unsigned int n = 0; n < hdr.count; n++)
-      {
-        if (fread(bmpdata, hdr.height * ((hdr.width + 7) / 8), 1, fp) != 1)
+        // get len of file
+        if (fseek(fp, 0, SEEK_END) != 0)
         {
-          delete[] bmpdata;
-          fclose(fp);
-          image.Clear();
-          return false;
+            fclose(fp);
+            return false;
         }
-        image.bitmaps.push_back(new cBitmap(hdr.width, hdr.height, bmpdata));
-        ret = true;
-      }
-      delete[] bmpdata;
+        fileSize = ftell(fp);
+
+        // rewind and get Header
+        if (fseek(fp, 0, SEEK_SET) != 0)
+        {
+            fclose(fp);
+            return false;
+        }
+
+        // read header sign
+        if (fread(sign, 4, 1, fp) != 1)
+        {
+            fclose(fp);
+            return false;
+        }
+
+        // check header sign
+        if (strncmp(sign, kGLCDFileSign, 3) != 0)
+        {
+            syslog(LOG_ERR, "glcdgraphics: load %s failed, wrong header (cGLCDFile::Load).", fileName.c_str());
+            fclose(fp);
+            return false;
+        }
+
+        // read width and height
+        if (fread(buf, 4, 1, fp) != 1)
+        {
+            fclose(fp);
+            return false;
+        }
+
+        width = (buf[1] << 8) | buf[0];
+        height = (buf[3] << 8) | buf[2];
+        if (width == 0 || height == 0)
+        {
+            syslog(LOG_ERR, "glcdgraphics: load %s failed, wrong header (cGLCDFile::Load).", fileName.c_str());
+            fclose(fp);
+            return false;
+        }
+
+        if (sign[3] == 'D')
+        {
+            count = 1;
+            delay = 10;
+            // check file length
+            if (fileSize != (long) (height * ((width + 7) / 8) + 8))
+            {
+                syslog(LOG_ERR, "glcdgraphics: load %s failed, wrong size (cGLCDFile::Load).", fileName.c_str());
+                fclose(fp);
+                return false;
+            }
+        }
+        else if (sign[3] == 'A')
+        {
+            // read count and delay
+            if (fread(buf, 6, 1, fp) != 1)
+            {
+                syslog(LOG_ERR, "glcdgraphics: load %s failed, wrong header (cGLCDFile::Load).", fileName.c_str());
+                fclose(fp);
+                return false;
+            }
+            count = (buf[1] << 8) | buf[0];
+            delay = (buf[3] << 24) | (buf[2] << 16) | (buf[1] << 8) | buf[0];
+            // check file length
+            if (count == 0 ||
+                fileSize != (long) (count * (height * ((width + 7) / 8)) + 14))
+            {
+                syslog(LOG_ERR, "glcdgraphics: load %s failed, wrong size (cGLCDFile::Load).", fileName.c_str());
+                fclose(fp);
+                return false;
+            }
+            // Set minimal limit for next image
+            if (delay < 10)
+                delay = 10;
+        }
+        else
+        {
+            syslog(LOG_ERR, "glcdgraphics: load %s failed, wrong header (cGLCDFile::Load).", fileName.c_str());
+            fclose(fp);
+            return false;
+        }
+
+        image.Clear();
+        image.width = width;
+        image.height = height;
+        image.delay = delay;
+        unsigned char * bmpdata = new unsigned char[height * ((width + 7) / 8)];
+        if (bmpdata)
+        {
+            for (unsigned int n = 0; n < count; n++)
+            {
+                if (fread(bmpdata, height * ((width + 7) / 8), 1, fp) != 1)
+                {
+                    delete[] bmpdata;
+                    fclose(fp);
+                    image.Clear();
+                    return false;
+                }
+                image.bitmaps.push_back(new cBitmap(width, height, bmpdata));
+                ret = true;
+            }
+            delete[] bmpdata;
+        }
+        else
+        {
+            syslog(LOG_ERR, "glcdgraphics: malloc failed (cGLCDFile::Load).");
+        }
+        fclose(fp);
     }
-    else
-    {
-      syslog(LOG_ERR, "glcdgraphics: malloc failed (cGLCDFile::Load).");
-    }
-    fclose(fp);
-  }
-  if (ret)
-    syslog(LOG_DEBUG, "glcdgraphics: image %s loaded.", fileName.c_str());
-  return ret;
+    if (ret)
+        syslog(LOG_DEBUG, "glcdgraphics: image %s loaded.", fileName.c_str());
+    return ret;
 }
 
 bool cGLCDFile::Save(cImage & image, const string & fileName)
 {
-  bool ret = false;
+    bool ret = false;
 
-  return ret;
+    return ret;
 }
 
 } // end of namespace
