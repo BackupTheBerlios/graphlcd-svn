@@ -54,7 +54,6 @@ cGLCDFile::~cGLCDFile()
 
 bool cGLCDFile::Load(cImage & image, const string & fileName)
 {
-    bool ret = false;
     FILE * fp;
     long fileSize;
     char sign[4];
@@ -156,9 +155,9 @@ bool cGLCDFile::Load(cImage & image, const string & fileName)
         }
 
         image.Clear();
-        image.width = width;
-        image.height = height;
-        image.delay = delay;
+        image.SetWidth(width);
+        image.SetHeight(height);
+        image.SetDelay(delay);
         unsigned char * bmpdata = new unsigned char[height * ((width + 7) / 8)];
         if (bmpdata)
         {
@@ -171,27 +170,99 @@ bool cGLCDFile::Load(cImage & image, const string & fileName)
                     image.Clear();
                     return false;
                 }
-                image.bitmaps.push_back(new cBitmap(width, height, bmpdata));
-                ret = true;
+                image.AddBitmap(new cBitmap(width, height, bmpdata));
             }
             delete[] bmpdata;
         }
         else
         {
             syslog(LOG_ERR, "glcdgraphics: malloc failed (cGLCDFile::Load).");
+            fclose(fp);
+            image.Clear();
+            return false;
         }
         fclose(fp);
     }
-    if (ret)
-        syslog(LOG_DEBUG, "glcdgraphics: image %s loaded.", fileName.c_str());
-    return ret;
+    syslog(LOG_DEBUG, "glcdgraphics: image %s loaded.", fileName.c_str());
+    return true;
 }
 
 bool cGLCDFile::Save(cImage & image, const string & fileName)
 {
-    bool ret = false;
+    FILE * fp;
+    uint8_t buf[14];
+    uint16_t width;
+    uint16_t height;
+    uint16_t count;
+    uint32_t delay;
+    const cBitmap * bitmap;
+    int i;
 
-    return ret;
+    if (image.Count() == 0)
+        return false;
+
+    fp = fopen(fileName.c_str(), "wb");
+    if (fp)
+    {
+        memcpy(buf, kGLCDFileSign, 3);
+        count = image.Count();
+        delay = image.Delay();
+        if (count == 1)
+        {
+            buf[3] = 'D';
+        }
+        else
+        {
+            buf[3] = 'A';
+        }
+        bitmap = image.GetBitmap(0);
+        width = bitmap->Width();
+        height = bitmap->Height();
+        buf[4] = (uint8_t) width;
+        buf[5] = (uint8_t) (width >> 8);
+        buf[6] = (uint8_t) height;
+        buf[7] = (uint8_t) (height >> 8);
+        if (count == 1)
+        {
+            if (fwrite(buf, 8, 1, fp) != 1)
+            {
+                fclose(fp);
+                return false;
+            }
+        }
+        else
+        {
+            buf[8] = (uint8_t) count;
+            buf[9] = (uint8_t) (count >> 8);
+            buf[10] = (uint8_t) delay;
+            buf[11] = (uint8_t) (delay >> 8);
+            buf[12] = (uint8_t) (delay >> 16);
+            buf[13] = (uint8_t) (delay >> 24);
+            if (fwrite(buf, 14, 1, fp) != 1)
+            {
+                fclose(fp);
+                return false;
+            }
+        }
+        for (i = 0; i < count; i++)
+        {
+            bitmap = image.GetBitmap(i);
+            if (bitmap)
+            {
+                if (bitmap->Width() == width && bitmap->Height() == height)
+                {
+                    if (fwrite(bitmap->Data(), height * ((width + 7) / 8), 1, fp) != 1)
+                    {
+                        fclose(fp);
+                        return false;
+                    }
+                }
+            }
+        }
+        fclose(fp);
+    }
+    syslog(LOG_DEBUG, "glcdgraphics: image %s saved.", fileName.c_str());
+    return true;
 }
 
 } // end of namespace
