@@ -24,9 +24,6 @@ class cBitmap;
 
 class cImage
 {
-    friend class cGLCDFile;
-    friend class cPBMFile;
-
 private:
     unsigned int width;
     unsigned int height;
@@ -45,9 +42,12 @@ public:
     unsigned long long LastChange() const { return lastChange; }
     void First(unsigned long long t) { lastChange = t; curBitmap = 0; }
     bool Next(unsigned long long t) { lastChange = t; curBitmap++; return curBitmap < bitmaps.size(); }
+    void SetWidth(unsigned int Width) { width = Width; }
+    void SetHeight(unsigned int Height) { height = Height; }
     void SetDelay(unsigned int d) { delay = d; }
     const cBitmap * GetBitmap(unsigned int nr) const;
     const cBitmap * GetBitmap() const;
+    void AddBitmap(cBitmap * Bitmap) { bitmaps.push_back(Bitmap); }
     void Clear();
 };
 
