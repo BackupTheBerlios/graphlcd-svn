@@ -45,8 +45,8 @@ public:
     void SetWidth(unsigned int Width) { width = Width; }
     void SetHeight(unsigned int Height) { height = Height; }
     void SetDelay(unsigned int d) { delay = d; }
-    const cBitmap * GetBitmap(unsigned int nr) const;
-    const cBitmap * GetBitmap() const;
+    cBitmap * GetBitmap(unsigned int nr) const;
+    cBitmap * GetBitmap() const;
     void AddBitmap(cBitmap * Bitmap) { bitmaps.push_back(Bitmap); }
     void Clear();
 };

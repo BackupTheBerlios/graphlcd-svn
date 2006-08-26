@@ -35,14 +35,14 @@ cImage::~cImage()
     Clear();
 }
 
-const cBitmap * cImage::GetBitmap() const
+cBitmap * cImage::GetBitmap() const
 {
     if (curBitmap < bitmaps.size())
         return bitmaps[curBitmap];
     return NULL;
 }
 
-const cBitmap * cImage::GetBitmap(unsigned int nr) const
+cBitmap * cImage::GetBitmap(unsigned int nr) const
 {
     if (nr < bitmaps.size())
         return bitmaps[nr];
