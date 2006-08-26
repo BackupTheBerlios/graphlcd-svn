@@ -108,9 +108,9 @@ bool cPBMFile::Load(cImage & image, const std::string & fileName)
     h = atoi(str);
 
     image.Clear();
-    image.width = w;
-    image.height = h;
-    image.delay = 100;
+    image.SetWidth(w);
+    image.SetHeight(h);
+    image.SetDelay(100);
     unsigned char * bmpdata = new unsigned char[h * ((w + 7) / 8)];
     if (bmpdata)
     {
@@ -121,7 +121,7 @@ bool cPBMFile::Load(cImage & image, const std::string & fileName)
             image.Clear();
             return false;
         }
-        image.bitmaps.push_back(new cBitmap(w, h, bmpdata));
+        image.AddBitmap(new cBitmap(w, h, bmpdata));
         delete[] bmpdata;
     }
     else
@@ -142,17 +142,42 @@ bool cPBMFile::Save(cImage & image, const std::string & fileName)
     char str[32];
     const cBitmap * bitmap;
 
-    fp = fopen(fileName.c_str(), "wb");
-    if (fp)
+    if (image.Count() == 1)
     {
-        bitmap = image.GetBitmap(0);
-        if (bitmap)
+        fp = fopen(fileName.c_str(), "wb");
+        if (fp)
         {
-            sprintf(str, "P4\n%d %d\n", bitmap->Width(), bitmap->Height());
-            fwrite(str, strlen(str), 1, fp);
-            fwrite(bitmap->Data(), bitmap->LineSize() * bitmap->Height(), 1, fp);
+            bitmap = image.GetBitmap(0);
+            if (bitmap)
+            {
+                sprintf(str, "P4\n%d %d\n", bitmap->Width(), bitmap->Height());
+                fwrite(str, strlen(str), 1, fp);
+                fwrite(bitmap->Data(), bitmap->LineSize() * bitmap->Height(), 1, fp);
+            }
+            fclose(fp);
         }
-        fclose(fp);
+    }
+    else
+    {
+        uint16_t i;
+        char tmpStr[256];
+
+        for (i = 0; i < image.Count(); i++)
+        {
+            sprintf(tmpStr, "%.248s.%05d", fileName.c_str(), i);
+            fp = fopen(tmpStr, "wb");
+            if (fp)
+            {
+                bitmap = image.GetBitmap(i);
+                if (bitmap)
+                {
+                    sprintf(str, "P4\n%d %d\n", bitmap->Width(), bitmap->Height());
+                    fwrite(str, strlen(str), 1, fp);
+                    fwrite(bitmap->Data(), bitmap->LineSize() * bitmap->Height(), 1, fp);
+                }
+                fclose(fp);
+            }
+        }
     }
     return true;
 }
