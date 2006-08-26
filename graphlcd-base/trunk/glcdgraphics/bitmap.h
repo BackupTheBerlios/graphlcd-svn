@@ -47,6 +47,7 @@ public:
     const unsigned char * Data() const { return bitmap; }
 
     void Clear();
+    void Invert();
     void DrawPixel(int x, int y, eColor color);
     void Draw8Pixels(int x, int y, unsigned char pixels, eColor color);
     void DrawLine(int x1, int y1, int x2, int y2, eColor color);

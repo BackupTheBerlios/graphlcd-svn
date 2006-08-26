@@ -62,6 +62,16 @@ void cBitmap::Clear()
     memset(bitmap, 0, lineSize * height);
 }
 
+void cBitmap::Invert()
+{
+    int i;
+
+    for (i = 0; i < lineSize * height; i++)
+    {
+        bitmap[i] ^= 0xFF;
+    }
+}
+
 void cBitmap::DrawPixel(int x, int y, eColor color)
 {
     if (x < 0 || x > width - 1)
