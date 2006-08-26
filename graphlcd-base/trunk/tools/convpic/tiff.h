@@ -1,5 +1,5 @@
 /**
- *  GraphLCD plugin for the Video Disk Recorder 
+ *  GraphLCD plugin for the Video Disk Recorder
  *
  *  tiff.h  -  tiff logo class
  *
@@ -29,18 +29,14 @@
 #ifndef _TIFF_H_
 #define _TIFF_H_
 
-#include "glcd.h"
+#include <glcdgraphics/imagefile.h>
 
-class cTIFF : public cGraphLCDLogoExt 
+class cTIFFFile : public GLCD::cImageFile
 {
 public:
-  cTIFF();
-  cTIFF(const cGraphLCDLogoExt& x);
-  virtual ~cTIFF();
-
-  virtual bool Load(const char * fileName, bool bInvert);
-  virtual bool Save(const char * fileName) { return false; }
-  virtual bool CanMergeImage() const { return false; }
+    cTIFFFile();
+    virtual ~cTIFFFile();
+    virtual bool Load(GLCD::cImage & image, const std::string & fileName);
 };
 
 #endif

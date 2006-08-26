@@ -1,5 +1,5 @@
 /**
- *  GraphLCD plugin for the Video Disk Recorder 
+ *  GraphLCD plugin for the Video Disk Recorder
  *
  *  bmp.h  -  bmp logo class
  *
@@ -29,17 +29,17 @@
 #ifndef _BMP_H_
 #define _BMP_H_
 
-#include "glcd.h"
+#include <glcdgraphics/imagefile.h>
 
-class cBMP : public cGraphLCDLogoExt 
+class cBMPFile : public GLCD::cImageFile
 {
+private:
+    bool Save(const GLCD::cBitmap * bitmap, const std::string & fileName);
 public:
-  cBMP();
-  virtual ~cBMP();
-  cBMP(const cGraphLCDLogoExt& x);
-  virtual bool Load(const char * fileName, bool bInvert);
-  virtual bool Save(const char * fileName);
-  virtual bool CanMergeImage() const { return false; }
+    cBMPFile();
+    virtual ~cBMPFile();
+    virtual bool Load(GLCD::cImage & image, const std::string & fileName);
+    virtual bool Save(GLCD::cImage & image, const std::string & fileName);
 };
 
 #endif

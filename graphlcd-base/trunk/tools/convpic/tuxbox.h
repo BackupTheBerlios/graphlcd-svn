@@ -1,5 +1,5 @@
 /**
- *  GraphLCD plugin for the Video Disk Recorder 
+ *  GraphLCD plugin for the Video Disk Recorder
  *
  *  tuxbox.h  -  tuxbox logo class
  *
@@ -27,20 +27,18 @@
 #ifndef _TUXBOX_H_
 #define _TUXBOX_H_
 
-#include "glcd.h"
+#include <glcdgraphics/imagefile.h>
 
-class cTuxBox : public cGraphLCDLogoExt 
+class cTuxBoxFile : public GLCD::cImageFile
 {
-  void vert2horz(const unsigned char* source, unsigned char* dest);
-  void horz2vert(const unsigned char* source, unsigned char* dest);
-
+private:
+    void vert2horz(const unsigned char* source, unsigned char* dest, int width, int height);
+    void horz2vert(const unsigned char* source, unsigned char* dest, int width, int height);
 public:
-  cTuxBox();
-  cTuxBox(const cGraphLCDLogoExt& x);
-  virtual ~cTuxBox();
-  virtual bool Load(const char * fileName, bool bInvert);
-  virtual bool Save(const char * fileName);
-  virtual bool CanMergeImage() const { return true; }
+    cTuxBoxFile();
+    virtual ~cTuxBoxFile();
+    virtual bool Load(GLCD::cImage & image, const std::string & fileName);
+    virtual bool Save(GLCD::cImage & image, const std::string & fileName);
 };
 
 #endif
