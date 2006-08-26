@@ -38,6 +38,7 @@ protected:
 
 public:
     cBitmap(int width, int height, unsigned char * data = NULL);
+    cBitmap(const cBitmap & b);
     ~cBitmap();
 
     int Width() const { return width; }

@@ -42,6 +42,16 @@ cBitmap::cBitmap(int width, int height, unsigned char * data)
         memcpy(bitmap, data, lineSize * height);
 }
 
+cBitmap::cBitmap(const cBitmap & b)
+{
+    width = b.width;
+    height = b.height;
+    lineSize = b.lineSize;
+    bitmap = new unsigned char[lineSize * height];
+    if (b.bitmap)
+        memcpy(bitmap, b.bitmap, lineSize * height);
+}
+
 cBitmap::~cBitmap()
 {
     delete[] bitmap;
