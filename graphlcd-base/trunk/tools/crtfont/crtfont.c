@@ -6,7 +6,7 @@
  *
  * based on graphlcd plugin 0.1.1 for the Video Disc Recorder
  *  (c) 2001-2004 Carsten Siebholz <c.siebholz AT t-online.de>
- *  
+ *
  * This file is released under the GNU General Public License. Refer
  * to the COPYING file distributed with this package.
  *
@@ -18,10 +18,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glcdgraphics/bitmap.h>
-#include <glcdgraphics/fontheader.h>
+#include <glcdgraphics/font.h>
 
 static const char *prgname = "crtfont";
-static const char *version = "0.1.5";
+static const char *version = "0.1.6";
 
 const int kMaxLineLength = 1024;
 
@@ -60,13 +60,11 @@ char * trim(char * str)
 int main(int argc, char *argv[])
 {
 	ePicFormat picFormat = undefined;
-	GLCD::tFontHeader fhdr;
-	GLCD::tCharHeader chdr;
+	GLCD::cFont font;
 	char * picName = NULL;
 	char * descName = NULL;
 	char * fontName = NULL;
 	FILE * descFile;
-	FILE * fontFile;
 	bool error = false;
 	GLCD::cBitmap * bitmap = NULL;
 	GLCD::cBitmap * tmpBitmap = NULL;
@@ -78,9 +76,6 @@ int main(int argc, char *argv[])
 	int spaceWidth;
 	int version;
 	char * ptr;
-
-
-	memcpy(fhdr.sign, GLCD::kFontFileSign, 4);
 
 	static struct option long_options[] =
 	{
@@ -151,12 +146,6 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Cannot open file: %s\n",descName);
 		return 2;
 	}
-	fontFile = fopen(fontName,"wb");
-	if (!fontFile)
-	{
-		fprintf(stderr, "Cannot open file: %s\n",fontName);
-		return 2;
-	}
 
 	// Load Picture
 	switch (picFormat)
@@ -178,11 +167,7 @@ int main(int argc, char *argv[])
 	if (!bitmap)
 		return 3;
 
-	memset(&fhdr, 0, sizeof(GLCD::tFontHeader));
-	memcpy(fhdr.sign, GLCD::kFontFileSign, 4);
 	spaceWidth = 0;
-
-	fwrite(&fhdr, sizeof(GLCD::tFontHeader), 1, fontFile);
 
 	version = 0;
 	fgets(line, sizeof(line), descFile);
@@ -204,22 +189,22 @@ int main(int argc, char *argv[])
 		if (strstr(line, "fontheight") != NULL)
 		{
 			ptr = strstr(line, ":");
-			fhdr.height = atoi(ptr + 1);
+			font.SetTotalHeight(atoi(ptr + 1));
 		}
 		else if (strstr(line, "fontascent") != NULL)
 		{
 			ptr = strstr(line, ":");
-			fhdr.ascent = atoi(ptr + 1);
+			font.SetTotalAscent(atoi(ptr + 1));
 		}
 		else if (strstr(line, "lineheight") != NULL)
 		{
 			ptr = strstr(line, ":");
-			fhdr.line = atoi(ptr + 1);
+			font.SetLineHeight(atoi(ptr + 1));
 		}
 		else if (strstr(line, "spacebetween") != NULL)
 		{
 			ptr = strstr(line, ":");
-			fhdr.space = atoi(ptr + 1);
+			font.SetSpaceBetween(atoi(ptr + 1));
 		}
 		else if (strstr(line, "spacewidth") != NULL)
 		{
@@ -237,16 +222,16 @@ int main(int argc, char *argv[])
 				token = strtok(NULL, " ");
 				while (token)
 				{
+				    uint16_t character;
 					if (strlen(token) == 1)
-						chdr.character = (unsigned char) token[0];
+						character = (uint8_t) token[0];
 					else
-						chdr.character = atoi(token);
+						character = atoi(token);
 
 					// get EndOffset
 					token = strtok(NULL, " ");
 					endOffset = atoi(token);
-					chdr.width = endOffset - startOffset;
-					tmpBitmap = bitmap->SubBitmap(startOffset, l * fhdr.height, endOffset - 1, (l + 1) * fhdr.height - 1);
+					tmpBitmap = bitmap->SubBitmap(startOffset, l * font.TotalHeight(), endOffset - 1, (l + 1) * font.TotalHeight() - 1);
 					if (spaceWidth > 0)
 					{
 						// calculate width of this character
@@ -276,22 +261,15 @@ int main(int argc, char *argv[])
 							left = 0;
 							right = spaceWidth - 1;
 						}
-						charBitmap = tmpBitmap->SubBitmap(left, 0, right, fhdr.height - 1);
-						chdr.width = charBitmap->Width();
-						fwrite(&chdr, sizeof(GLCD::tCharHeader), 1, fontFile);
-						fwrite(charBitmap->Data(), fhdr.height * charBitmap->LineSize(), 1, fontFile);
-						delete charBitmap;
+						charBitmap = tmpBitmap->SubBitmap(left, 0, right, font.TotalHeight() - 1);
+						font.SetCharacter(character, charBitmap);
 						delete tmpBitmap;
 					}
 					else
 					{
-						chdr.width = tmpBitmap->Width();
-						fwrite(&chdr, sizeof(GLCD::tCharHeader), 1, fontFile);
-						fwrite(tmpBitmap->Data(), fhdr.height * tmpBitmap->LineSize(), 1, fontFile);
-						delete tmpBitmap;
+						font.SetCharacter(character, tmpBitmap);
 					}
 					startOffset = endOffset;
-					fhdr.count++;
 
 					// get next character
 					token = strtok(NULL, " ");
@@ -300,16 +278,11 @@ int main(int argc, char *argv[])
 			l++;
 		}
 	}
-
-	fseek(fontFile, 0, SEEK_SET);
-	fwrite(&fhdr, sizeof(GLCD::tFontHeader), 1, fontFile);
-
-	fclose(fontFile);
 	fclose(descFile);
-
 	delete bitmap;
 
-	fprintf(stdout,"Font '%s' created successfully\n", fontName);
+	if (font.SaveFNT(fontName))
+        fprintf(stdout,"Font '%s' created successfully\n", fontName);
 
 	return 0;
 }
