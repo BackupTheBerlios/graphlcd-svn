@@ -49,6 +49,12 @@ public:
     int SpaceBetween() const { return spaceBetween; };
     int LineHeight() const { return lineHeight; };
 
+    void SetTotalWidth(int width) { totalWidth = width; };
+    void SetTotalHeight(int height) { totalHeight = height; };
+    void SetTotalAscent(int ascent) { totalAscent = ascent; };
+    void SetSpaceBetween(int width) { spaceBetween = width; };
+    void SetLineHeight(int height) { lineHeight = height; };
+
     int Width(char ch) const;
     int Width(const std::string & str) const;
     int Width(const std::string & str, unsigned int len) const;

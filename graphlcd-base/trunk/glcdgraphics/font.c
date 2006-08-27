@@ -19,7 +19,6 @@
 #include <algorithm>
 
 #include "font.h"
-#include "fontheader.h"
 
 #ifdef HAVE_FREETYPE2
 #include <ft2build.h>
@@ -29,6 +28,29 @@
 
 namespace GLCD
 {
+
+static const char * kFontFileSign = "FNT3";
+static const uint32_t kFontHeaderSize = 16;
+static const uint32_t kCharHeaderSize = 4;
+
+//#pragma pack(1)
+//struct tFontHeader
+//{
+//    char sign[4];          // = FONTFILE_SIGN
+//    unsigned short height; // total height of the font
+//    unsigned short ascent; // ascender of the font
+//    unsigned short line;   // line height
+//    unsigned short reserved;
+//    unsigned short space;  // space between characters of a string
+//    unsigned short count;  // number of chars in this file
+//};
+//
+//struct tCharHeader
+//{
+//    unsigned short character;
+//    unsigned short width;
+//};
+//#pragma pack()
 
 cFont::cFont()
 {
@@ -46,42 +68,50 @@ bool cFont::LoadFNT(const std::string & fileName)
     Unload();
 
     FILE * fontFile;
-    tFontHeader fhdr;
-    tCharHeader chdr;
     int i;
-    unsigned char buffer[10000];
+    uint8_t buffer[10000];
+    uint16_t fontHeight;
+    uint16_t numChars;
     int maxWidth = 0;
 
     fontFile = fopen(fileName.c_str(), "rb");
     if (!fontFile)
         return false;
 
-    fread(&fhdr, sizeof(tFontHeader), 1, fontFile);
-    if (fhdr.sign[0] != kFontFileSign[0] ||
-            fhdr.sign[1] != kFontFileSign[1] ||
-            fhdr.sign[2] != kFontFileSign[2] ||
-            fhdr.sign[3] != kFontFileSign[3])
+    fread(buffer, kFontHeaderSize, 1, fontFile);
+    if (buffer[0] != kFontFileSign[0] ||
+        buffer[1] != kFontFileSign[1] ||
+        buffer[2] != kFontFileSign[2] ||
+        buffer[3] != kFontFileSign[3])
     {
         fclose(fontFile);
         return false;
     }
 
-    for (i = 0; i < fhdr.count; i++)
+    fontHeight = buffer[4] | (buffer[5] << 8);
+    numChars = buffer[14] | (buffer[15] << 8);
+    for (i = 0; i < numChars; i++)
     {
-        fread(&chdr, sizeof(tCharHeader), 1, fontFile);
-        fread(buffer, fhdr.height * ((chdr.width + 7) / 8), 1, fontFile);
-        if (characters[chdr.character])
-            delete characters[chdr.character];
-        characters[chdr.character] = new cBitmap(chdr.width, fhdr.height, buffer);
-        if (characters[chdr.character]->Width() > maxWidth)
-            maxWidth = characters[chdr.character]->Width();
+        uint8_t chdr[kCharHeaderSize];
+        uint16_t charWidth;
+        uint16_t character;
+        fread(chdr, kCharHeaderSize, 1, fontFile);
+        character = chdr[0] | (chdr[1] << 8);
+        charWidth = chdr[2] | (chdr[3] << 8);
+        fread(buffer, fontHeight * ((charWidth + 7) / 8), 1, fontFile);
+        if (characters[character])
+            delete characters[character];
+        characters[character] = new cBitmap(charWidth, fontHeight, buffer);
+        if (characters[character]->Width() > maxWidth)
+            maxWidth = characters[character]->Width();
     }
-    totalWidth = maxWidth;
-    totalHeight = fhdr.height;
-    totalAscent = fhdr.ascent;
-    lineHeight = fhdr.line;
-    spaceBetween = fhdr.space;
     fclose(fontFile);
+
+    totalWidth = maxWidth;
+    totalHeight = fontHeight;
+    totalAscent = buffer[6] | (buffer[7] << 8);;
+    lineHeight = buffer[8] | (buffer[9] << 8);;
+    spaceBetween = buffer[12] | (buffer[13] << 8);;
 
     return true;
 }
@@ -89,8 +119,9 @@ bool cFont::LoadFNT(const std::string & fileName)
 bool cFont::SaveFNT(const std::string & fileName) const
 {
     FILE * fontFile;
-    tFontHeader fhdr;
-    tCharHeader chdr;
+    uint8_t fhdr[kFontHeaderSize];
+    uint8_t chdr[kCharHeaderSize];
+    uint16_t numChars;
     int i;
 
     fontFile = fopen(fileName.c_str(),"w+b");
@@ -100,32 +131,44 @@ bool cFont::SaveFNT(const std::string & fileName) const
         return false;
     }
 
-    memcpy(fhdr.sign, kFontFileSign, 4);
-    fhdr.reserved = 0;
-    fhdr.height = totalHeight;
-    fhdr.ascent = totalAscent;
-    fhdr.space = spaceBetween;
-    fhdr.line = lineHeight;
-    fhdr.count = 0; // just preliminary value
+    numChars = 0;
+    for (i = 0; i < 256; i++)
+    {
+        if (characters[i])
+        {
+            numChars++;
+        }
+    }
+
+    memcpy(fhdr, kFontFileSign, 4);
+    fhdr[4] = (uint8_t) totalHeight;
+    fhdr[5] = (uint8_t) (totalHeight >> 8);
+    fhdr[6] = (uint8_t) totalAscent;
+    fhdr[7] = (uint8_t) (totalAscent >> 8);
+    fhdr[8] = (uint8_t) lineHeight;
+    fhdr[9] = (uint8_t) (lineHeight >> 8);
+    fhdr[10] = 0;
+    fhdr[11] = 0;
+    fhdr[12] = (uint8_t) spaceBetween;
+    fhdr[13] = (uint8_t) (spaceBetween >> 8);
+    fhdr[14] = (uint8_t) numChars;
+    fhdr[15] = (uint8_t) (numChars >> 8);
 
     // write font file header
-    fwrite(&fhdr, sizeof(tFontHeader), 1, fontFile);
+    fwrite(fhdr, kFontHeaderSize, 1, fontFile);
 
     for (i = 0; i < 256; i++)
     {
         if (characters[i])
         {
-            chdr.character = i;
-            chdr.width = characters[i]->Width();
-            fwrite(&chdr, sizeof(GLCD::tCharHeader), 1, fontFile);
-            fwrite(characters[i]->Data(), fhdr.height * characters[i]->LineSize(), 1, fontFile);
-            fhdr.count++;
+            chdr[0] = (uint8_t) i;
+            chdr[1] = (uint8_t) (i >> 8);
+            chdr[2] = (uint8_t) characters[i]->Width();
+            chdr[3] = (uint8_t) (characters[i]->Width() >> 8);
+            fwrite(chdr, kCharHeaderSize, 1, fontFile);
+            fwrite(characters[i]->Data(), totalHeight * characters[i]->LineSize(), 1, fontFile);
         }
     }
-
-    // write again font header with actual count achieved
-    fseek(fontFile, 0, SEEK_SET);
-    fwrite(&fhdr, sizeof(tFontHeader), 1, fontFile);
 
     fclose(fontFile);
 
