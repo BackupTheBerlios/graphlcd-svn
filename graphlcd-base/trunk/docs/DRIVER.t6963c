@@ -53,6 +53,18 @@ Windows wiring:
   D6     (08)   D6    (13)                (Data Bit 6)
   D7     (09)   D7    (14)                (Data Bit 7)
 
+Serial wiring using a industry version with a serial to parallel
+converter:
+
+  printerport   LCD
+  -----------   ----------
+  nAuto  (14)   nCE   (03)
+  nSTRB  (01)   nSCK  (07)
+  INIT   (16)   nC/D  (08)
+  INIT   (16)   nSDAT (08)
+  GND    (25)   GND   (01)
+
+
 Note: The pin numbering may vary with other displays.
 
 The LCD must operate in the 6x8 or 8x8 font mode. Usually, there is a
