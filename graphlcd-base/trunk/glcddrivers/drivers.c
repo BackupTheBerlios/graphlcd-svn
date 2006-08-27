@@ -26,6 +26,7 @@
 #include "noritake800.h"
 #include "avrctl.h"
 #include "serdisp.h"
+#include "g15daemon.h"
 
 namespace GLCD
 {
@@ -46,6 +47,7 @@ tDriver drivers[] =
     {"noritake800",   kDriverNoritake800},
     {"avrctl",        kDriverAvrCtl},
     {"serdisp",       kDriverSerDisp},
+    {"g15daemon",     kDriverG15daemon},
     {"",              kDriverUnknown}
 };
 
@@ -96,6 +98,8 @@ cDriver * CreateDriver(int driverID, cDriverConfig * config)
             return new cDriverAvrCtl(config);
         case kDriverSerDisp:
             return new cDriverSerDisp(config);
+        case kDriverG15daemon:
+            return new cDriverG15daemon(config);
         case kDriverUnknown:
         default:
             return NULL;
