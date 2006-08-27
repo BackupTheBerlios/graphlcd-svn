@@ -29,7 +29,7 @@
  *
  * (c) 2004 Lucian Muresan <lucianm AT users.sourceforge.net>
  */
- 
+
 #ifndef _GLCDDRIVERS_NORITAKE800_H_
 #define _GLCDDRIVERS_NORITAKE800_H_
 
@@ -43,48 +43,48 @@ class cParallelPort;
 
 class cDriverNoritake800 : public cDriver
 {
-  cParallelPort * m_pport;
+    cParallelPort * m_pport;
 
-  cDriverConfig * m_Config;
-  cDriverConfig * m_oldConfig;
+    cDriverConfig * m_Config;
+    cDriverConfig * m_oldConfig;
 
-  int m_iSizeYb;
-  int m_nRefreshCounter;
-  int m_nWiring;
+    int m_iSizeYb;
+    int m_nRefreshCounter;
+    int m_nWiring;
 
-  unsigned char ** m_pDrawMem;             /* the draw "memory" */
-  unsigned char ** m_pVFDMem;              /* the double buffed display "memory" */
+    unsigned char ** m_pDrawMem;             /* the draw "memory" */
+    unsigned char ** m_pVFDMem;              /* the double buffed display "memory" */
 
-  long m_nTimingAdjustCmd;
-  bool m_bSleepIsInit;
+    long m_nTimingAdjustCmd;
+    bool m_bSleepIsInit;
 
-  // internal graphics layers
-  bool m_bGraphScreen0_On;
-  bool m_bGraphScreen1_On;
-  
-  unsigned char * m_pWiringMaskCache;
+    // internal graphics layers
+    bool m_bGraphScreen0_On;
+    bool m_bGraphScreen1_On;
+
+    unsigned char * m_pWiringMaskCache;
 
 protected:
-  void ClearVFDMem();
-  void N800Cmd(unsigned char data);
-  void N800Data(unsigned char data);
-  int CheckSetup();
-  unsigned char N800LptWiringMask(unsigned char ctrl_bits);
-  void N800WriteByte(unsigned char data, int nCol, int nRow, int layer);
+    void ClearVFDMem();
+    void N800Cmd(unsigned char data);
+    void N800Data(unsigned char data);
+    int CheckSetup();
+    unsigned char N800LptWiringMask(unsigned char ctrl_bits);
+    void N800WriteByte(unsigned char data, int nCol, int nRow, int layer);
 
 public:
-  cDriverNoritake800(cDriverConfig * config);
-  virtual ~cDriverNoritake800();
+    cDriverNoritake800(cDriverConfig * config);
+    virtual ~cDriverNoritake800();
 
-  virtual int Init();
-  virtual int DeInit();
+    virtual int Init();
+    virtual int DeInit();
 
-  virtual void Clear();
-  virtual void SetPixel(int x, int y);
-  virtual void Set8Pixels(int x, int y, unsigned char data);
-  virtual void Refresh(bool refreshAll = false);
+    virtual void Clear();
+    virtual void SetPixel(int x, int y);
+    virtual void Set8Pixels(int x, int y, unsigned char data);
+    virtual void Refresh(bool refreshAll = false);
 
-  virtual void SetBrightness(unsigned int percent);
+    virtual void SetBrightness(unsigned int percent);
 };
 
 } // end of namespace

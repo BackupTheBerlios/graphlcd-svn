@@ -25,22 +25,22 @@ class cDriverConfig;
 class cDriverSimLCD : public cDriver
 {
 private:
-	unsigned char ** LCD;
-	cDriverConfig * config;
-	cDriverConfig * oldConfig;
+    unsigned char ** LCD;
+    cDriverConfig * config;
+    cDriverConfig * oldConfig;
 
-	int CheckSetup();
+    int CheckSetup();
 
 public:
-	cDriverSimLCD(cDriverConfig * config);
-	virtual ~cDriverSimLCD();
+    cDriverSimLCD(cDriverConfig * config);
+    virtual ~cDriverSimLCD();
 
-	virtual int Init();
-	virtual int DeInit();
+    virtual int Init();
+    virtual int DeInit();
 
-	virtual void Clear();
-	virtual void Set8Pixels(int x, int y, unsigned char data);
-	virtual void Refresh(bool refreshAll = false);
+    virtual void Clear();
+    virtual void Set8Pixels(int x, int y, unsigned char data);
+    virtual void Refresh(bool refreshAll = false);
 };
 
 } // end of namespace

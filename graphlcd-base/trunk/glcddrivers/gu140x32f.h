@@ -10,7 +10,7 @@
  *     (c) 2001-2003 by Carsten Siebholz <c.siebholz AT t-online.de>
  *   lcdproc 0.4 driver hd44780-ext8bit
  *     (c) 1999, 1995 Benjamin Tse <blt AT Comports com>
- *  
+ *
  * This file is released under the GNU General Public License. Refer
  * to the COPYING file distributed with this package.
  *
@@ -32,40 +32,40 @@ class cParallelPort;
 
 class cDriverGU140X32F : public cDriver
 {
-	unsigned char m_WiringRS;
-	unsigned char m_WiringEN1;
+    unsigned char m_WiringRS;
+    unsigned char m_WiringEN1;
 
-	cParallelPort * port;
+    cParallelPort * port;
 
-	cDriverConfig * config;
-	cDriverConfig * oldConfig;
+    cDriverConfig * config;
+    cDriverConfig * oldConfig;
 
-	int m_iSizeYb;
-	int m_nRefreshCounter;
-	unsigned char *m_pDrawMem; // the draw "memory"
-	unsigned char *m_pVFDMem;  // the double buffed display "memory"
-	long m_nTimingAdjustCmd;
-	bool m_bSleepIsInit;
+    int m_iSizeYb;
+    int m_nRefreshCounter;
+    unsigned char *m_pDrawMem; // the draw "memory"
+    unsigned char *m_pVFDMem;  // the double buffed display "memory"
+    long m_nTimingAdjustCmd;
+    bool m_bSleepIsInit;
 
-	int CheckSetup();
+    int CheckSetup();
 
 protected:
-	void ClearVFDMem();
-	void SetPixel(int x, int y);
-	void Write(unsigned char nFlags, unsigned char bData, unsigned int nMicroSecBusyTime);
+    void ClearVFDMem();
+    void SetPixel(int x, int y);
+    void Write(unsigned char nFlags, unsigned char bData, unsigned int nMicroSecBusyTime);
 
 public:
-	cDriverGU140X32F(cDriverConfig * config);
-	virtual ~cDriverGU140X32F();
+    cDriverGU140X32F(cDriverConfig * config);
+    virtual ~cDriverGU140X32F();
 
-	virtual int Init();
-	virtual int DeInit();
+    virtual int Init();
+    virtual int DeInit();
 
-	virtual void Clear();
-	virtual void Set8Pixels(int x, int y, unsigned char data);
-	virtual void Refresh(bool refreshAll = false);
+    virtual void Clear();
+    virtual void Set8Pixels(int x, int y, unsigned char data);
+    virtual void Refresh(bool refreshAll = false);
 
-	virtual void SetBrightness(unsigned int percent);
+    virtual void SetBrightness(unsigned int percent);
 };
 
 } // end of namespace

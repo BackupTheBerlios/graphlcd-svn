@@ -23,32 +23,32 @@ class cSerialPort;
 class cDriverAvrCtl : public cDriver
 {
 private:
-  cSerialPort * port;
-	unsigned char ** newLCD; // wanted state
-	unsigned char ** oldLCD; // current state
-	cDriverConfig * config;
-	cDriverConfig * oldConfig;
-	int refreshCounter;
+    cSerialPort * port;
+    unsigned char ** newLCD; // wanted state
+    unsigned char ** oldLCD; // current state
+    cDriverConfig * config;
+    cDriverConfig * oldConfig;
+    int refreshCounter;
 
-  int WaitForAck(void);
-  void CmdSysSync(void);
-  void CmdDispClearScreen(void);
-  void CmdDispSwitchScreen(void);
-  void CmdDispSetBrightness(unsigned char percent);
-  void CmdDispSetRowData(unsigned char column, unsigned char offset, unsigned short length, unsigned char * data);
+    int WaitForAck(void);
+    void CmdSysSync(void);
+    void CmdDispClearScreen(void);
+    void CmdDispSwitchScreen(void);
+    void CmdDispSetBrightness(unsigned char percent);
+    void CmdDispSetRowData(unsigned char column, unsigned char offset, unsigned short length, unsigned char * data);
 
-	int CheckSetup();
+    int CheckSetup();
 
 public:
-	cDriverAvrCtl(cDriverConfig * config);
-	virtual ~cDriverAvrCtl();
+    cDriverAvrCtl(cDriverConfig * config);
+    virtual ~cDriverAvrCtl();
 
-	virtual int Init();
-	virtual int DeInit();
+    virtual int Init();
+    virtual int DeInit();
 
-	virtual void Clear();
-	virtual void Set8Pixels(int x, int y, unsigned char data);
-	virtual void Refresh(bool refreshAll = false);
+    virtual void Clear();
+    virtual void Set8Pixels(int x, int y, unsigned char data);
+    virtual void Refresh(bool refreshAll = false);
 };
 
 } // end of namespace

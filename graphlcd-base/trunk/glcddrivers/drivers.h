@@ -23,27 +23,27 @@ class cDriver;
 
 enum eDriver
 {
-	kDriverUnknown       = 0,
-	kDriverSimLCD        = 1,
-	kDriverGU140X32F     = 2,
-	kDriverGU256X64_372  = 3,
-	kDriverGU256X64_3900 = 4,
-	kDriverHD61830       = 5,
-	kDriverKS0108        = 6,
-	kDriverSED1330       = 7,
-	kDriverSED1520       = 8,
-	kDriverT6963C        = 9,
-	kDriverFramebuffer   = 10,
-	kDriverImage         = 11,
-	kDriverNoritake800   = 12,
-	kDriverAvrCtl        = 13,
-	kDriverSerDisp       = 100
+    kDriverUnknown       = 0,
+    kDriverSimLCD        = 1,
+    kDriverGU140X32F     = 2,
+    kDriverGU256X64_372  = 3,
+    kDriverGU256X64_3900 = 4,
+    kDriverHD61830       = 5,
+    kDriverKS0108        = 6,
+    kDriverSED1330       = 7,
+    kDriverSED1520       = 8,
+    kDriverT6963C        = 9,
+    kDriverFramebuffer   = 10,
+    kDriverImage         = 11,
+    kDriverNoritake800   = 12,
+    kDriverAvrCtl        = 13,
+    kDriverSerDisp       = 100
 };
 
 struct tDriver
 {
-	std::string name;
-	eDriver id;
+    std::string name;
+    eDriver id;
 };
 
 tDriver * GetAvailableDrivers(int & count);

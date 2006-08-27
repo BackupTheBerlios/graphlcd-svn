@@ -32,45 +32,45 @@ class cParallelPort;
 class cDriverSED1330 : public cDriver
 {
 private:
-	cParallelPort * port;
-	unsigned char ** newLCD; // wanted state
-	unsigned char ** oldLCD; // current state
-	int refreshCounter;
-	long timeForPortCmdInNs;
-	cDriverConfig * config;
-	cDriverConfig * oldConfig;
-	bool useSleepInit;
+    cParallelPort * port;
+    unsigned char ** newLCD; // wanted state
+    unsigned char ** oldLCD; // current state
+    int refreshCounter;
+    long timeForPortCmdInNs;
+    cDriverConfig * config;
+    cDriverConfig * oldConfig;
+    bool useSleepInit;
 
-	int oscillatorFrequency;
-	int interface;
-	unsigned char A0HI;
-	unsigned char A0LO;
-	unsigned char RDHI;
-	unsigned char RDLO;
-	unsigned char ENHI;
-	unsigned char ENLO;
-	unsigned char WRHI;
-	unsigned char WRLO;
-	unsigned char RWHI;
-	unsigned char RWLO;
-	unsigned char CSHI;
-	unsigned char CSLO;
+    int oscillatorFrequency;
+    int interface;
+    unsigned char A0HI;
+    unsigned char A0LO;
+    unsigned char RDHI;
+    unsigned char RDLO;
+    unsigned char ENHI;
+    unsigned char ENLO;
+    unsigned char WRHI;
+    unsigned char WRLO;
+    unsigned char RWHI;
+    unsigned char RWLO;
+    unsigned char CSHI;
+    unsigned char CSLO;
 
-	int CheckSetup();
-	int InitGraphic();
-	void WriteCmd(unsigned char cmd);
-	void WriteData(unsigned char data);
+    int CheckSetup();
+    int InitGraphic();
+    void WriteCmd(unsigned char cmd);
+    void WriteData(unsigned char data);
 
 public:
-	cDriverSED1330(cDriverConfig * config);
-	virtual ~cDriverSED1330();
+    cDriverSED1330(cDriverConfig * config);
+    virtual ~cDriverSED1330();
 
-	virtual int Init();
-	virtual int DeInit();
+    virtual int Init();
+    virtual int DeInit();
 
-	virtual void Clear();
-	virtual void Set8Pixels(int x, int y, unsigned char data);
-	virtual void Refresh(bool refreshAll = false);
+    virtual void Clear();
+    virtual void Set8Pixels(int x, int y, unsigned char data);
+    virtual void Refresh(bool refreshAll = false);
 };
 
 } // end of namespace

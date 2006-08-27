@@ -20,35 +20,35 @@ namespace GLCD
 {
 
 cDriver::cDriver()
-:	width(0),
-	height(0)
+:   width(0),
+    height(0)
 {
 }
 
 void cDriver::SetScreen(const unsigned char * data, int wid, int hgt, int lineSize)
 {
-	int x, y;
+    int x, y;
 
-	if (wid > width)
-		wid = width;
-	if (hgt > height)
-		hgt = height;
+    if (wid > width)
+        wid = width;
+    if (hgt > height)
+        hgt = height;
 
-	Clear();
-	if (data)
-	{
-		for (y = 0; y < hgt; y++)
-		{
-			for (x = 0; x < (wid / 8); x++)
-			{
-				Set8Pixels(x * 8, y, data[y * lineSize + x]);
-			}
-			if (width % 8)
-			{
-				Set8Pixels((wid / 8) * 8, y, data[y * lineSize + wid / 8] & bitmaskl[wid % 8 - 1]);
-			}
-		}
-	}
+    Clear();
+    if (data)
+    {
+        for (y = 0; y < hgt; y++)
+        {
+            for (x = 0; x < (wid / 8); x++)
+            {
+                Set8Pixels(x * 8, y, data[y * lineSize + x]);
+            }
+            if (width % 8)
+            {
+                Set8Pixels((wid / 8) * 8, y, data[y * lineSize + wid / 8] & bitmaskl[wid % 8 - 1]);
+            }
+        }
+    }
 }
 
 } // end of namespace

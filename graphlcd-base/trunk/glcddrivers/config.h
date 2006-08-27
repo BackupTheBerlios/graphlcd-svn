@@ -27,55 +27,55 @@ const int kWaitGettimeofday = 3;
 
 struct tOption
 {
-	std::string name;
-	std::string value;
+    std::string name;
+    std::string value;
 };
 
 class cDriverConfig
 {
 public:
-	std::string name;
-	std::string driver;
-	int id;
-	std::string device;
-	int port;
-	int width;
-	int height;
-	bool upsideDown;
-	bool invert;
-	int brightness;
-	int contrast;
-	bool backlight;
-	int adjustTiming;
-	int refreshDisplay;
-	std::vector <tOption> options;
+    std::string name;
+    std::string driver;
+    int id;
+    std::string device;
+    int port;
+    int width;
+    int height;
+    bool upsideDown;
+    bool invert;
+    int brightness;
+    int contrast;
+    bool backlight;
+    int adjustTiming;
+    int refreshDisplay;
+    std::vector <tOption> options;
 
 public:
-	cDriverConfig();
-	cDriverConfig(const cDriverConfig & rhs);
-	~cDriverConfig();
-	cDriverConfig & operator=(const cDriverConfig & rhs);
-	bool Parse(const std::string & line);
-	int GetInt(const std::string & value);
-	bool GetBool(const std::string & value);
+    cDriverConfig();
+    cDriverConfig(const cDriverConfig & rhs);
+    ~cDriverConfig();
+    cDriverConfig & operator=(const cDriverConfig & rhs);
+    bool Parse(const std::string & line);
+    int GetInt(const std::string & value);
+    bool GetBool(const std::string & value);
 };
 
 class cConfig
 {
 public:
-	int waitMethod;
-	int waitPriority;
-	std::vector <cDriverConfig> driverConfigs;
+    int waitMethod;
+    int waitPriority;
+    std::vector <cDriverConfig> driverConfigs;
 
 public:
-	cConfig();
-	~cConfig();
-	bool Load(const std::string & filename);
-	bool Save(const std::string & filename);
-	bool Parse(const std::string & line);
-	int GetInt(const std::string & value);
-	bool GetBool(const std::string & value);
-	int GetConfigIndex(const std::string & name);
+    cConfig();
+    ~cConfig();
+    bool Load(const std::string & filename);
+    bool Save(const std::string & filename);
+    bool Parse(const std::string & line);
+    int GetInt(const std::string & value);
+    bool GetBool(const std::string & value);
+    int GetConfigIndex(const std::string & name);
 };
 
 extern cConfig Config;

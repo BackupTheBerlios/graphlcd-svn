@@ -24,50 +24,52 @@ class cDriverConfig;
 class cDriverSerDisp : public cDriver
 {
 private:
-	cDriverConfig * config;
-	cDriverConfig * oldConfig;
 
-	long  serdisp_version;
+    cDriverConfig * config;
+    cDriverConfig * oldConfig;
 
-  int   supports_options;
-  long  fg_colour;
+    long  serdisp_version;
 
-	void* sdhnd; // serdisplib handle
-	void* dd;    // display descriptor
-	void* sdcd;  // serdisp connect descriptor
+    int   supports_options;
+    long  fg_colour;
 
-	long  (*fp_serdisp_getversioncode) ();
+    void* sdhnd; // serdisplib handle
+    void* dd;    // display descriptor
+    void* sdcd;  // serdisp connect descriptor
 
-	void* (*fp_SDCONN_open)            (const char sdcdev[]);
+    long  (*fp_serdisp_getversioncode) ();
 
-	void* (*fp_PP_open)                (const char sdcdev[]);
-	void* (*fp_PP_close)               (void* sdcd);
+    void* (*fp_SDCONN_open)            (const char sdcdev[]);
 
-	void* (*fp_serdisp_init)           (void* sdcd, const char dispname[], const char extra[]);
-	void  (*fp_serdisp_rewrite)        (void* dd);
-	void  (*fp_serdisp_update)         (void* dd);
-	void  (*fp_serdisp_clearbuffer)    (void* dd);
-	void  (*fp_serdisp_setpixcol)      (void* dd, int x, int y, long colour);  // serdisp_setpixel or serdisp_setcolour
-	int   (*fp_serdisp_feature)        (void* dd, int feature, int value);
-	int   (*fp_serdisp_isoption)       (void* dd, const char* optionname);
-	void  (*fp_serdisp_setoption)      (void* dd, const char* optionname, long value);
-	int   (*fp_serdisp_getwidth)       (void* dd);
-	int   (*fp_serdisp_getheight)      (void* dd);
-	void  (*fp_serdisp_quit)           (void* dd);
-	void  (*fp_serdisp_close)          (void* dd);
+    void* (*fp_PP_open)                (const char sdcdev[]);
+    void* (*fp_PP_close)               (void* sdcd);
 
-	int CheckSetup();
+    void* (*fp_serdisp_init)           (void* sdcd, const char dispname[], const char extra[]);
+    void  (*fp_serdisp_rewrite)        (void* dd);
+    void  (*fp_serdisp_update)         (void* dd);
+    void  (*fp_serdisp_clearbuffer)    (void* dd);
+    void  (*fp_serdisp_setpixcol)      (void* dd, int x, int y, long colour);  // serdisp_setpixel or serdisp_setcolour
+    int   (*fp_serdisp_feature)        (void* dd, int feature, int value);
+    int   (*fp_serdisp_isoption)       (void* dd, const char* optionname);
+    void  (*fp_serdisp_setoption)      (void* dd, const char* optionname, long value);
+    int   (*fp_serdisp_getwidth)       (void* dd);
+    int   (*fp_serdisp_getheight)      (void* dd);
+    void  (*fp_serdisp_quit)           (void* dd);
+    void  (*fp_serdisp_close)          (void* dd);
+
+    int CheckSetup();
 
 public:
-	cDriverSerDisp(cDriverConfig * config);
-	virtual ~cDriverSerDisp();
 
-	virtual int Init();
-	virtual int DeInit();
+    cDriverSerDisp(cDriverConfig * config);
+    virtual ~cDriverSerDisp();
 
-	virtual void Clear();
-	virtual void Set8Pixels(int x, int y, unsigned char data);
-	virtual void Refresh(bool refreshAll = false);
+    virtual int Init();
+    virtual int DeInit();
+
+    virtual void Clear();
+    virtual void Set8Pixels(int x, int y, unsigned char data);
+    virtual void Refresh(bool refreshAll = false);
 };
 
 #endif

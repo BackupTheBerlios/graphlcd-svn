@@ -21,24 +21,24 @@ namespace GLCD
 class cDriver
 {
 protected:
-	int width;
-	int height;
+    int width;
+    int height;
 public:
-	cDriver();
-	virtual ~cDriver() {}
+    cDriver();
+    virtual ~cDriver() {}
 
-	int Width() const { return width; }
-	int Height() const { return height; }
+    int Width() const { return width; }
+    int Height() const { return height; }
 
-	virtual int Init() { return 0; }
-	virtual int DeInit() { return 0; }
+    virtual int Init() { return 0; }
+    virtual int DeInit() { return 0; }
 
-	virtual void Clear() {}
-	virtual void Set8Pixels(int x, int y, unsigned char data) {}
-	virtual void SetScreen(const unsigned char * data, int width, int height, int lineSize);
-	virtual void Refresh(bool refreshAll = false) {}
+    virtual void Clear() {}
+    virtual void Set8Pixels(int x, int y, unsigned char data) {}
+    virtual void SetScreen(const unsigned char * data, int width, int height, int lineSize);
+    virtual void Refresh(bool refreshAll = false) {}
 
-	virtual void SetBrightness(unsigned int percent) {}
+    virtual void SetBrightness(unsigned int percent) {}
 };
 
 } // end of namespace

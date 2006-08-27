@@ -23,30 +23,30 @@ class cParallelPort;
 class cDriverHD61830 : public cDriver
 {
 private:
-	cParallelPort * port;
-  
-	unsigned char ** newLCD; // wanted state
-	unsigned char ** oldLCD; // current state
-	cDriverConfig * config;
-	cDriverConfig * oldConfig;
-	int refreshCounter;
-	long timeForPortCmdInNs;
-	bool useSleepInit;
+    cParallelPort * port;
 
-	int CheckSetup();
-	int InitGraphic();
-	void Write(unsigned char cmd, unsigned char data);
+    unsigned char ** newLCD; // wanted state
+    unsigned char ** oldLCD; // current state
+    cDriverConfig * config;
+    cDriverConfig * oldConfig;
+    int refreshCounter;
+    long timeForPortCmdInNs;
+    bool useSleepInit;
+
+    int CheckSetup();
+    int InitGraphic();
+    void Write(unsigned char cmd, unsigned char data);
 
 public:
-	cDriverHD61830(cDriverConfig * config);
-	virtual ~cDriverHD61830();
+    cDriverHD61830(cDriverConfig * config);
+    virtual ~cDriverHD61830();
 
-	virtual int Init();
-	virtual int DeInit();
+    virtual int Init();
+    virtual int DeInit();
 
-	virtual void Clear();
-	virtual void Set8Pixels(int x, int y, unsigned char data);
-	virtual void Refresh(bool refreshAll = false);
+    virtual void Clear();
+    virtual void Set8Pixels(int x, int y, unsigned char data);
+    virtual void Refresh(bool refreshAll = false);
 };
 
 } // end of namespace

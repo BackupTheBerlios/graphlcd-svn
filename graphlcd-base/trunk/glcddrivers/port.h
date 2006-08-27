@@ -30,47 +30,47 @@ const unsigned char kSelectLow  = 0x08;
 class cParallelPort
 {
 private:
-	int fd;
-	int port;
-	bool usePPDev;
+    int fd;
+    int port;
+    bool usePPDev;
 
 public:
-	cParallelPort();
-	~cParallelPort();
+    cParallelPort();
+    ~cParallelPort();
 
-	int Open(int port);
-	int Open(const char * device);
-	int Close();
+    int Open(int port);
+    int Open(const char * device);
+    int Close();
 
-	bool IsDirectIO() const { return (!usePPDev); }
-	int GetPortHandle() const { return ((usePPDev) ? fd : port); }
+    bool IsDirectIO() const { return (!usePPDev); }
+    int GetPortHandle() const { return ((usePPDev) ? fd : port); }
 
-	void Claim();
-	void Release();
+    void Claim();
+    void Release();
 
-	void SetDirection(int direction);
-	unsigned char ReadControl();
-	void WriteControl(unsigned char values);
-	unsigned char ReadStatus();
-	unsigned char ReadData();
-	void WriteData(unsigned char data);
+    void SetDirection(int direction);
+    unsigned char ReadControl();
+    void WriteControl(unsigned char values);
+    unsigned char ReadStatus();
+    unsigned char ReadData();
+    void WriteData(unsigned char data);
 };
 
 class cSerialPort
 {
 private:
-	int fd;
+    int fd;
 
 public:
-	cSerialPort();
-	~cSerialPort();
+    cSerialPort();
+    ~cSerialPort();
 
-	int Open(const char * device);
-	int Close();
+    int Open(const char * device);
+    int Close();
 
-	int ReadData(unsigned char * data);
-	void WriteData(unsigned char data);
-	void WriteData(unsigned char * data, unsigned short length);
+    int ReadData(unsigned char * data);
+    void WriteData(unsigned char data);
+    void WriteData(unsigned char * data, unsigned short length);
 };
 
 } // end of namespace
