@@ -74,6 +74,7 @@ const unsigned short kCGRAMBase   = 0x1800;
 // T6963 Wirings
 static const std::string kWiringStandard = "Standard";
 static const std::string kWiringWindows  = "Windows";
+static const std::string kWiringSerial   = "Serial";
 
 const unsigned char kStandardWRHI = 0x00; // 01 / nSTRB
 const unsigned char kStandardWRLO = 0x01; //
@@ -93,6 +94,15 @@ const unsigned char kWindowsCELO = 0x01; //
 const unsigned char kWindowsCDHI = 0x00; // 17 / nSELECT
 const unsigned char kWindowsCDLO = 0x08; //
 
+const unsigned char kSerialWRHI = 0x01; // 01 / nSTRB
+const unsigned char kSerialWRLO = 0x00; //
+const unsigned char kSerialRDHI = 0x08; // 17 / nSELECT
+const unsigned char kSerialRDLO = 0x00; //
+const unsigned char kSerialCEHI = 0x02; // 14 / nLINEFEED
+const unsigned char kSerialCELO = 0x00; //
+const unsigned char kSerialCDHI = 0x00; // 16 / INIT
+const unsigned char kSerialCDLO = 0x04; //
+
 
 cDriverT6963C::cDriverT6963C(cDriverConfig * config)
 :   config(config)
@@ -107,6 +117,7 @@ cDriverT6963C::cDriverT6963C(cDriverConfig * config)
     displayMode = 0;
     bidirectLPT = 1;
     autoWrite = false;
+    serial = 0;
 }
 
 cDriverT6963C::~cDriverT6963C()
@@ -175,6 +186,18 @@ int cDriverT6963C::Init()
                 CELO = kWindowsCELO;
                 CDHI = kWindowsCDHI;
                 CDLO = kWindowsCDLO;
+            }
+            else if (config->options[i].value == kWiringSerial)
+            {
+                serial = 1;
+                WRHI = kSerialWRHI;
+                WRLO = kSerialWRLO;
+                RDHI = kSerialRDHI;
+                RDLO = kSerialRDLO;
+                CEHI = kSerialCEHI;
+                CELO = kSerialCELO;
+                CDHI = kSerialCDHI;
+                CDLO = kSerialCDLO;
             }
             else
                 syslog(LOG_ERR, "%s error: wiring %s not supported, using default (Standard)!\n",
@@ -555,24 +578,72 @@ void cDriverT6963C::T6963CDSPReady()
 
 void cDriverT6963C::T6963CData(unsigned char data)
 {
-    if (useStatusCheck)
-        T6963CDSPReady();
-    T6963CSetControl(WRHI | CEHI | CDLO | RDHI); // CD down (data)
-    T6963CSetControl(WRLO | CELO | CDLO | RDHI); // CE & WR down
-    port->WriteData(data);
-    T6963CSetControl(WRHI | CEHI | CDLO | RDHI); // CE & WR up again
-    T6963CSetControl(WRHI | CEHI | CDHI | RDHI); // CD up again
+    if (serial)
+    {
+        T6963CSetControl(WRLO | CEHI | CDLO | RDLO);
+        for (int i = 128; i; i>>=1)
+        {
+            if (data & i)
+            {
+                T6963CSetControl(WRLO | CEHI | CDHI | RDLO);
+                T6963CSetControl(WRHI | CEHI | CDHI | RDLO);
+            }
+            else
+            {
+                T6963CSetControl(WRLO | CEHI | CDLO | RDLO);
+                T6963CSetControl(WRHI | CEHI | CDLO | RDLO);
+            }
+        }
+        T6963CSetControl(WRLO | CEHI | CDLO | RDLO); // CD down (data)
+        T6963CSetControl(WRLO | CELO | CDLO | RDLO); // CE down
+        T6963CSetControl(WRLO | CEHI | CDLO | RDLO); // CE up
+    }
+    else
+    {
+        if (useStatusCheck)
+            T6963CDSPReady();
+        T6963CSetControl(WRHI | CEHI | CDLO | RDHI); // CD down (data)
+        T6963CSetControl(WRLO | CELO | CDLO | RDHI); // CE & WR down
+        port->WriteData(data);
+        T6963CSetControl(WRHI | CEHI | CDLO | RDHI); // CE & WR up again
+        T6963CSetControl(WRHI | CEHI | CDHI | RDHI); // CD up again
+    }
 }
 
 void cDriverT6963C::T6963CCommand(unsigned char cmd)
 {
-    if (useStatusCheck)
-        T6963CDSPReady();
-    T6963CSetControl(WRHI | CEHI | CDHI | RDHI); // CD up (command)
-    T6963CSetControl(WRLO | CELO | CDHI | RDHI); // CE & WR down
-    port->WriteData(cmd);
-    T6963CSetControl(WRHI | CEHI | CDHI | RDHI); // CE & WR up again
-    T6963CSetControl(WRHI | CEHI | CDLO | RDHI); // CD down again
+    if (serial)
+    {
+        syslog(LOG_DEBUG, "Serial cmd out: ");
+        T6963CSetControl(WRLO | CEHI | CDLO | RDLO);
+        for (int i = 128; i; i>>=1)
+        {
+            if (cmd & i)
+            {
+                T6963CSetControl(WRLO | CEHI | CDHI | RDLO);
+                T6963CSetControl(WRHI | CEHI | CDHI | RDLO);
+            }
+            else
+            {
+                T6963CSetControl(WRLO | CEHI | CDLO | RDLO);
+                T6963CSetControl(WRHI | CEHI | CDLO | RDLO);
+            }
+        }
+        T6963CSetControl(WRLO | CEHI | CDHI | RDLO); // CD up (command)
+        T6963CSetControl(WRLO | CELO | CDHI | RDLO); // CE down
+        T6963CSetControl(WRLO | CEHI | CDHI | RDLO); // CE up
+        T6963CSetControl(WRLO | CEHI | CDLO | RDLO); // CD down
+    }
+    else
+    {
+        if (useStatusCheck)
+            T6963CDSPReady();
+        T6963CSetControl(WRHI | CEHI | CDHI | RDHI); // CD up (command)
+        T6963CSetControl(WRLO | CELO | CDHI | RDHI); // CE & WR down
+        port->WriteData(cmd);
+        T6963CSetControl(WRHI | CEHI | CDHI | RDHI); // CE & WR up again
+        T6963CSetControl(WRHI | CEHI | CDLO | RDHI); // CD down again
+    }
 }
 
 void cDriverT6963C::T6963CCommandByte(unsigned char cmd, unsigned char data)

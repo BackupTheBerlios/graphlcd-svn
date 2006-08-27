@@ -36,6 +36,7 @@ private:
     bool useAutoMode;
     bool useStatusCheck;
 
+    int serial;
     int FS;
     int WRHI;
     int WRLO;
