@@ -13,6 +13,7 @@
  */
 
 #include <stdio.h>
+#include <stdint.h>
 #include <syslog.h>
 #include <fcntl.h>
 
