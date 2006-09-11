@@ -40,7 +40,9 @@ const unsigned char CMD_SYS_ACK  = 0x01;
 const unsigned char CMD_DISP_CLEAR_SCREEN   = 0x10;
 const unsigned char CMD_DISP_SWITCH_SCREEN  = 0x11;
 const unsigned char CMD_DISP_SET_BRIGHTNESS = 0x12;
-const unsigned char CMD_DISP_SET_ROW_DATA   = 0x13;
+const unsigned char CMD_DISP_SET_COL_DATA   = 0x13;
+const unsigned char CMD_DISP_SET_ROW_DATA   = 0x14;
+const unsigned char CMD_DISP_UPDATE         = 0x15;
 
 
 cDriverAvrCtl::cDriverAvrCtl(cDriverConfig * config)
@@ -226,8 +228,9 @@ void cDriverAvrCtl::Refresh(bool refreshAll)
                 }
                 memcpy(oldLCD[x + i], newLCD[x + i], (height + 7) / 8);
             }
-            CmdDispSetRowData(x, 0, 16 * num, data);
+            CmdDispSetColData(x, 0, 16 * num, data);
         }
+        CmdDispUpdate();
         CmdDispSwitchScreen();
         // and reset RefreshCounter
         refreshCounter = 0;
@@ -308,21 +311,36 @@ void cDriverAvrCtl::CmdDispSetBrightness(uint8_t percent)
     WaitForAck();
 }
 
-void cDriverAvrCtl::CmdDispSetRowData(uint8_t column, uint8_t offset, uint16_t length, uint8_t * data)
+void cDriverAvrCtl::CmdDispSetColData(uint8_t column, uint8_t offset, uint16_t length, uint8_t * data)
 {
     uint8_t cmd[2560];
 
     cmd[CMD_HDR_SYNC] = CMD_SYNC_SEND;
-    cmd[CMD_HDR_COMMAND] = CMD_DISP_SET_ROW_DATA;
-    cmd[CMD_HDR_LENGTH] = (length + 4) >> 8;
-    cmd[CMD_HDR_LENGTH+1] = (length + 4);
-    cmd[CMD_DATA_START] = column;
-    cmd[CMD_DATA_START+1] = offset;
-    cmd[CMD_DATA_START+2] = length >> 8;
-    cmd[CMD_DATA_START+3] = length;
-    memcpy(&cmd[CMD_DATA_START+4], data, length);
+    cmd[CMD_HDR_COMMAND] = CMD_DISP_SET_COL_DATA;
+    cmd[CMD_HDR_LENGTH] = (length + 6) >> 8;
+    cmd[CMD_HDR_LENGTH+1] = (length + 6);
+    cmd[CMD_DATA_START] = column >> 8;
+    cmd[CMD_DATA_START+1] = column;
+    cmd[CMD_DATA_START+2] = offset >> 8;
+    cmd[CMD_DATA_START+3] = offset;
+    cmd[CMD_DATA_START+4] = length >> 8;
+    cmd[CMD_DATA_START+5] = length;
+    memcpy(&cmd[CMD_DATA_START+6], data, length);
 
-    port->WriteData(cmd, length+8);
+    port->WriteData(cmd, length+10);
+    WaitForAck();
+}
+
+void cDriverAvrCtl::CmdDispUpdate(void)
+{
+    uint8_t cmd[4];
+
+    cmd[CMD_HDR_SYNC] = CMD_SYNC_SEND;
+    cmd[CMD_HDR_COMMAND] = CMD_DISP_UPDATE;
+    cmd[CMD_HDR_LENGTH] = 0;
+    cmd[CMD_HDR_LENGTH+1] = 0;
+
+    port->WriteData(cmd, 4);
     WaitForAck();
 }
 
