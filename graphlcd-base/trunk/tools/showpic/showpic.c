@@ -212,6 +212,7 @@ int main(int argc, char *argv[])
 	std::string picFile;
 
 	optFile = optind;
+  lcd->SetBrightness(brightness);
 	while (optFile < argc && !stopProgramm)
 	{
 		picFile = argv[optFile++];
