@@ -50,6 +50,7 @@ public:
     virtual void Clear();
     virtual void Set8Pixels(int x, int y, unsigned char data);
     virtual void Refresh(bool refreshAll = false);
+    virtual void SetBrightness(unsigned int percent);
 };
 
 } // end of namespace

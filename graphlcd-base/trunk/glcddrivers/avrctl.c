@@ -241,6 +241,11 @@ void cDriverAvrCtl::Refresh(bool refreshAll)
     }
 }
 
+void cDriverAvrCtl::SetBrightness(unsigned int percent)
+{
+  CmdDispSetBrightness(percent);
+}
+
 int cDriverAvrCtl::WaitForAck(void)
 {
     uint8_t cmd[4];
