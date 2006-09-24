@@ -27,39 +27,39 @@ class cSkin;
 
 class cSkinFont
 {
-  friend bool StartElem(const std::string &name, std::map<std::string,std::string> &attrs);
-  friend bool EndElem(const std::string &name);
+    friend bool StartElem(const std::string &name, std::map<std::string,std::string> &attrs);
+    friend bool EndElem(const std::string &name);
 
 public:
-  enum eType
-  {
-    ftFNT,
-    ftFT2
-  };
+    enum eType
+    {
+        ftFNT,
+        ftFT2
+    };
 
 private:
-  cSkin * skin;
-  std::string id;
-  eType type;
-  std::string file;
-  int size;
-  cFont font;
+    cSkin * skin;
+    std::string id;
+    eType type;
+    std::string file;
+    int size;
+    cFont font;
 
 public:
-  cSkinFont(cSkin * Parent);
+    cSkinFont(cSkin * Parent);
 
-  bool ParseUrl(const std::string & Text);
+    bool ParseUrl(const std::string & Text);
 
-  cSkin * Skin(void) const { return skin; }
-  const std::string & Id(void) const { return id; }
-  const cFont * Font(void) const { return &font; }
+    cSkin * Skin(void) const { return skin; }
+    const std::string & Id(void) const { return id; }
+    const cFont * Font(void) const { return &font; }
 };
 
 class cSkinFonts: public std::vector<cSkinFont *>
 {
 public:
-  cSkinFonts(void);
-  ~cSkinFonts(void);
+    cSkinFonts(void);
+    ~cSkinFonts(void);
 };
 
 } // end of namespace

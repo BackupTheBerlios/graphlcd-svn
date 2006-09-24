@@ -33,37 +33,37 @@ void (*CB)(int percent)
 class cXML
 {
 private:
-  bool skipping;
-  int state;
-  int linenr;
-  int delim;
+    bool skipping;
+    int state;
+    int linenr;
+    int delim;
 
-  std::string data, cdata, tag, attrn, attrv;
-  std::map<std::string, std::string> attr;
+    std::string data, cdata, tag, attrn, attrv;
+    std::map<std::string, std::string> attr;
 
-  XML_NODE_START_CB(nodestartcb);
-  XML_NODE_END_CB(nodeendcb);
-  XML_CDATA_CB(cdatacb);
-  XML_PARSE_ERROR_CB(parseerrorcb);
-  XML_PROGRESS_CB(progresscb);
+    XML_NODE_START_CB(nodestartcb);
+    XML_NODE_END_CB(nodeendcb);
+    XML_CDATA_CB(cdatacb);
+    XML_PARSE_ERROR_CB(parseerrorcb);
+    XML_PROGRESS_CB(progresscb);
 
 protected:
-  bool IsTokenChar(bool start, int c);
-  int  ReadChar(int c);
+    bool IsTokenChar(bool start, int c);
+    int  ReadChar(int c);
 
 public:
-  cXML(const std::string & file);
-  cXML(const char * mem, unsigned int len);
+    cXML(const std::string & file);
+    cXML(const char * mem, unsigned int len);
 
-  void SetNodeStartCB(XML_NODE_START_CB(cb));
-  void SetNodeEndCB(XML_NODE_END_CB(cb));
-  void SetCDataCB(XML_CDATA_CB(cb));
-  void SetParseErrorCB(XML_PARSE_ERROR_CB(cb));
-  void SetProgressCB(XML_PROGRESS_CB(cb));
+    void SetNodeStartCB(XML_NODE_START_CB(cb));
+    void SetNodeEndCB(XML_NODE_END_CB(cb));
+    void SetCDataCB(XML_CDATA_CB(cb));
+    void SetParseErrorCB(XML_PARSE_ERROR_CB(cb));
+    void SetProgressCB(XML_PROGRESS_CB(cb));
 
-  int Parse(void);
+    int Parse(void);
 
-  int LineNr(void) const { return linenr; }
+    int LineNr(void) const { return linenr; }
 };
 
 } // end of namespace

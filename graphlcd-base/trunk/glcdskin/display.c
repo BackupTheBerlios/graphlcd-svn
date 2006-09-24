@@ -16,36 +16,42 @@ namespace GLCD
 {
 
 static const std::string DisplayNames[] =
-  { "normal", "volume", "message", "replay", "menu" };
+{
+    "normal",
+    "volume",
+    "message",
+    "replay",
+    "menu"
+};
 
 cSkinDisplay::cSkinDisplay(cSkin * parent)
-: skin(parent),
-  type((eType)__COUNT_DISPLAY__)
+:   skin(parent),
+    type((eType)__COUNT_DISPLAY__)
 {
 }
 
 bool cSkinDisplay::ParseType(const std::string & Text)
 {
-  for (int i = 0; i < (int) __COUNT_DISPLAY__; ++i)
-  {
-    if (DisplayNames[i].length() > 0 && DisplayNames[i] == Text)
+    for (int i = 0; i < (int) __COUNT_DISPLAY__; ++i)
     {
-      type = (eType) i;
-      return true;
+        if (DisplayNames[i].length() > 0 && DisplayNames[i] == Text)
+        {
+            type = (eType) i;
+            return true;
+        }
     }
-  }
-  return false;
+    return false;
 }
 
 const std::string & cSkinDisplay::GetType(eType Type)
 {
-  return DisplayNames[Type];
+    return DisplayNames[Type];
 }
 
 void cSkinDisplay::Render(cBitmap * screen)
 {
-  for (uint32_t i = 0; i < NumObjects(); ++i)
-    GetObject(i)->Render(screen);
+    for (uint32_t i = 0; i < NumObjects(); ++i)
+        GetObject(i)->Render(screen);
 }
 
 
@@ -55,12 +61,12 @@ cSkinDisplays::cSkinDisplays(void)
 
 cSkinDisplays::~cSkinDisplays()
 {
-  iterator it = begin();
-  while (it != end())
-  {
-    delete (*it).second;
-    it++;
-  }
+    iterator it = begin();
+    while (it != end())
+    {
+        delete (*it).second;
+        it++;
+    }
 }
 
 } // end of namespace
