@@ -140,6 +140,7 @@ int main(int argc, char ** argv)
 		delete lcd;
 		return 10;
 	}
+	lcd->SetBrightness(GLCD::Config.driverConfigs[displayNumber].brightness);
 
     GLCD::cBitmap * screen = new GLCD::cBitmap(lcd->Width(), lcd->Height());
     screen->Clear();
