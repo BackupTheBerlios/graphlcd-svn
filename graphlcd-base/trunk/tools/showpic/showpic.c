@@ -199,6 +199,7 @@ int main(int argc, char *argv[])
 		delete lcd;
 		return 7;
 	}
+  lcd->SetBrightness(GLCD::Config.driverConfigs[displayNumber].brightness);
 
 	signal(SIGINT, sighandler);
 	signal(SIGQUIT, sighandler);
@@ -212,7 +213,6 @@ int main(int argc, char *argv[])
 	std::string picFile;
 
 	optFile = optind;
-  lcd->SetBrightness(brightness);
 	while (optFile < argc && !stopProgramm)
 	{
 		picFile = argv[optFile++];
