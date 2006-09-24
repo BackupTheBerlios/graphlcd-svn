@@ -19,7 +19,7 @@ cSkin::cSkin(const cSkinConfig & Config, const std::string & Name)
 :   config(Config),
     name(Name)
 {
-    mImageCache = new cImageCache(100);
+    mImageCache = new cImageCache(this, 100);
 }
 
 cSkin::~cSkin(void)

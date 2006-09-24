@@ -21,35 +21,38 @@
 namespace GLCD
 {
 
+class cSkin;
+
 class cImageItem
 {
 private:
-  std::string path;
-  uint64_t counter;
-  cImage * image;
+    std::string path;
+    uint64_t counter;
+    cImage * image;
 public:
-  cImageItem(const std::string & path, cImage * image);
-  ~cImageItem();
+    cImageItem(const std::string & path, cImage * image);
+    ~cImageItem();
 
-  const std::string & Path() const { return path; }
-  uint64_t Counter() const { return counter; }
-  cImage * Image() { return image; }
-  void ResetCounter() { counter = 0; }
-  void IncCounter() { counter += 1; }
+    const std::string & Path() const { return path; }
+    uint64_t Counter() const { return counter; }
+    cImage * Image() { return image; }
+    void ResetCounter() { counter = 0; }
+    void IncCounter() { counter += 1; }
 };
 
 class cImageCache
 {
 private:
-  size_t size;
-  std::vector <cImageItem *> images;
+    cSkin * skin;
+    size_t size;
+    std::vector <cImageItem *> images;
 
-  cImageItem * LoadImage(const std::string & path);
+    cImageItem * LoadImage(const std::string & path);
 public:
-  cImageCache(int size);
-  ~cImageCache();
+    cImageCache(cSkin * Parent, int Size);
+    ~cImageCache();
 
-  cImage * Get(const std::string & path);
+    cImage * Get(const std::string & path);
 };
 
 } // end of namespace
