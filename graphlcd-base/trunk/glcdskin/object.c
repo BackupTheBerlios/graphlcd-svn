@@ -14,10 +14,8 @@ static const std::string ObjectNames[] =
     "ellipse",
     "slope",
     "image",
-    "text",
-    "marquee",
-    "blink",
     "progress",
+    "text",
     "scrolltext",
     "scrollbar",
     "block",
@@ -35,7 +33,10 @@ cSkinObject::cSkinObject(cSkinDisplay * Parent)
     filled(false),
     radius(0),
     arc(0),
-    path(this, false),
+    mPath(this, false),
+    mDirection(0),
+    mCurrent(this, false),
+    mTotal(this, false),
     objects(NULL)
 {
 }
@@ -50,7 +51,10 @@ cSkinObject::cSkinObject(const cSkinObject & Src)
     filled(Src.filled),
     radius(Src.radius),
     arc(Src.arc),
-    path(Src.path),
+    mPath(Src.mPath),
+    mDirection(Src.mDirection),
+    mCurrent(Src.mCurrent),
+    mTotal(Src.mTotal),
     objects(NULL)
 {
     if (Src.objects)
@@ -117,7 +121,7 @@ void cSkinObject::Render(GLCD::cBitmap * screen)
         case cSkinObject::image:
         {
             cImageCache * cache = skin->ImageCache();
-            GLCD::cImage * image = cache->Get(path.Evaluate());
+            GLCD::cImage * image = cache->Get(mPath.Evaluate());
             if (image)
             {
                 const GLCD::cBitmap * bitmap = image->GetBitmap();
@@ -132,16 +136,6 @@ void cSkinObject::Render(GLCD::cBitmap * screen)
         case cSkinObject::text:
             //DrawText(Object->Pos(), Object->Size(), Object->Fg(), Object->Text(), Object->Font(),
             //    Object->Align());
-            break;
-
-        case cSkinObject::marquee:
-            //DrawMarquee(Object->Pos(), Object->Size(), Object->Fg(), Object->Text(), Object->Font(),
-            //    Object->Align(), Object->Delay(), Object->Index());
-            break;
-
-        case cSkinObject::blink:
-            //DrawBlink(Object->Pos(), Object->Size(), Object->Fg(), Object->Bg(), Object->Text(),
-            //    Object->Font(), Object->Align(), Object->Delay(), Object->Index());
             break;
 
         case cSkinObject::pixel:
@@ -179,10 +173,40 @@ void cSkinObject::Render(GLCD::cBitmap * screen)
             break;
 
         case cSkinObject::progress:
-            //DrawProgressbar(Object->Pos(), Object->Size(), Object->Current(), Object->Total(),
-            //    Object->Bg(), Object->Fg(), Object->Keep(), Object->Mark(),
-            //    Object->Active(), GetMarks());
+        {
+            int current = mCurrent.Evaluate();
+            int total = mTotal.Evaluate();
+            printf("current %d total %d\n", current, total);
+            if (total == 0)
+                total = 1;
+            if (current > total)
+                current = total;
+            if (mDirection == 0)
+            {
+                int w = Size().w * current / total;
+                if (w > 0)
+                    screen->DrawRectangle(Pos().x, Pos().y, Pos().x + w - 1, Pos().y + Size().h - 1, color, true);
+            }
+            else if (mDirection == 1)
+            {
+                int h = Size().h * current / total;
+                if (h > 0)
+                    screen->DrawRectangle(Pos().x, Pos().y, Pos().x + Size().w - 1, Pos().y + h - 1, color, true);
+            }
+            else if (mDirection == 2)
+            {
+                int w = Size().w * current / total;
+                if (w > 0)
+                    screen->DrawRectangle(Pos().x + Size().w - w, Pos().y, Pos().x + Size().w - 1, Pos().y + Size().h - 1, color, true);
+            }
+            else if (mDirection == 3)
+            {
+                int h = Size().h * current / total;
+                if (h > 0)
+                    screen->DrawRectangle(Pos().x, Pos().y + Size().h - h, Pos().x + Size().w - 1, Pos().y + Size().h - 1, color, true);
+            }
             break;
+        }
 
         case cSkinObject::scrolltext:
             //DrawScrolltext(Object->Pos(), Object->Size(), Object->Fg(), Object->Text(), Object->Font(),

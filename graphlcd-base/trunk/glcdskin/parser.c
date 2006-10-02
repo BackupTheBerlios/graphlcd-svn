@@ -176,11 +176,9 @@ bool StartElem(const std::string & name, std::map<std::string,std::string> & att
                 ATTRIB_OPT_NUMBER("x", object->pos2.x);
                 ATTRIB_OPT_NUMBER("y", object->pos2.y);
                 ATTRIB_OPT_FUNC("color", object->ParseColor);
-                ATTRIB_MAN_FUNC("path", object->path.Parse);
+                ATTRIB_MAN_FUNC("path", object->mPath.Parse);
             }
             else if (name == "text"
-                || name == "marquee"
-                || name == "blink"
                 || name == "scrolltext")
             {
 #if 0
@@ -190,7 +188,6 @@ bool StartElem(const std::string & name, std::map<std::string,std::string> & att
 
                 if (name == "blink")
                 {
-                    ATTRIB_OPT_STRING("blinkColor", object->mBg);
                     ATTRIB_OPT_NUMBER("delay", object->mDelay);
 
                     if (object->mDelay == 0)
@@ -225,18 +222,15 @@ bool StartElem(const std::string & name, std::map<std::string,std::string> & att
                 ATTRIB_OPT_BOOL("filled", object->filled);
                 ATTRIB_OPT_NUMBER("arc", object->arc);
             }
-#if 0
             else if (name == "progress"
                 || name == "scrollbar")
             {
-                ATTRIB_OPT_STRING("color",   object->mFg);
-                ATTRIB_OPT_STRING("bgColor", object->mBg);
-                ATTRIB_OPT_STRING("mark",    object->mMark);
-                ATTRIB_OPT_STRING("active",  object->mActive);
-                ATTRIB_OPT_STRING("keep",    object->mKeep);
-                ATTRIB_OPT_FUNC  ("current", object->mCurrent.Parse);
-                ATTRIB_OPT_FUNC  ("total",   object->mTotal.Parse);
+                ATTRIB_OPT_FUNC("color", object->ParseColor);
+                ATTRIB_OPT_NUMBER("direction", object->mDirection);
+                ATTRIB_OPT_FUNC("current", object->mCurrent.Parse);
+                ATTRIB_OPT_FUNC("total", object->mTotal.Parse);
             }
+#if 0
             else if (name == "item") {
                 ATTRIB_MAN_NUMBER("height",  object->mPos2.y);
                 --object->mPos2.y;
@@ -262,8 +256,6 @@ bool CharData(const std::string & text)
 
     //printf("context: %s\n", context[context.size() - 1].c_str());
     if (context[context.size() - 1] == "text"
-        || context[context.size() - 1] == "marquee"
-        || context[context.size() - 1] == "blink"
         || context[context.size() - 1] == "scrolltext")
     {
 #if 0

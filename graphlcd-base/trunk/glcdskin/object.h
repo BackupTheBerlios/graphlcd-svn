@@ -59,10 +59,8 @@ public:
         ellipse,
         slope,
         image,
-        text,
-        marquee,
-        blink,
         progress,
+        text,
         scrolltext,
         scrollbar,
         block,
@@ -81,7 +79,10 @@ private:
     bool filled;
     int radius;
     int arc;
-    cSkinString path;
+    cSkinString mPath;
+    int mDirection;
+    cSkinString mCurrent;
+    cSkinString mTotal;
 
     cSkinObjects * objects; // used for block objects such as <list>
 
