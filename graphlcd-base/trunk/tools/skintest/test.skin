@@ -24,9 +24,11 @@
     <slope x1="90" x2="120" y1="80" y2="100" color="black" filled="yes" arc="6"/>
     <slope x1="130" x2="160" y1="80" y2="100" color="black" filled="yes" arc="7"/>
 -->
-    <image x="100" y="50" color="black" path="ARTE_l.glcd"/>
+    <image x="100" y="60" color="black" path="ARTE_l.glcd"/>
     <!--
     <image x="100" y="50" color="black" path="ARTE_m.glcd"/>
     -->
+    <rectangle x1="10" x2="200" y1="100" y2="120" color="black"/>
+    <progress x1="12" x2="198" y1="102" y2="118" color="black" direction="0" current="16" total="20"/>
   </display>
 </skin>
