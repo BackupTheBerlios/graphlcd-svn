@@ -27,6 +27,7 @@
 <!--
     <image x="100" y="60" color="black" path="ARTE_l.glcd"/>
     <image x="100" y="50" color="black" path="ARTE_m.glcd"/>
+    <image x="50" y="50" color="black" condition="or(file('ARTE_m.glcd'),file('ARTE_l.glcd'))" path="ARTE_l.glcd"/>
 -->
     <text x1="0" x2="-1" y1="0" y2="-1" color="black" align="left" font="medium">
     This is a left aligned text.
