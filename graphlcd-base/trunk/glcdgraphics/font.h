@@ -16,6 +16,7 @@
 #define _GLCDGRAPHICS_FONT_H_
 
 #include <string>
+#include <vector>
 
 #include "bitmap.h"
 
@@ -64,6 +65,9 @@ public:
 
     const cBitmap * GetCharacter(char ch) const;
     void SetCharacter(char ch, cBitmap * bitmapChar);
+
+    void WrapText(int Width, int Height, std::string & Text,
+                  std::vector <std::string> & Lines, int * TextWidth = NULL) const;
 };
 
 } // end of namespace

@@ -19,6 +19,7 @@
 
 #include <algorithm>
 
+#include "common.h"
 #include "font.h"
 
 #ifdef HAVE_FREETYPE2
@@ -474,6 +475,88 @@ void cFont::Unload()
     }
     // re-init
     Init();
+}
+
+void cFont::WrapText(int Width, int Height, std::string & Text,
+                     std::vector <std::string> & Lines, int * ActualWidth) const
+{
+    int maxLines;
+    int lineCount;
+    int textWidth;
+    std::string::size_type start;
+    std::string::size_type pos;
+    std::string::size_type posLast;
+
+    Lines.clear();
+    maxLines = 1;
+    if (Height > 0)
+    {
+        maxLines = Height / LineHeight();
+        if (maxLines == 0)
+            maxLines = 1;
+    }
+    lineCount = 0;
+
+    pos = 0;
+    start = 0;
+    posLast = 0;
+    textWidth = 0;
+    while (pos < Text.length() && (Height == 0 || lineCount < maxLines))
+    {
+        if (Text[pos] == '\n')
+        {
+            Lines.push_back(trim(Text.substr(start, pos - start)));
+            start = pos + 1;
+            posLast = pos + 1;
+            textWidth = 0;
+            lineCount++;
+        }
+        else if (textWidth > Width)
+        {
+            if (posLast > start)
+            {
+                Lines.push_back(trim(Text.substr(start, posLast - start)));
+                start = posLast + 1;
+                posLast = start;
+                textWidth = this->Width(Text.substr(start, pos - start + 1));
+            }
+            else
+            {
+                Lines.push_back(trim(Text.substr(start, pos - start)));
+                start = pos + 1;
+                posLast = start;
+                textWidth = this->Width(Text[pos]);
+            }
+            lineCount++;
+        }
+        else if (Text[pos] == ' ')
+        {
+            posLast = pos;
+            textWidth += this->Width(Text[pos]);
+        }
+        else
+        {
+            textWidth += this->Width(Text[pos]);
+        }
+        pos++;
+    }
+
+    if (lineCount < maxLines)
+    {
+        if (pos > start)
+        {
+            Lines.push_back(trim(Text.substr(start)));
+            lineCount++;
+        }
+        textWidth = 0;
+        for (int i = 0; i < lineCount; i++)
+            textWidth = std::max(textWidth, this->Width(Lines[i]));
+        textWidth = std::min(textWidth, Width);
+    }
+    else
+        textWidth = Width;
+    if (ActualWidth)
+        *ActualWidth = textWidth;
 }
 
 } // end of namespace
