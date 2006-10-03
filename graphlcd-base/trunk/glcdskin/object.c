@@ -24,46 +24,54 @@ static const std::string ObjectNames[] =
 };
 
 cSkinObject::cSkinObject(cSkinDisplay * Parent)
-:   display(Parent),
-    skin(Parent->Skin()),
-    type((eType) __COUNT_OBJECT__),
-    pos1(0, 0),
-    pos2(-1, -1),
-    color(GLCD::clrBlack),
-    filled(false),
-    radius(0),
-    arc(0),
-    mPath(this, false),
+:   mDisplay(Parent),
+    mSkin(Parent->Skin()),
+    mType((eType) __COUNT_OBJECT__),
+    mPos1(0, 0),
+    mPos2(-1, -1),
+    mColor(GLCD::clrBlack),
+    mFilled(false),
+    mRadius(0),
+    mArc(0),
     mDirection(0),
+    mAlign(taLeft),
+    mMultiline(false),
+    mPath(this, false),
     mCurrent(this, false),
     mTotal(this, false),
-    objects(NULL)
+    mFont(this, false),
+    mText(this, false),
+    mObjects(NULL)
 {
 }
 
 cSkinObject::cSkinObject(const cSkinObject & Src)
-:   display(Src.display),
-    skin(Src.skin),
-    type(Src.type),
-    pos1(Src.pos1),
-    pos2(Src.pos2),
-    color(Src.color),
-    filled(Src.filled),
-    radius(Src.radius),
-    arc(Src.arc),
-    mPath(Src.mPath),
+:   mDisplay(Src.mDisplay),
+    mSkin(Src.mSkin),
+    mType(Src.mType),
+    mPos1(Src.mPos1),
+    mPos2(Src.mPos2),
+    mColor(Src.mColor),
+    mFilled(Src.mFilled),
+    mRadius(Src.mRadius),
+    mArc(Src.mArc),
     mDirection(Src.mDirection),
+    mAlign(Src.mAlign),
+    mMultiline(Src.mMultiline),
+    mPath(Src.mPath),
     mCurrent(Src.mCurrent),
     mTotal(Src.mTotal),
-    objects(NULL)
+    mFont(Src.mFont),
+    mText(Src.mText),
+    mObjects(NULL)
 {
-    if (Src.objects)
-        objects = new cSkinObjects(*Src.objects);
+    if (Src.mObjects)
+        mObjects = new cSkinObjects(*Src.mObjects);
 }
 
 cSkinObject::~cSkinObject()
 {
-    delete objects;
+    delete mObjects;
 }
 
 bool cSkinObject::ParseType(const std::string & Text)
@@ -72,7 +80,7 @@ bool cSkinObject::ParseType(const std::string & Text)
     {
         if (ObjectNames[i] == Text)
         {
-            type = (eType) i;
+            mType = (eType) i;
             return true;
         }
     }
@@ -82,31 +90,49 @@ bool cSkinObject::ParseType(const std::string & Text)
 bool cSkinObject::ParseColor(const std::string & Text)
 {
     if (Text == "white")
-        color = GLCD::clrWhite;
+        mColor = GLCD::clrWhite;
     else if (Text == "black")
-        color = GLCD::clrBlack;
+        mColor = GLCD::clrBlack;
     else
         return false;
     return true;
 }
 
+bool cSkinObject::ParseAlignment(const std::string & Text)
+{
+    if (Text == "left")
+        mAlign = taLeft;
+    else if (Text == "right")
+        mAlign = taRight;
+    else if (Text == "center")
+        mAlign = taCenter;
+    else
+        return false;
+    return true;
+}
+
+bool cSkinObject::ParseFontFace(const std::string & Text)
+{
+    return mFont.Parse(Text);
+}
+
 const std::string & cSkinObject::TypeName(void) const
 {
-    return ObjectNames[type];
+    return ObjectNames[mType];
 }
 
 tPoint cSkinObject::Pos(void) const
 {
-    return tPoint(pos1.x < 0 ? skin->BaseSize().w + pos1.x : pos1.x,
-                  pos1.y < 0 ? skin->BaseSize().h + pos1.y : pos1.y);
+    return tPoint(mPos1.x < 0 ? mSkin->BaseSize().w + mPos1.x : mPos1.x,
+                  mPos1.y < 0 ? mSkin->BaseSize().h + mPos1.y : mPos1.y);
 }
 
 tSize cSkinObject::Size(void) const
 {
-    tPoint p1(pos1.x < 0 ? skin->BaseSize().w + pos1.x : pos1.x,
-              pos1.y < 0 ? skin->BaseSize().h + pos1.y : pos1.y);
-    tPoint p2(pos2.x < 0 ? skin->BaseSize().w + pos2.x : pos2.x,
-              pos2.y < 0 ? skin->BaseSize().h + pos2.y : pos2.y);
+    tPoint p1(mPos1.x < 0 ? mSkin->BaseSize().w + mPos1.x : mPos1.x,
+              mPos1.y < 0 ? mSkin->BaseSize().h + mPos1.y : mPos1.y);
+    tPoint p2(mPos2.x < 0 ? mSkin->BaseSize().w + mPos2.x : mPos2.x,
+              mPos2.y < 0 ? mSkin->BaseSize().h + mPos2.y : mPos2.y);
     return tSize(p2.x - p1.x + 1, p2.y - p1.y + 1);
 }
 
@@ -120,26 +146,21 @@ void cSkinObject::Render(GLCD::cBitmap * screen)
     {
         case cSkinObject::image:
         {
-            cImageCache * cache = skin->ImageCache();
+            cImageCache * cache = mSkin->ImageCache();
             GLCD::cImage * image = cache->Get(mPath.Evaluate());
             if (image)
             {
                 const GLCD::cBitmap * bitmap = image->GetBitmap();
                 if (bitmap)
                 {
-                    screen->DrawBitmap(Pos().x, Pos().y, *bitmap, color);
+                    screen->DrawBitmap(Pos().x, Pos().y, *bitmap, mColor);
                 }
             }
             break;
         }
 
-        case cSkinObject::text:
-            //DrawText(Object->Pos(), Object->Size(), Object->Fg(), Object->Text(), Object->Font(),
-            //    Object->Align());
-            break;
-
         case cSkinObject::pixel:
-            screen->DrawPixel(Pos().x, Pos().y, color);
+            screen->DrawPixel(Pos().x, Pos().y, mColor);
             break;
 
         case cSkinObject::line:
@@ -149,34 +170,33 @@ void cSkinObject::Render(GLCD::cBitmap * screen)
             int y1 = Pos().y;
             int y2 = Pos().y + Size().h - 1;
             if (x1 == x2)
-                screen->DrawVLine(x1, y1, y2, color);
+                screen->DrawVLine(x1, y1, y2, mColor);
             else if (y1 == y2)
-                screen->DrawHLine(x1, y1, x2, color);
+                screen->DrawHLine(x1, y1, x2, mColor);
             else
-                screen->DrawLine(x1, y1, x2, y2, color);
+                screen->DrawLine(x1, y1, x2, y2, mColor);
             break;
         }
 
         case cSkinObject::rectangle:
-            if (radius == 0)
-                screen->DrawRectangle(Pos().x, Pos().y, Pos().x + Size().w - 1, Pos().y + Size().h - 1, color, filled);
+            if (mRadius == 0)
+                screen->DrawRectangle(Pos().x, Pos().y, Pos().x + Size().w - 1, Pos().y + Size().h - 1, mColor, mFilled);
             else
-                screen->DrawRoundRectangle(Pos().x, Pos().y, Pos().x + Size().w - 1, Pos().y + Size().h - 1, color, filled, radius);
+                screen->DrawRoundRectangle(Pos().x, Pos().y, Pos().x + Size().w - 1, Pos().y + Size().h - 1, mColor, mFilled, mRadius);
             break;
 
         case cSkinObject::ellipse:
-            screen->DrawEllipse(Pos().x, Pos().y, Pos().x + Size().w - 1, Pos().y + Size().h - 1, color, filled, arc);
+            screen->DrawEllipse(Pos().x, Pos().y, Pos().x + Size().w - 1, Pos().y + Size().h - 1, mColor, mFilled, mArc);
             break;
 
         case cSkinObject::slope:
-            screen->DrawSlope(Pos().x, Pos().y, Pos().x + Size().w - 1, Pos().y + Size().h - 1, color, arc);
+            screen->DrawSlope(Pos().x, Pos().y, Pos().x + Size().w - 1, Pos().y + Size().h - 1, mColor, mArc);
             break;
 
         case cSkinObject::progress:
         {
             int current = mCurrent.Evaluate();
             int total = mTotal.Evaluate();
-            printf("current %d total %d\n", current, total);
             if (total == 0)
                 total = 1;
             if (current > total)
@@ -185,25 +205,75 @@ void cSkinObject::Render(GLCD::cBitmap * screen)
             {
                 int w = Size().w * current / total;
                 if (w > 0)
-                    screen->DrawRectangle(Pos().x, Pos().y, Pos().x + w - 1, Pos().y + Size().h - 1, color, true);
+                    screen->DrawRectangle(Pos().x, Pos().y, Pos().x + w - 1, Pos().y + Size().h - 1, mColor, true);
             }
             else if (mDirection == 1)
             {
                 int h = Size().h * current / total;
                 if (h > 0)
-                    screen->DrawRectangle(Pos().x, Pos().y, Pos().x + Size().w - 1, Pos().y + h - 1, color, true);
+                    screen->DrawRectangle(Pos().x, Pos().y, Pos().x + Size().w - 1, Pos().y + h - 1, mColor, true);
             }
             else if (mDirection == 2)
             {
                 int w = Size().w * current / total;
                 if (w > 0)
-                    screen->DrawRectangle(Pos().x + Size().w - w, Pos().y, Pos().x + Size().w - 1, Pos().y + Size().h - 1, color, true);
+                    screen->DrawRectangle(Pos().x + Size().w - w, Pos().y, Pos().x + Size().w - 1, Pos().y + Size().h - 1, mColor, true);
             }
             else if (mDirection == 3)
             {
                 int h = Size().h * current / total;
                 if (h > 0)
-                    screen->DrawRectangle(Pos().x, Pos().y + Size().h - h, Pos().x + Size().w - 1, Pos().y + Size().h - 1, color, true);
+                    screen->DrawRectangle(Pos().x, Pos().y + Size().h - h, Pos().x + Size().w - 1, Pos().y + Size().h - 1, mColor, true);
+            }
+            break;
+        }
+
+        case cSkinObject::text:
+        {
+            cSkinFont * skinFont = mSkin->GetFont(mFont.Evaluate());
+            if (skinFont)
+            {
+                const cFont * font = skinFont->Font();
+                std::string text = mText.Evaluate();
+                if (mMultiline)
+                {
+                    std::vector <std::string> lines;
+                    font->WrapText(Size().w, Size().h, text, lines);
+                    for (size_t i = 0; i < lines.size(); i++)
+                    {
+                        int w = font->Width(lines[i]);
+                        int x = Pos().x;
+                        if (w < Size().w)
+                        {
+                            if (mAlign == taRight)
+                            {
+                                x += Size().w - w;
+                            }
+                            else if (mAlign == taCenter)
+                            {
+                                x += (Size().w - w) / 2;
+                            }
+                        }
+                        screen->DrawText(x, Pos().y + i * font->LineHeight(), x + Size().w - 1, lines[i], font, mColor);
+                    }
+                }
+                else
+                {
+                    int w = font->Width(text);
+                    int x = Pos().x;
+                    if (w < Size().w)
+                    {
+                        if (mAlign == taRight)
+                        {
+                            x += Size().w - w;
+                        }
+                        else if (mAlign == taCenter)
+                        {
+                            x += (Size().w - w) / 2;
+                        }
+                    }
+                    screen->DrawText(x, Pos().y, x + Size().w - 1, text, font, mColor);
+                }
             }
             break;
         }
@@ -218,8 +288,8 @@ void cSkinObject::Render(GLCD::cBitmap * screen)
             break;
 
         case cSkinObject::block:
-            //for (uint i = 0; i < Object->Objects(); ++i)
-            //  DrawObject(Object->GetObject(i));
+            for (uint32_t i = 0; i < NumObjects(); i++)
+                GetObject(i)->Render(screen);
             break;
 
         case cSkinObject::list:

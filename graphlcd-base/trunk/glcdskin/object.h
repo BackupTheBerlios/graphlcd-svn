@@ -43,6 +43,12 @@ struct tSize
     tSize(int _w = 0, int _h = 0) { w = _w; h = _h; }
 };
 
+enum eTextAlignment
+{
+    taCenter,
+    taLeft,
+    taRight
+};
 
 class cSkinObject
 {
@@ -70,45 +76,49 @@ public:
     };
 
 private:
-    cSkinDisplay * display;
-    cSkin * skin;
-    eType type;
-    tPoint pos1;
-    tPoint pos2;
-    eColor color;
-    bool filled;
-    int radius;
-    int arc;
-    cSkinString mPath;
+    cSkinDisplay * mDisplay;
+    cSkin * mSkin;
+    eType mType;
+    tPoint mPos1;
+    tPoint mPos2;
+    eColor mColor;
+    bool mFilled;
+    int mRadius;
+    int mArc;
     int mDirection;
+    eTextAlignment mAlign;
+    bool mMultiline;
+    cSkinString mPath;
     cSkinString mCurrent;
     cSkinString mTotal;
+    cSkinString mFont;
+    cSkinString mText;
 
-    cSkinObjects * objects; // used for block objects such as <list>
+    cSkinObjects * mObjects; // used for block objects such as <list>
 
 public:
     cSkinObject(cSkinDisplay * parent);
     cSkinObject(const cSkinObject & Src);
     ~cSkinObject();
 
-    bool ParseType     (const std::string &Text);
-    bool ParseColor    (const std::string &Text);
+    bool ParseType(const std::string &Text);
+    bool ParseColor(const std::string &Text);
     bool ParseCondition(const std::string &Text);
     bool ParseAlignment(const std::string &Text);
-    bool ParseFontFace (const std::string &Text);
+    bool ParseFontFace(const std::string &Text);
 
     void SetListIndex(uint Index, int Tab);
 
-    eType Type(void) const { return type; }
-    cSkinDisplay * Display(void) const { return display; }
-    cSkin * Skin(void) const { return skin; }
+    eType Type(void) const { return mType; }
+    cSkinDisplay * Display(void) const { return mDisplay; }
+    cSkin * Skin(void) const { return mSkin; }
 
     const std::string & TypeName(void) const;
     tPoint Pos(void) const;
     tSize Size(void) const;
 
     uint32_t NumObjects(void) const;
-    const cSkinObject * GetObject(uint32_t Index) const;
+    cSkinObject * GetObject(uint32_t Index) const;
 
     void Render(cBitmap * screen);
 };
@@ -123,12 +133,12 @@ public:
 // recursive dependancy
 inline uint32_t cSkinObject::NumObjects(void) const
 {
-    return objects ? objects->size() : 0;
+    return mObjects ? mObjects->size() : 0;
 }
 
-inline const cSkinObject * cSkinObject::GetObject(uint32_t Index) const
+inline cSkinObject * cSkinObject::GetObject(uint32_t Index) const
 {
-    return objects ? (*objects)[Index] : NULL;
+    return mObjects ? (*mObjects)[Index] : NULL;
 }
 
 } // end of namespace
