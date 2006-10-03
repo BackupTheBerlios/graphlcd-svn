@@ -9,6 +9,8 @@
  * (c) 2004 Andreas Regel <andreas.regel AT powarman.de>
  */
 
+#include <ctype.h>
+
 #include "common.h"
 
 
@@ -32,6 +34,27 @@ void sort(int & value1, int & value2)
         value2 = value1;
         value1 = tmp;
     }
+}
+
+std::string trim(const std::string & s)
+{
+	std::string::size_type start, end;
+
+	start = 0;
+	while (start < s.length())
+	{
+		if (!isspace(s[start]))
+			break;
+		start++;
+	}
+	end = s.length() - 1;
+	while (end >= 0)
+	{
+		if (!isspace(s[end]))
+			break;
+		end--;
+	}
+	return s.substr(start, end - start + 1);
 }
 
 } // end of namespace
