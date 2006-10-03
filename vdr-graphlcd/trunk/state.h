@@ -104,7 +104,6 @@ protected:
 	virtual void Replaying(const cControl *Control, const char *Name, const char *FileName, bool On);
 #endif
 	virtual void SetVolume(int Volume, bool Absolute);
-	virtual void Tick();
 	virtual void OsdClear();
 	virtual void OsdTitle(const char *Title);
 	virtual void OsdStatusMessage(const char *Message);
@@ -119,6 +118,7 @@ public:
 	cGraphLCDState();
 	virtual ~cGraphLCDState();
 
+	void Tick();
 	tChannelState GetChannelState();
 	tEventState GetEventState();
 	tReplayState GetReplayState();

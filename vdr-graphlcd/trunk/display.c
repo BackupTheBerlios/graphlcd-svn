@@ -154,6 +154,12 @@ int cGraphLCDDisplay::Init(const char * CfgDir, unsigned int displayNumber)
 	return 0;
 }
 
+void cGraphLCDDisplay::Tick(void)
+{
+  if (GraphLCDState)
+    GraphLCDState->Tick();
+}
+
 void cGraphLCDDisplay::Action(void)
 {
 	if (LCD->Init() != 0)

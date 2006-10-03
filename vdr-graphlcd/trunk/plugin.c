@@ -63,6 +63,7 @@ public:
 	virtual bool Initialize();
 	virtual bool Start();
 	virtual void Housekeeping();
+  virtual void MainThreadHook(void);
 	virtual const char * MainMenuEntry() { return MAINMENUENTRY; }
 	virtual cOsdObject * MainMenuAction();
 	virtual cMenuSetupPage * SetupMenu();
@@ -199,6 +200,11 @@ bool cPluginGraphLCD::Start()
 
 void cPluginGraphLCD::Housekeeping()
 {
+}
+
+void cPluginGraphLCD::MainThreadHook()
+{
+  Display.Tick();
 }
 
 cOsdObject * cPluginGraphLCD::MainMenuAction()

@@ -63,6 +63,7 @@ public:
 	~cGraphLCDDisplay();
 
 	int Init(const char * CfgDir, unsigned int DisplayNumber);
+  void Tick(void);
 
 	void SetChannel(int ChannelNumber);
 	void SetClear();
