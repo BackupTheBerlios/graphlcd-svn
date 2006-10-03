@@ -30,6 +30,7 @@ namespace GLCD
 class cSkin;
 class cSkinDisplay;
 class cSkinObjects;
+class cSkinFunction;
 
 struct tPoint
 {
@@ -93,6 +94,7 @@ private:
     cSkinString mTotal;
     cSkinString mFont;
     cSkinString mText;
+    cSkinFunction * mCondition;
 
     cSkinObjects * mObjects; // used for block objects such as <list>
 

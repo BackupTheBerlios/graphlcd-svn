@@ -2,6 +2,7 @@
 #include "object.h"
 #include "skin.h"
 #include "cache.h"
+#include "function.h"
 
 namespace GLCD
 {
@@ -41,6 +42,7 @@ cSkinObject::cSkinObject(cSkinDisplay * Parent)
     mTotal(this, false),
     mFont(this, false),
     mText(this, false),
+    mCondition(NULL),
     mObjects(NULL)
 {
 }
@@ -63,6 +65,7 @@ cSkinObject::cSkinObject(const cSkinObject & Src)
     mTotal(Src.mTotal),
     mFont(Src.mFont),
     mText(Src.mText),
+    mCondition(Src.mCondition),
     mObjects(NULL)
 {
     if (Src.mObjects)
@@ -96,6 +99,18 @@ bool cSkinObject::ParseColor(const std::string & Text)
     else
         return false;
     return true;
+}
+
+bool cSkinObject::ParseCondition(const std::string & Text)
+{
+    cSkinFunction *result = new cSkinFunction(this);
+    if (result->Parse(Text))
+    {
+        delete mCondition;
+        mCondition = result;
+        return true;
+    }
+    return false;
 }
 
 bool cSkinObject::ParseAlignment(const std::string & Text)
@@ -138,10 +153,9 @@ tSize cSkinObject::Size(void) const
 
 void cSkinObject::Render(GLCD::cBitmap * screen)
 {
-    /*
-    if (Object->Condition() != NULL && !Object->Condition()->Evaluate())
+    if (mCondition != NULL && !mCondition->Evaluate())
         return;
-    */
+
     switch (Type())
     {
         case cSkinObject::image:

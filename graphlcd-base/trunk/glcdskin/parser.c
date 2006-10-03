@@ -167,7 +167,7 @@ bool StartElem(const std::string & name, std::map<std::string,std::string> & att
             ATTRIB_OPT_NUMBER("y1", object->mPos1.y);
             ATTRIB_OPT_NUMBER("x2", object->mPos2.x);
             ATTRIB_OPT_NUMBER("y2", object->mPos2.y);
-            //XXX ATTRIB_OPT_FUNC("condition", object->ParseCondition);
+            ATTRIB_OPT_FUNC("condition", object->ParseCondition);
 
             if (name == "image")
             {
