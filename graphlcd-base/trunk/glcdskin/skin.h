@@ -49,7 +49,7 @@ public:
 
     void SetBaseSize(int width, int height);
 
-    cSkinFont * Get(const std::string & id);
+    cSkinFont * GetFont(const std::string & id);
     cSkinDisplay * Get(cSkinDisplay::eType Type);
 
     const cSkinConfig & Config(void) const { return config; }
@@ -61,13 +61,14 @@ public:
     cImageCache * ImageCache(void) { return mImageCache; }
 };
 
-inline cSkinFont * cSkin::Get(const std::string & id)
+inline cSkinFont * cSkin::GetFont(const std::string & id)
 {
     cSkinFonts::iterator it = fonts.begin();
     while (it != fonts.end())
     {
         if ((*it)->Id() == id)
             return (*it);
+        it++;
     }
     return NULL;
 }
