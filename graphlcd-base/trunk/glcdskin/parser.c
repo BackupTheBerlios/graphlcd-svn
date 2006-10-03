@@ -163,29 +163,29 @@ bool StartElem(const std::string & name, std::map<std::string,std::string> & att
         object = new cSkinObject(display);
         if (object->ParseType(name))
         {
-            ATTRIB_OPT_NUMBER("x1", object->pos1.x);
-            ATTRIB_OPT_NUMBER("y1", object->pos1.y);
-            ATTRIB_OPT_NUMBER("x2", object->pos2.x);
-            ATTRIB_OPT_NUMBER("y2", object->pos2.y);
+            ATTRIB_OPT_NUMBER("x1", object->mPos1.x);
+            ATTRIB_OPT_NUMBER("y1", object->mPos1.y);
+            ATTRIB_OPT_NUMBER("x2", object->mPos2.x);
+            ATTRIB_OPT_NUMBER("y2", object->mPos2.y);
             //XXX ATTRIB_OPT_FUNC("condition", object->ParseCondition);
 
             if (name == "image")
             {
-                ATTRIB_OPT_NUMBER("x", object->pos1.x);
-                ATTRIB_OPT_NUMBER("y", object->pos1.y);
-                ATTRIB_OPT_NUMBER("x", object->pos2.x);
-                ATTRIB_OPT_NUMBER("y", object->pos2.y);
+                ATTRIB_OPT_NUMBER("x", object->mPos1.x);
+                ATTRIB_OPT_NUMBER("y", object->mPos1.y);
+                ATTRIB_OPT_NUMBER("x", object->mPos2.x);
+                ATTRIB_OPT_NUMBER("y", object->mPos2.y);
                 ATTRIB_OPT_FUNC("color", object->ParseColor);
                 ATTRIB_MAN_FUNC("path", object->mPath.Parse);
             }
             else if (name == "text"
                 || name == "scrolltext")
             {
-#if 0
-                ATTRIB_OPT_STRING("color", object->mFg);
+                ATTRIB_OPT_FUNC("color", object->ParseColor);
                 ATTRIB_OPT_FUNC("align", object->ParseAlignment);
                 ATTRIB_OPT_FUNC("font", object->ParseFontFace);
-
+                ATTRIB_OPT_BOOL("multiline", object->mMultiline);
+#if 0
                 if (name == "blink")
                 {
                     ATTRIB_OPT_NUMBER("delay", object->mDelay);
@@ -213,14 +213,14 @@ bool StartElem(const std::string & name, std::map<std::string,std::string> & att
             else if (name == "rectangle")
             {
                 ATTRIB_OPT_FUNC("color", object->ParseColor);
-                ATTRIB_OPT_BOOL("filled", object->filled);
-                ATTRIB_OPT_NUMBER("radius", object->radius);
+                ATTRIB_OPT_BOOL("filled", object->mFilled);
+                ATTRIB_OPT_NUMBER("radius", object->mRadius);
             }
             else if (name == "ellipse" || name == "slope")
             {
                 ATTRIB_OPT_FUNC("color", object->ParseColor);
-                ATTRIB_OPT_BOOL("filled", object->filled);
-                ATTRIB_OPT_NUMBER("arc", object->arc);
+                ATTRIB_OPT_BOOL("filled", object->mFilled);
+                ATTRIB_OPT_NUMBER("arc", object->mArc);
             }
             else if (name == "progress"
                 || name == "scrollbar")
@@ -258,10 +258,8 @@ bool CharData(const std::string & text)
     if (context[context.size() - 1] == "text"
         || context[context.size() - 1] == "scrolltext")
     {
-#if 0
         if (!object->mText.Parse(text))
             return false;
-#endif
     }
     else
         syslog(LOG_ERR, "ERROR: Bad character data");
@@ -299,8 +297,6 @@ bool EndElem(const std::string & name)
                 switch (object->mType)
                 {
                     case cSkinObject::text:
-                    case cSkinObject::marquee:
-                    case cSkinObject::blink:
                     case cSkinObject::scrolltext:
                         object->mCondition = new cxFunction(object->mText);
                         break;
@@ -316,9 +312,9 @@ bool EndElem(const std::string & name)
             {
                 printf("pushing to parent\n");
                 cSkinObject *parent = parents[parents.size() - 1];
-                if (parent->objects == NULL)
-                    parent->objects = new cSkinObjects();
-                parent->objects->push_back(object);
+                if (parent->mObjects == NULL)
+                    parent->mObjects = new cSkinObjects();
+                parent->mObjects->push_back(object);
             }
             else
                 display->objects.push_back(object);
