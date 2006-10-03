@@ -14,6 +14,7 @@
 #include <glcdskin/parser.h>
 #include <glcdskin/skin.h>
 #include <glcdskin/config.h>
+#include <glcdskin/string.h>
 
 std::string SkinPath(void)
 {
@@ -23,6 +24,11 @@ std::string SkinPath(void)
 std::string CharSet(void)
 {
     return "iso8859-15";
+}
+
+GLCD::cType GetToken(const GLCD::tSkinToken & Token)
+{
+    return 0;
 }
 
 static const char * kDefaultConfigFile = "/etc/graphlcd.conf";
@@ -148,11 +154,12 @@ int main(int argc, char ** argv)
     GLCD::cSkinConfig skinConfig;
     skinConfig.SetSkinPathFunc(SkinPath);
     skinConfig.SetCharSetFunc(CharSet);
+    skinConfig.SetGetTokenFunc(GetToken);
     GLCD::cSkin * skin = GLCD::XmlParse(skinConfig, "test", skinFileName);
     skin->SetBaseSize(screen->Width(), screen->Height());
     GLCD::cSkinDisplay * display = skin->Get(GLCD::cSkinDisplay::normal);
-    display->Render(screen);
 
+    display->Render(screen);
     lcd->SetScreen(screen->Data(), screen->Width(), screen->Height(), screen->LineSize());
     lcd->Refresh(true);
 
