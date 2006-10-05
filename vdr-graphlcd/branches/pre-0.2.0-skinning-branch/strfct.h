@@ -1,5 +1,5 @@
 /**
- *  GraphLCD plugin for the Video Disk Recorder 
+ *  GraphLCD plugin for the Video Disk Recorder
  *
  *  strfct.h  -  various string functions
  *
@@ -33,9 +33,6 @@
 
 
 char * strncopy(char * dest , const char * src , size_t n);
-char * trimleft(char * str);
-char * trimright(char * str);
-char * trim(char * str);
 std::string trim(const std::string & s);
 std::string compactspace(const std::string & s);
 
