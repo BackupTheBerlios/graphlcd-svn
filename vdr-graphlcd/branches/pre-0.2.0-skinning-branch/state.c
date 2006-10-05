@@ -1,5 +1,5 @@
 /**
- *  GraphLCD plugin for the Video Disk Recorder 
+ *  GraphLCD plugin for the Video Disk Recorder
  *
  *  status.c  -  status monitor class
  *
@@ -16,8 +16,6 @@
 
 #include <vdr/eitscan.h>
 #include <vdr/i18n.h>
-
-#include "compat.h"
 
 
 cGraphLCDState::cGraphLCDState()
@@ -83,28 +81,16 @@ void cGraphLCDState::ChannelSwitch(const cDevice * Device, int ChannelNumber)
 	}
 }
 
-#if VDRVERSNUM < 10338
-void cGraphLCDState::Recording(const cDevice * Device, const char * Name)
-#else
 void cGraphLCDState::Recording(const cDevice * Device, const char * Name, const char *FileName, bool On)
-#endif
 {
 //	printf("graphlcd plugin: cGraphLCDState::Recording %d %s\n", Device->CardIndex(), Name);
 	if (GraphLCDSetup.PluginActive)
 	{
 		mutex.Lock();
-#if VDRVERSNUM < 10338
-		if (Name)
-#else
 		if (On)
-#endif
 		{
 			card[Device->DeviceNumber()].recordingCount++;
-#if VDRVERSNUM < 10338
-			card[Device->DeviceNumber()].recordingName = Name;
-#else
 			card[Device->DeviceNumber()].recordingName = Name ? Name : "";
-#endif
 		}
 		else
 		{
@@ -118,31 +104,19 @@ void cGraphLCDState::Recording(const cDevice * Device, const char * Name, const 
 	}
 }
 
-#if VDRVERSNUM < 10338
-void cGraphLCDState::Replaying(const cControl * Control, const char * Name)
-#else
 void cGraphLCDState::Replaying(const cControl * Control, const char * Name, const char *FileName, bool On)
-#endif
 {
 //	printf("graphlcd plugin: cGraphLCDState::Replaying %s\n", Name);
 	if (GraphLCDSetup.PluginActive)
 	{
-#if VDRVERSNUM < 10338
-		if (Name)
-#else
 		if (On)
-#endif
 		{
 			mutex.Lock();
 			replay.control = (cControl *) Control;
 			replay.mode = eReplayNormal;
 			replay.name = "";
 			replay.loopmode = "";
-#if VDRVERSNUM < 10338
-			if (!isempty(Name))
-#else
 			if (Name && !isempty(Name))
-#endif
 			{
 				if (GraphLCDSetup.IdentifyReplayType)
 				{
@@ -177,7 +151,7 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name, cons
 								replay.loopmode.erase (1, 1);
 							if (replay.loopmode[1] == ']')
 								replay.loopmode = "";
-							//printf ("loopmode=<%s>\n", replay.loopmode.c_str ());   
+							//printf ("loopmode=<%s>\n", replay.loopmode.c_str ());
 							for(j=0;*(Name+i+j) != '\0';++j) //trim name
 							{
 								if(*(Name+i+j)!=' ')
@@ -204,9 +178,9 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name, cons
 						if(slen>7)
 						{
 							unsigned int i,n;
-							for(n=0,i=0;*(Name+i) != '\0';++i) 
+							for(n=0,i=0;*(Name+i) != '\0';++i)
 							{ //search volumelabel after 4*", " => xxx, xxx, xxx, xxx, title
-								if(*(Name+i)==' ' && *(Name+i-1)==',') 
+								if(*(Name+i)==' ' && *(Name+i-1)==',')
 								{
 									if(++n == 4)
 									{
@@ -214,22 +188,22 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name, cons
 										break;
 									}
 								}
-							}    
+							}
 							if(bFound) //found DVD replaymessage
 							{
-								unsigned int j;bool b; 
+								unsigned int j;bool b;
 								for(j=0;*(Name+i+j) != '\0';++j) //trim name
-								{	
-									if(*(Name+i+j)!=' ') 
+								{
+									if(*(Name+i+j)!=' ')
 										break;
 								}
 
-								if (strlen(Name+i+j) > 0) 
+								if (strlen(Name+i+j) > 0)
 								{ // if name isn't empty, then copy
 									replay.name = Name + i + j;
 									// replace all '_' with ' '
 									replace(replay.name.begin(), replay.name.end(), '_', ' ');
-									for (j = 0, b = true; j < replay.name.length(); ++j) 
+									for (j = 0, b = true; j < replay.name.length(); ++j)
 									{
 										// KAPITALIZE -> Kaptialize
 										if (replay.name[j] == ' ')
@@ -238,8 +212,8 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name, cons
 											b = false;
 										else replay.name[j] = tolower(replay.name[j]);
 									}
-								} 
-								else 
+								}
+								else
 								{ //if Name empty, set fallback title
 									replay.name = tr("Unknown title");
 								}
@@ -250,8 +224,8 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name, cons
 					if (!bFound)
 					{
 						int i;
-						for(i=slen-1;i>0;--i) 
-						{ //Reversesearch last Subtitle 
+						for(i=slen-1;i>0;--i)
+						{ //Reversesearch last Subtitle
 							// - filename contains '~' => subdirectory
 							// or filename contains '/' => subdirectory
 							switch(*(Name+i))
@@ -310,13 +284,9 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name, cons
 			mutex.Lock();
 			replay.control = NULL;
 			mutex.Unlock();
-			SetChannel(channel.number); 
+			SetChannel(channel.number);
 		}
-#if VDRVERSNUM < 10338
-		Display.Replaying(Name ? true : false, replay.mode);
-#else
 		Display.Replaying(On, replay.mode);
-#endif
 	}
 }
 
@@ -330,7 +300,7 @@ void cGraphLCDState::SetVolume(int Volume, bool Absolute)
 		volume.value = Volume;
 		if (!first)
 		{
-			volume.lastChange = TimeMs();
+			volume.lastChange = cTimeMs::Now();
 			mutex.Unlock();
 			Display.Update();
 		}
@@ -407,7 +377,7 @@ void cGraphLCDState::OsdTitle(const char * Title)
 				osd.title.resize(pos);
 			osd.title = compactspace(osd.title);
 		}
-	
+
 		mutex.Unlock();
 		Display.SetOsdTitle();
 	}
@@ -642,41 +612,6 @@ void cGraphLCDState::SetChannel(int ChannelNumber)
 void cGraphLCDState::GetProgramme()
 {
 	mutex.Lock();
-#if VDRVERSNUM < 10300
-	const cEventInfo * present = NULL, * following = NULL;
-	cMutexLock mutexLock;
-	const cSchedules * schedules = cSIProcessor::Schedules(mutexLock);
-	if (channel.id.Valid())
-	{
-		if (schedules)
-		{
-			const cSchedule * schedule = schedules->GetSchedule(channel.id);
-			if (schedule)
-			{
-				if ((present = schedule->GetPresentEvent()) != NULL)
-				{
-					event.presentTime = present->GetTime();
-					event.presentTitle = "";
-					if (!isempty(present->GetTitle()))
-						event.presentTitle = present->GetTitle();
-					event.presentSubtitle = "";
-					if (!isempty(present->GetSubtitle()))
-						event.presentSubtitle = present->GetSubtitle();
-				}
-				if ((following = schedule->GetFollowingEvent()) != NULL)
-				{
-					event.followingTime = following->GetTime();
-					event.followingTitle = "";
-					if (!isempty(following->GetTitle()))
-						event.followingTitle = following->GetTitle();
-					event.followingSubtitle = "";
-					if (!isempty(following->GetSubtitle()))
-						event.followingSubtitle = following->GetSubtitle();
-				}
-			}
-		}
-	}
-#else
 	const cEvent * present = NULL, * following = NULL;
 	cSchedulesLock schedulesLock;
 	const cSchedules * schedules = cSchedules::Schedules(schedulesLock);
@@ -710,7 +645,6 @@ void cGraphLCDState::GetProgramme()
 			}
 		}
 	}
-#endif
 	mutex.Unlock();
 }
 

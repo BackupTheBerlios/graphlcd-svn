@@ -1,5 +1,5 @@
 /**
- *  GraphLCD plugin for the Video Disk Recorder 
+ *  GraphLCD plugin for the Video Disk Recorder
  *
  *  i18n.c  -  Internationalization
  *
@@ -47,12 +47,8 @@ const tI18nPhrase Phrases[] =
 		"Ecran grafic LCD/VFD",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Plugin active",
@@ -71,12 +67,8 @@ const tI18nPhrase Phrases[] =
 		"Plugin activat",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"JanFebMarAprMayJunJulAugSepOctNovDec",
@@ -95,12 +87,8 @@ const tI18nPhrase Phrases[] =
 		"IanFebMarAprMaiIunIulAugSepOctNoiDec",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Show Date/Time",
@@ -119,12 +107,8 @@ const tI18nPhrase Phrases[] =
 		"Aratã Data/Ora",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"not in menu",
@@ -143,12 +127,8 @@ const tI18nPhrase Phrases[] =
 		"nu în meniu",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Show Channel",
@@ -167,12 +147,8 @@ const tI18nPhrase Phrases[] =
 		"Aratã canalul",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Show Logo",
@@ -191,12 +167,8 @@ const tI18nPhrase Phrases[] =
 		"Aratã logo",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Show Logo on Replay",
@@ -215,12 +187,8 @@ const tI18nPhrase Phrases[] =
 		"Aratã logo în timpul redãrii",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Show Symbols",
@@ -239,12 +207,8 @@ const tI18nPhrase Phrases[] =
 		"Aratã simboluri",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Show ET Symbols",
@@ -263,12 +227,8 @@ const tI18nPhrase Phrases[] =
 		"Aratã simboluri externe",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Show Program",
@@ -287,12 +247,8 @@ const tI18nPhrase Phrases[] =
 		"Aratã programul",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Show Timebar",
@@ -311,12 +267,8 @@ const tI18nPhrase Phrases[] =
 		"Aratã linia timp",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Show Menu",
@@ -335,12 +287,8 @@ const tI18nPhrase Phrases[] =
 		"Aratã meniuri",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Show Messages",
@@ -359,12 +307,8 @@ const tI18nPhrase Phrases[] =
 		"Aratã mesaje",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Show Color Buttons",
@@ -383,12 +327,8 @@ const tI18nPhrase Phrases[] =
 		"Aratã butoanele colorate",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Show Volume",
@@ -407,12 +347,8 @@ const tI18nPhrase Phrases[] =
 		"Aratã volumul",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"compressed",
@@ -431,12 +367,8 @@ const tI18nPhrase Phrases[] =
 		"comprimat",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"auto",
@@ -455,12 +387,8 @@ const tI18nPhrase Phrases[] =
 		"auto",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"medium",
@@ -479,12 +407,8 @@ const tI18nPhrase Phrases[] =
 		"mediu",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"large",
@@ -503,12 +427,8 @@ const tI18nPhrase Phrases[] =
 		"mare",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Show free Cards",
@@ -527,12 +447,8 @@ const tI18nPhrase Phrases[] =
 		"Aratã receptoare libere",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Replay",
@@ -551,12 +467,8 @@ const tI18nPhrase Phrases[] =
 		"Redare",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"DVD",
@@ -575,12 +487,8 @@ const tI18nPhrase Phrases[] =
 		"DVD",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Music",
@@ -599,12 +507,8 @@ const tI18nPhrase Phrases[] =
 		"Muzicã",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"File",
@@ -623,12 +527,8 @@ const tI18nPhrase Phrases[] =
 		"Fiºier",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Image",
@@ -647,12 +547,8 @@ const tI18nPhrase Phrases[] =
 		"Imagine",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"CD",
@@ -671,12 +567,8 @@ const tI18nPhrase Phrases[] =
 		"CD",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Unknown title",
@@ -695,12 +587,8 @@ const tI18nPhrase Phrases[] =
 		"Titlu necunoscut",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Identify replay type",
@@ -719,12 +607,8 @@ const tI18nPhrase Phrases[] =
 		"Identificarea tipului redãrii",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Modify replay string",
@@ -743,12 +627,8 @@ const tI18nPhrase Phrases[] =
 		"Modifica textul redãrii",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Scroll text lines",
@@ -767,12 +647,8 @@ const tI18nPhrase Phrases[] =
 		"Deruleazã liniile text",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Scroll speed",
@@ -791,12 +667,8 @@ const tI18nPhrase Phrases[] =
 		"Viteza derulãrii",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Scroll time interval",
@@ -815,12 +687,8 @@ const tI18nPhrase Phrases[] =
 		"Interval derulare",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"never",
@@ -839,12 +707,8 @@ const tI18nPhrase Phrases[] =
 		"niciodatã",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"once",
@@ -863,12 +727,8 @@ const tI18nPhrase Phrases[] =
 		"odatã",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"always",
@@ -887,12 +747,8 @@ const tI18nPhrase Phrases[] =
 		"întotdeauna",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Brightness on user activity",
@@ -911,12 +767,8 @@ const tI18nPhrase Phrases[] =
 		"Luminozitate la utilizare",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Brightness on user inactivity",
@@ -935,12 +787,8 @@ const tI18nPhrase Phrases[] =
 		"Luminozitate la inactivitate",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{
 		"Brightness delay [s]",
@@ -959,12 +807,8 @@ const tI18nPhrase Phrases[] =
 		"Limita luminozitate",// Românã
 		"",// TODO Magyar
 		"",// TODO Català
-#if VDRVERSNUM > 10302
 		"",// TODO Russian
-# if VDRVERSNUM > 10307
 		"",// TODO Croatian
-# endif
-#endif
 	},
 	{ NULL }
 };

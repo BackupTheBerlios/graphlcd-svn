@@ -1,5 +1,5 @@
 /**
- *  GraphLCD plugin for the Video Disk Recorder 
+ *  GraphLCD plugin for the Video Disk Recorder
  *
  *  display.c  -  Display class
  *
@@ -25,8 +25,6 @@
 
 #include <vdr/tools.h>
 #include <vdr/menu.h>
-
-#include "compat.h"
 
 #define MAXLINES_MSG  4
 #define MAXLINES_TEXT 16
@@ -199,7 +197,7 @@ void cGraphLCDDisplay::Action(void)
 		esyslog("graphlcd plugin: ERROR: No \"Symbol Font\" specified!\n");
 		return;
 	}
-	
+
 	if (bitmap->Width() < 240)
 	{
 		FRAME_SPACE_X  = 0;
@@ -294,7 +292,7 @@ void cGraphLCDDisplay::Action(void)
 			}
 			if (GraphLCDSetup.ShowVolume && !update && showVolume)
 			{
-				if (TimeMs() - GraphLCDState->GetVolumeState().lastChange > 2000)
+				if (cTimeMs::Now() - GraphLCDState->GetVolumeState().lastChange > 2000)
 				{
 					update = true;
 					showVolume = false;
@@ -327,7 +325,7 @@ void cGraphLCDDisplay::Action(void)
 
 					// update Display if animated Logo is present, and an update is necessary
 					if (!update && IsLogoActive() && logo->Count() > 1 &&
-					    (TimeMs() - logo->LastChange() >= logo->Delay()))
+					    (cTimeMs::Now() - logo->LastChange() >= logo->Delay()))
 					{
 						update = true;
 					}
@@ -352,11 +350,7 @@ void cGraphLCDDisplay::Action(void)
 					}
 					else
 					{
-#if VDRVERSNUM < 10314
-						usleep(100000);
-#else
 						cCondWait::SleepMs(100);
-#endif
 					}
 					break;
 
@@ -376,7 +370,7 @@ void cGraphLCDDisplay::Action(void)
 							}
 							// update Display if animated Logo is present, and an update is necessary
 							if (!update && IsLogoActive() && logo->Count() > 1 &&
-								TimeMs() - logo->LastChange() >= logo->Delay())
+								cTimeMs::Now() - logo->LastChange() >= logo->Delay())
 							{
 								update = true;
 							}
@@ -405,20 +399,12 @@ void cGraphLCDDisplay::Action(void)
 								}
 								else
 								{
-#if VDRVERSNUM < 10314
-									usleep(100000);
-#else
 									cCondWait::SleepMs(100);
-#endif
 								}
 							}
 							else
 							{
-#if VDRVERSNUM < 10314
-								usleep(100000);
-#else
 								cCondWait::SleepMs(100);
-#endif
 							}
 						}
 						else
@@ -451,11 +437,7 @@ void cGraphLCDDisplay::Action(void)
 						}
 						else
 						{
-#if VDRVERSNUM < 10314
-							usleep(100000);
-#else
 							cCondWait::SleepMs(100);
-#endif
 						}
 					}
 					else
@@ -464,11 +446,7 @@ void cGraphLCDDisplay::Action(void)
 
 						State = LastState;
 						// activate delayed Update
-#if VDRVERSNUM < 10314
-						usleep(100000);
-#else
 						cCondWait::SleepMs(100);
-#endif
 					}
 					break;
 
@@ -478,11 +456,7 @@ void cGraphLCDDisplay::Action(void)
 		}
 		else
 		{
-#if VDRVERSNUM < 10314
-			usleep(100000);
-#else
 			cCondWait::SleepMs(100);
-#endif
 		}
 	}
 	dsyslog("graphlcd plugin: Display update thread ended (pid=%d)", getpid());
@@ -517,18 +491,12 @@ void cGraphLCDDisplay::SetChannel(int ChannelNumber)
 				picType = ptLogoSmall;
 				break;
 		}
-#if VDRVERSNUM >= 10300
 		char strTmp[64];
 		strcpy(strTmp, (const char *) ch->GetChannelID().ToString());
 		char * strId = strstr(strTmp, "-") + 1;
 		logo = logoList->GetLogo(strId, picType);
-#else
-		char strId[16];
-		sprintf(strId, "%d", ch->Sid());
-		logo = logoList->GetLogo(strId, picType);
-#endif
 		if (logo)
-			logo->First(TimeMs());
+			logo->First(cTimeMs::Now());
 	}
 	else
 	{
@@ -550,7 +518,7 @@ void cGraphLCDDisplay::SetClear()
 		tab[i] = 0;
 
 	mutex.Unlock();
-	
+
 	if (State == Menu)
 	{
 		State = LastState;
@@ -644,7 +612,7 @@ void cGraphLCDDisplay::Replaying(bool starting, eReplayMode replayMode)
 			}
 			switch (replayMode)
 			{
-				default:        
+				default:
 				case eReplayNormal : logo = logoList->GetLogo("REPLAY-VDR", picType);break;
 				case eReplayMusic  : logo = logoList->GetLogo("REPLAY-MUSIC", picType);break;
 				case eReplayDVD    : logo = logoList->GetLogo("REPLAY-DVD", picType);break;
@@ -653,7 +621,7 @@ void cGraphLCDDisplay::Replaying(bool starting, eReplayMode replayMode)
 				case eReplayAudioCD: logo = logoList->GetLogo("REPLAY-AUDIOCD", picType);break;
 			}
 			if (logo)
-				logo->First(TimeMs());
+				logo->First(cTimeMs::Now());
 		}
 		else
 		{
@@ -882,7 +850,7 @@ void cGraphLCDDisplay::DisplayLogo()
 	{
 		if (logo->Count() > 1)
 		{
-			unsigned long long t = TimeMs();
+			unsigned long long t = cTimeMs::Now();
 			if (t - logo->LastChange() >= logo->Delay())
 			{
 				if (!logo->Next(t))
@@ -947,7 +915,7 @@ void cGraphLCDDisplay::DisplaySymbols()
 						bitmap->DrawCharacter(xPos, yPos, bitmap->Width() - 1, 'M', symbols);
 						yPos += symbols->Height('S') + SYMBOL_SPACE;
 					}
-					else if (ch->Apid2())
+					else if (ch->Apid(1))
 					{
 						bitmap->DrawCharacter(xPos, yPos, bitmap->Width() - 1, 'A', symbols);
 						yPos += symbols->Height('A') + SYMBOL_SPACE;
@@ -959,8 +927,8 @@ void cGraphLCDDisplay::DisplaySymbols()
 					}
 
 					// blank or dolby
-					bitmap->DrawCharacter(xPos, yPos, bitmap->Width() - 1, ch->Dpid1() ? 'D' : ' ', symbols);
-					yPos += symbols->Height(ch->Dpid1() ? 'D' : ' ') + SYMBOL_SPACE;
+					bitmap->DrawCharacter(xPos, yPos, bitmap->Width() - 1, ch->Dpid(0) ? 'D' : ' ', symbols);
+					yPos += symbols->Height(ch->Dpid(0) ? 'D' : ' ') + SYMBOL_SPACE;
 
 					// blank or teletext
 					bitmap->DrawCharacter(xPos, yPos, bitmap->Width() - 1, ch->Tpid() ? 'T' : ' ', symbols);
@@ -1028,18 +996,18 @@ void cGraphLCDDisplay::DisplaySymbols()
 						bitmap->DrawCharacter(xPos, yPos, bitmap->Width() - 1, 'M', symbols);
 						yPos += symbols->Height('S') + SYMBOL_SPACE;
 					}
-					else if (ch->Apid2() && ch->Dpid1())
+					else if (ch->Apid(1) && ch->Dpid(0))
 					{
 						// if Apid2 and Dpid1 are set then use combined symbol
 						bitmap->DrawCharacter(xPos, yPos, bitmap->Width() - 1, 'B', symbols);
 						yPos += symbols->Height('B') + SYMBOL_SPACE;
 					}
-					else if (ch->Apid2())
+					else if (ch->Apid(1))
 					{
 						bitmap->DrawCharacter(xPos, yPos, bitmap->Width() - 1, 'A', symbols);
 						yPos += symbols->Height('A') + SYMBOL_SPACE;
 					}
-					else if (ch->Dpid1())
+					else if (ch->Dpid(0))
 					{
 						bitmap->DrawCharacter(xPos, yPos, bitmap->Width() - 1, 'D', symbols);
 						yPos += symbols->Height('D') + SYMBOL_SPACE;
@@ -1087,8 +1055,8 @@ void cGraphLCDDisplay::DisplaySymbols()
 					xPos -= symbols->Width(ch->Tpid() ? 'T' : ' ') + SYMBOL_SPACE;
 
 					// blank or dolby
-					bitmap->DrawCharacter(xPos, yPos, bitmap->Width() - 1, ch->Dpid1() ? 'D' : ' ', symbols);
-					xPos -= symbols->Width(ch->Dpid1() ? 'D' : ' ') + SYMBOL_SPACE;
+					bitmap->DrawCharacter(xPos, yPos, bitmap->Width() - 1, ch->Dpid(0) ? 'D' : ' ', symbols);
+					xPos -= symbols->Width(ch->Dpid(0) ? 'D' : ' ') + SYMBOL_SPACE;
 
 					if (bitmap->Height() > MAXY_M) // with 128 pixel width only 3 symbols...
 					{
@@ -1103,7 +1071,7 @@ void cGraphLCDDisplay::DisplaySymbols()
 						bitmap->DrawCharacter(xPos, yPos, bitmap->Width() - 1, 'M', symbols);
 						xPos -= symbols->Width('S') + SYMBOL_SPACE;
 					}
-					else if (ch->Apid2())
+					else if (ch->Apid(1))
 					{
 						bitmap->DrawCharacter(xPos, yPos, bitmap->Width() - 1, 'A', symbols);
 						xPos -= symbols->Width('A') + SYMBOL_SPACE;
@@ -1131,14 +1099,14 @@ void cGraphLCDDisplay::DisplaySymbols()
 					}
 
 					// dolby
-					if (ch->Dpid1())
+					if (ch->Dpid(0))
 					{
 						xPos -= symbols->Width('D') + SYMBOL_SPACE;
 						bitmap->DrawCharacter(xPos, yPos, bitmap->Width() - 1, 'D', symbols);
 					}
 
 					// 2chan
-					if (ch->Apid2())
+					if (ch->Apid(1))
 					{
 						xPos -= symbols->Width('A') + SYMBOL_SPACE;
 						bitmap->DrawCharacter(xPos, yPos, bitmap->Width() - 1, 'A', symbols);
@@ -1357,7 +1325,7 @@ bool cGraphLCDDisplay::IsScrollerTextChanged(const std::vector<cScroller> & scro
   {
     if (i->Text() != (*li))
       return true; //Different text found
-  }  
+  }
   return false; //Text seem equal
 }
 
@@ -1463,7 +1431,7 @@ void cGraphLCDDisplay::DisplayReplay(tReplayState & replay)
 			nTopY + nProgressbarHeight,
 			GLCD::clrBlack, false);
 
-	if (1 < replay.total && 1 < replay.current) // Don't show full progressbar for endless streams 
+	if (1 < replay.total && 1 < replay.current) // Don't show full progressbar for endless streams
 	{
 		bitmap->DrawRectangle(FRAME_SPACE_X,
 				nTopY,
@@ -1475,7 +1443,7 @@ void cGraphLCDDisplay::DisplayReplay(tReplayState & replay)
 	// Draw Strings with current and total replay time
 	nTopY = bitmap->Height() - normalFont->TotalHeight() - FRAME_SPACE_Y;
 	// use same width like Progressbar
-//	if (!IsLogoActive() || nTopY > logo->Height()) 
+//	if (!IsLogoActive() || nTopY > logo->Height())
 //	nMaxX = max(1, bitmap->Width() - 1 - (2 * FRAME_SPACE_X));
 
 	switch (replay.mode)
@@ -1499,9 +1467,9 @@ void cGraphLCDDisplay::DisplayReplay(tReplayState & replay)
 	if (replay.mode == eReplayImage) // Image-Plugin hasn't Frames per Seconds
 	{
 		char buffer[8];
-		snprintf(buffer, sizeof(buffer), "%d", replay.current); 
+		snprintf(buffer, sizeof(buffer), "%d", replay.current);
 		szCurrent = buffer;
-		snprintf(buffer, sizeof(buffer), "%d", replay.total); 
+		snprintf(buffer, sizeof(buffer), "%d", replay.total);
 		szTotal = buffer;
 	}
 	else
@@ -1510,21 +1478,21 @@ void cGraphLCDDisplay::DisplayReplay(tReplayState & replay)
 		    IndexIsGreaterAsOneHour(replay.current)) // Check if any index bigger as one hour
 		{
 			szCurrent = (const char *) IndexToHMSF(replay.current);
-			if (replay.total > 1) // Don't draw totaltime for endless streams  
+			if (replay.total > 1) // Don't draw totaltime for endless streams
 				szTotal = (const char *) IndexToHMSF(replay.total);
 		}
 		else
 		{
 			// Show only minutes and seconds on short replays
 			szCurrent = (const char *) IndexToMS(replay.current);
-			if (replay.total > 1) // Don't draw totaltime for endless streams  
+			if (replay.total > 1) // Don't draw totaltime for endless streams
 				szTotal = (const char *) IndexToMS(replay.total);
 		}
 	}
 	// Get width of drawable strings
 	nWidthPreMsg = normalFont->Width(szPreMsg);
 	nWidthCurrent = normalFont->Width(szCurrent);
-	if (szTotal.length()) // Don't draw empty string 
+	if (szTotal.length()) // Don't draw empty string
 		nWidthTotal = normalFont->Width(szTotal);
 
 	// Draw depends on display width, any placeable informations
@@ -1546,7 +1514,7 @@ void cGraphLCDDisplay::DisplayReplay(tReplayState & replay)
 		// Show prefix and current position
 		nWidthOffset = bitmap->DrawText(FRAME_SPACE_X, nTopY, nMaxX, szPreMsg, normalFont);
 		bitmap->DrawText(FRAME_SPACE_X + nWidthOffset + 1, nTopY, nMaxX, szCurrent, normalFont);
-	}        
+	}
 	else
 	{
 		// Show only current position
@@ -1805,7 +1773,7 @@ void cGraphLCDDisplay::DisplayVolume()
 	{
 		if (volume.lastChange > 0)
 		{
-			if (TimeMs() - volume.lastChange < 2000)
+			if (cTimeMs::Now() - volume.lastChange < 2000)
 			{
 				RecH = (bitmap->Height() / 5) + 2 * FRAME_SPACE_YB + 4 * FRAME_SPACE_YB;
 				RecW = bitmap->Width() / 2;
@@ -1996,7 +1964,7 @@ int cGraphLCDDisplay::WrapText(std::string & text, std::vector <std::string> & l
   return textWidth;
 }
 
-void cGraphLCDDisplay::SetBrightness() 
+void cGraphLCDDisplay::SetBrightness()
 {
 	mutex.Lock();
 	bool bActive = bBrightnessActive
@@ -2006,7 +1974,7 @@ void cGraphLCDDisplay::SetBrightness()
 		|| (GraphLCDSetup.BrightnessDelay == 900);
 	if (bActive)
 	{
-		LastTimeBrightness = TimeMs();
+		LastTimeBrightness = cTimeMs::Now();
 		bBrightnessActive = false;
 	}
 	if ((bActive ? GraphLCDSetup.BrightnessActive : GraphLCDSetup.BrightnessIdle) != nCurrentBrightness)
@@ -2019,7 +1987,7 @@ void cGraphLCDDisplay::SetBrightness()
 		else
 		{
 			if (GraphLCDSetup.BrightnessDelay < 1
-				|| ((TimeMs() - LastTimeBrightness) > (uint64) (GraphLCDSetup.BrightnessDelay*1000)))
+				|| ((cTimeMs::Now() - LastTimeBrightness) > (uint64) (GraphLCDSetup.BrightnessDelay*1000)))
 			{
 				LCD->SetBrightness(GraphLCDSetup.BrightnessIdle);
 				nCurrentBrightness = GraphLCDSetup.BrightnessIdle;

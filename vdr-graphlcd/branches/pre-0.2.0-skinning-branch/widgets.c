@@ -4,8 +4,6 @@
 #include <vdr/config.h>
 #include <vdr/tools.h>
 
-#include "compat.h"
-
 
 cScroller::cScroller()
 {
@@ -28,8 +26,8 @@ void cScroller::Reset()
 
 bool cScroller::NeedsUpdate()
 {
-  if (active && 
-      TimeMs() - lastUpdate > (unsigned long long) GraphLCDSetup.ScrollTime)
+  if (active &&
+      cTimeMs::Now() - lastUpdate > (unsigned long long) GraphLCDSetup.ScrollTime)
   {
     update = true;
     return true;
@@ -52,7 +50,7 @@ void cScroller::Init(int X, int Y, int Xmax, const GLCD::cFont * Font, const std
   else
     active = false;
   update = false;
-  lastUpdate = TimeMs() + 2000;
+  lastUpdate = cTimeMs::Now() + 2000;
 }
 
 void cScroller::Draw(GLCD::cBitmap * bitmap)
@@ -85,7 +83,7 @@ void cScroller::Draw(GLCD::cBitmap * bitmap)
 				}
 			}
 			position += increment;
-			lastUpdate = TimeMs();
+			lastUpdate = cTimeMs::Now();
 			update = false;
 		}
 		bitmap->DrawText(x, y, xmax, text, font, GLCD::clrBlack, true, position);
