@@ -518,30 +518,30 @@ void cFont::WrapText(int Width, int Height, std::string & Text,
                 Lines.push_back(trim(Text.substr(start, posLast - start)));
                 start = posLast + 1;
                 posLast = start;
-                textWidth = this->Width(Text.substr(start, pos - start + 1));
+                textWidth = this->Width(Text.substr(start, pos - start + 1)) + spaceBetween;
             }
             else
             {
                 Lines.push_back(trim(Text.substr(start, pos - start)));
                 start = pos + 1;
                 posLast = start;
-                textWidth = this->Width(Text[pos]);
+                textWidth = this->Width(Text[pos]) + spaceBetween;
             }
             lineCount++;
         }
         else if (Text[pos] == ' ')
         {
             posLast = pos;
-            textWidth += this->Width(Text[pos]);
+            textWidth += this->Width(Text[pos]) + spaceBetween;
         }
         else
         {
-            textWidth += this->Width(Text[pos]);
+            textWidth += this->Width(Text[pos]) + spaceBetween;
         }
         pos++;
     }
 
-    if (lineCount < maxLines)
+    if (Height == 0 || lineCount < maxLines)
     {
         if (pos > start)
         {
