@@ -32,36 +32,6 @@
 #include "strfct.h"
 
 
-char * trimleft(char * str)
-{
-	const char * s = str;
-	while (*s == ' ' || *s == '\t')
-		++s;
-  if(s != str)
-  {
-    *(str) = *(s);
-    for(unsigned int n = 0;*(s+n) != '\0';++n)
-      *(str+n) = *(s+n);
-  }
- 	return str;
-}
-
-
-char * trimright(char * str)
-{
-	char * s = str + strlen(str) - 1;
-	while (s >= str && (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r'))
-		*s-- = 0;
-	return str;
-}
-
-
-char * trim (char * str)
-{
-	return trimleft(trimright(str));
-}
-
-
 char * strncopy(char * dest , const char * src , size_t n)
 {
   strncpy(dest, src, n);
