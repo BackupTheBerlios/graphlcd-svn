@@ -91,6 +91,9 @@ bool cFont::LoadFNT(const std::string & fileName)
     }
 
     fontHeight = buffer[4] | (buffer[5] << 8);
+    totalAscent = buffer[6] | (buffer[7] << 8);
+    lineHeight = buffer[8] | (buffer[9] << 8);
+    spaceBetween = buffer[12] | (buffer[13] << 8);
     numChars = buffer[14] | (buffer[15] << 8);
     for (i = 0; i < numChars; i++)
     {
@@ -111,9 +114,6 @@ bool cFont::LoadFNT(const std::string & fileName)
 
     totalWidth = maxWidth;
     totalHeight = fontHeight;
-    totalAscent = buffer[6] | (buffer[7] << 8);;
-    lineHeight = buffer[8] | (buffer[9] << 8);;
-    spaceBetween = buffer[12] | (buffer[13] << 8);;
 
     return true;
 }
