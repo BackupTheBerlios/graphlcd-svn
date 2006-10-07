@@ -1,5 +1,5 @@
 /**
- *  GraphLCD plugin for the Video Disk Recorder 
+ *  GraphLCD plugin for the Video Disk Recorder
  *
  *  display.h  -  Display class
  *
@@ -143,12 +143,9 @@ private:
 
 	void UpdateIn(long usec);
 	bool CheckAndUpdateSymbols();
-	int WrapText(std::string & text, std::vector <std::string> & lines,
-	             const GLCD::cFont * font, int maxTextWidth,
-	             int maxLines = 100, bool cutTooLong = true);
 
 	/** Check if replay index bigger as one hour */
-	bool IndexIsGreaterAsOneHour(int Index) const;  
+	bool IndexIsGreaterAsOneHour(int Index) const;
 	/** Translate replay index to string with minute and second MM:SS */
 	const char *IndexToMS(int Index) const;
 	/** Compare Scroller with new Textbuffer*/
