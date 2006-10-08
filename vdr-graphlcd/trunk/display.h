@@ -1,29 +1,14 @@
-/**
- *  GraphLCD plugin for the Video Disk Recorder 
+/*
+ * GraphLCD plugin for the Video Disk Recorder
  *
- *  display.h  -  Display class
+ * display.h - display class
  *
- *  (c) 2001-2004 Carsten Siebholz <c.siebholz AT t-online de>
- **/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program;                                              *
- *   if not, write to the Free Software Foundation, Inc.,                  *
- *   59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *
- *                                                                         *
- ***************************************************************************/
+ * This file is released under the GNU General Public License. Refer
+ * to the COPYING file distributed with this package.
+ *
+ * (c) 2001-2004 Carsten Siebholz <c.siebholz AT t-online.de>
+ * (c) 2004 Andreas Regel <andreas.regel AT powarman.de>
+ */
 
 #ifndef GRAPHLCD_DISPLAY_H
 #define GRAPHLCD_DISPLAY_H
@@ -59,10 +44,10 @@ enum ThreadState
 class cGraphLCDDisplay : public cThread
 {
 public:
-	cGraphLCDDisplay();
-	~cGraphLCDDisplay();
+    cGraphLCDDisplay(void);
+    ~cGraphLCDDisplay(void);
 
-	int Init(const char * CfgDir, unsigned int DisplayNumber);
+    int Init(GLCD::cDriver * Lcd, const char * CfgDir);
   void Tick(void);
 
 	void SetChannel(int ChannelNumber);
@@ -85,7 +70,7 @@ protected:
 private:
 	bool update;
 	bool active;
-	unsigned int displayNumber;
+    GLCD::cDriver * mLcd;
 
 	cFontList fontList;
 	GLCD::cBitmap * bitmap;
@@ -143,9 +128,6 @@ private:
 
 	void UpdateIn(long usec);
 	bool CheckAndUpdateSymbols();
-	int WrapText(std::string & text, std::vector <std::string> & lines,
-	             const GLCD::cFont * font, int maxTextWidth,
-	             int maxLines = 100, bool cutTooLong = true);
 
 	/** Check if replay index bigger as one hour */
 	bool IndexIsGreaterAsOneHour(int Index) const;  
@@ -164,7 +146,5 @@ private:
 	int nCurrentBrightness;
 	bool bBrightnessActive;
 };
-
-extern cGraphLCDDisplay Display;
 
 #endif

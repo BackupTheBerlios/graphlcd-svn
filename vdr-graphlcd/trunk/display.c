@@ -1,10 +1,14 @@
-/**
- *  GraphLCD plugin for the Video Disk Recorder 
+/*
+ * GraphLCD plugin for the Video Disk Recorder
  *
- *  display.c  -  Display class
+ * display.c - display class
  *
- *  (c) 2001-2004 Carsten Siebholz <c.siebholz AT t-online de>
- **/
+ * This file is released under the GNU General Public License. Refer
+ * to the COPYING file distributed with this package.
+ *
+ * (c) 2001-2004 Carsten Siebholz <c.siebholz AT t-online.de>
+ * (c) 2004 Andreas Regel <andreas.regel AT powarman.de>
+ */
 
 #include <ctype.h>
 #include <unistd.h>
@@ -64,7 +68,10 @@ int     TIMEBAR_HEIGHT;
 
 
 cGraphLCDDisplay::cGraphLCDDisplay()
-:	active(false),
+:   cThread("glcd_display"),
+    update(false),
+    active(false),
+    mLcd(NULL),
 	bitmap(NULL),
 	GraphLCDState(NULL)
 {
@@ -120,21 +127,14 @@ cGraphLCDDisplay::~cGraphLCDDisplay()
 	delete logoList;
 }
 
-int cGraphLCDDisplay::Init(const char * CfgDir, unsigned int displayNumber)
+int cGraphLCDDisplay::Init(GLCD::cDriver * Lcd, const char * CfgDir)
 {
-	if (!CfgDir)
+    if (!Lcd || !CfgDir)
 		return 2;
+    mLcd = Lcd;
 	cfgDir = CfgDir;
 	fontDir = cfgDir + "/fonts";
 	logoDir = cfgDir + "/logos";
-
-	LCD = GLCD::CreateDriver(GLCD::Config.driverConfigs[displayNumber].id, &GLCD::Config.driverConfigs[displayNumber]);
-	if (!LCD)
-	{
-		esyslog("graphlcd: ERROR: Failed creating display object %s\n",
-				GLCD::Config.driverConfigs[displayNumber].name.c_str());
-		return 1;
-	}
 
 	logoList = new cGraphLCDLogoList(logoDir.c_str(), cfgDir.c_str());
 	if (!logoList)
@@ -162,13 +162,7 @@ void cGraphLCDDisplay::Tick(void)
 
 void cGraphLCDDisplay::Action(void)
 {
-	if (LCD->Init() != 0)
-	{
-		esyslog("graphlcd: ERROR: Failed initializing display\n");
-		return;
-	}
-
-	bitmap = new GLCD::cBitmap(LCD->Width(), LCD->Height());
+    bitmap = new GLCD::cBitmap(mLcd->Width(), mLcd->Height());
 	if (!bitmap)
 	{
 		esyslog("graphlcd plugin: ERROR creating drawing bitmap\n");
@@ -258,13 +252,11 @@ void cGraphLCDDisplay::Action(void)
 		TIMEBAR_HEIGHT        = 5;
 	}
 
-	GraphLCDState = new cGraphLCDState();
+    GraphLCDState = new cGraphLCDState(this);
 	if (!GraphLCDState)
 		return;
 
-	dsyslog("graphlcd plugin: Display update thread started (pid=%d)", getpid());
-
-	LCD->Refresh(true);
+    mLcd->Refresh(true);
 	active = true;
 	update = true;
 	while (active)
@@ -346,8 +338,8 @@ void cGraphLCDDisplay::Action(void)
 						DisplayProgramme();
 						DisplayVolume();
 						DisplayMessage();
-						LCD->SetScreen(bitmap->Data(), bitmap->Width(), bitmap->Height(), bitmap->LineSize());
-						LCD->Refresh(false);
+                        mLcd->SetScreen(bitmap->Data(), bitmap->Width(), bitmap->Height(), bitmap->LineSize());
+                        mLcd->Refresh(false);
 						LastTime = CurrTime;
 					}
 					else
@@ -399,8 +391,8 @@ void cGraphLCDDisplay::Action(void)
 									//DisplaySymbols();
 									DisplayVolume();
 									DisplayMessage();
-									LCD->SetScreen(bitmap->Data(), bitmap->Width(), bitmap->Height(), bitmap->LineSize());
-									LCD->Refresh(false);
+                                mLcd->SetScreen(bitmap->Data(), bitmap->Width(), bitmap->Height(), bitmap->LineSize());
+                                mLcd->Refresh(false);
 									LastTime = CurrTime;
 								}
 								else
@@ -445,8 +437,8 @@ void cGraphLCDDisplay::Action(void)
 							DisplayVolume();
 							DisplayMessage();
 							DisplayColorButtons();
-							LCD->SetScreen(bitmap->Data(), bitmap->Width(), bitmap->Height(), bitmap->LineSize());
-							LCD->Refresh(false);
+                            mLcd->SetScreen(bitmap->Data(), bitmap->Width(), bitmap->Height(), bitmap->LineSize());
+                            mLcd->Refresh(false);
 							LastTime = CurrTime;
 						}
 						else
@@ -485,7 +477,6 @@ void cGraphLCDDisplay::Action(void)
 #endif
 		}
 	}
-	dsyslog("graphlcd plugin: Display update thread ended (pid=%d)", getpid());
 }
 
 void cGraphLCDDisplay::SetChannel(int ChannelNumber)
@@ -687,7 +678,7 @@ void cGraphLCDDisplay::SetOsdTextItem(const char * Text, bool Scroll)
 		if (osd.textItem.length() == 0)
 			lastText = NULL;
 		int maxTextLen = bitmap->Width() - 2 * FRAME_SPACE_X - 2 * TEXT_OFFSET_X;
-		WrapText(osd.textItem, textItemLines, normalFont, maxTextLen);
+		normalFont->WrapText(maxTextLen, 0, osd.textItem, textItemLines);
 		textItemLines.push_back("");
 		if (lastText != Text)
 		{
@@ -1409,13 +1400,13 @@ void cGraphLCDDisplay::DisplayReplay(tReplayState & replay)
 				lines.push_back(replay.name);
 			}
 			else
-				WrapText(replay.name, lines, largeFont, nMaxX, maxLines, false);
+				largeFont->WrapText(nMaxX, maxLines * lineHeight, replay.name, lines);
 		}
 		else if (maxLines == 1) //singleline mode
 			lines.push_back(replay.name);
 		else
 		{
-			WrapText(replay.name, lines, largeFont, nMaxX, maxLines, false);
+			largeFont->WrapText(nMaxX, maxLines * lineHeight, replay.name, lines);
 		}
 
 		if (scroller.size() != lines.size() ||
@@ -1667,11 +1658,11 @@ void cGraphLCDDisplay::DisplayMessage()
 	if (GraphLCDSetup.ShowMessages && osd.message.length() > 0)
 	{
 		maxTextLen = bitmap->Width() - 2 * FRAME_SPACE_X - 2 * FRAME_SPACE_XB - 2 * TEXT_OFFSET_X - 10;
-		recW = WrapText(osd.message, lines, normalFont, maxTextLen, MAXLINES_MSG);
+		entryHeight = 2 * (normalFont->TotalHeight() - normalFont->TotalAscent()) + normalFont->TotalAscent();
+		normalFont->WrapText(maxTextLen, MAXLINES_MSG * entryHeight, osd.message, lines, &recW);
 		lineCount = lines.size();
 
 		// display text
-		entryHeight = 2 * (normalFont->TotalHeight() - normalFont->TotalAscent()) + normalFont->TotalAscent();
 		recH = lineCount * entryHeight + 2 * TEXT_OFFSET_Y_CHANNEL + 2 * FRAME_SPACE_YB;
 		recW = recW + 2 * TEXT_OFFSET_X + 2 * FRAME_SPACE_XB + 2 * FRAME_SPACE_X;
 		recW += (recW % 2);
@@ -1725,7 +1716,7 @@ void cGraphLCDDisplay::DisplayTextItem()
 		}
 
 		// draw Text
-		iEntryHeight = 2 * (normalFont->TotalHeight() - normalFont->TotalAscent()) + normalFont->TotalAscent();
+		iEntryHeight = normalFont->LineHeight();
 		yPos = yPos + normalFont->TotalAscent() + 2 * TEXT_OFFSET_Y_CHANNEL + FRAME_SPACE_YB;
 		if (GraphLCDSetup.ShowColorButtons &&
 		    (osd.colorButton[0].length() > 0 || osd.colorButton[1].length() > 0 ||
@@ -1743,7 +1734,7 @@ void cGraphLCDDisplay::DisplayTextItem()
 		{
 			if (i + startLine < lineCount)
 				bitmap->DrawText(FRAME_SPACE_X + TEXT_OFFSET_X,
-						yPos + i * iEntryHeight + (normalFont->TotalHeight() - normalFont->TotalAscent()),
+						yPos + i * iEntryHeight,
 						bitmap->Width() - 1 - FRAME_SPACE_X,
 						textItemLines[i + startLine], normalFont);
 		}
@@ -1910,92 +1901,6 @@ bool cGraphLCDDisplay::CheckAndUpdateSymbols()
   return bRet;
 }
 
-int cGraphLCDDisplay::WrapText(std::string & text, std::vector <std::string> & lines, const GLCD::cFont * font, int maxTextWidth, int maxLines, bool cutTooLong)
-{
-  int lineCount;
-  int textWidth;
-  std::string::size_type start;
-  std::string::size_type pos;
-  std::string::size_type posLast;
-
-  lines.clear();
-  lineCount = 0;
-
-  pos = 0;
-  start = 0;
-  posLast = 0;
-  textWidth = 0;
-  while (pos < text.length() && lineCount < maxLines)
-  {
-    if (text[pos] == '\n')
-    {
-      lines.push_back(trim(text.substr(start, pos - start)));
-      start = pos + 1;
-      posLast = pos + 1;
-      textWidth = 0;
-      lineCount++;
-    }
-    else if (textWidth > maxTextWidth)
-    {
-      if (posLast > start)
-      {
-        lines.push_back(trim(text.substr(start, posLast - start)));
-        start = posLast + 1;
-        posLast = start;
-        textWidth = font->Width(text.substr(start, pos - start + 1));
-      }
-      else
-      {
-        lines.push_back(trim(text.substr(start, pos - start)));
-        start = pos + 1;
-        posLast = start;
-        textWidth = font->Width(text[pos]);
-      }
-      lineCount++;
-    }
-    else if (text[pos] == ' ')
-    {
-      posLast = pos;
-      textWidth += font->Width(text[pos]);
-    }
-    else
-    {
-      textWidth += font->Width(text[pos]);
-    }
-    pos++;
-  }
-
-  if (lineCount < maxLines)
-  {
-    if (pos > start)
-    {
-      lines.push_back(trim(text.substr(start)));
-      lineCount++;
-    }
-  }
-  else if (cutTooLong)
-  {
-    pos = lines[lineCount - 1].length();
-    while (font->Width(lines[lineCount - 1], pos) > maxTextWidth)
-    {
-      pos = lines[lineCount - 1].rfind(' ', pos - 1);
-      if (pos == std::string::npos)
-        break;
-    }
-    if (pos != std::string::npos)
-      lines[lineCount - 1].resize(pos);
-  }
-  else
-    return maxTextWidth;
-
-  textWidth = 0;
-  for (int i = 0; i < lineCount; i++)
-    textWidth = std::max(textWidth, font->Width(lines[i]));
-  textWidth = std::min(textWidth, maxTextWidth);
-
-  return textWidth;
-}
-
 void cGraphLCDDisplay::SetBrightness() 
 {
 	mutex.Lock();
@@ -2013,7 +1918,7 @@ void cGraphLCDDisplay::SetBrightness()
     {
 		if (bActive)
 		{
-			LCD->SetBrightness(GraphLCDSetup.BrightnessActive);
+            mLcd->SetBrightness(GraphLCDSetup.BrightnessActive);
 			nCurrentBrightness = GraphLCDSetup.BrightnessActive;
 		}
 		else
@@ -2021,12 +1926,10 @@ void cGraphLCDDisplay::SetBrightness()
 			if (GraphLCDSetup.BrightnessDelay < 1
 				|| ((TimeMs() - LastTimeBrightness) > (uint64) (GraphLCDSetup.BrightnessDelay*1000)))
 			{
-				LCD->SetBrightness(GraphLCDSetup.BrightnessIdle);
+                mLcd->SetBrightness(GraphLCDSetup.BrightnessIdle);
 				nCurrentBrightness = GraphLCDSetup.BrightnessIdle;
 			}
 		}
 	}
 	mutex.Unlock();
 }
-
-cGraphLCDDisplay Display;

@@ -1,5 +1,5 @@
 /**
- *  GraphLCD plugin for the Video Disk Recorder 
+ *  GraphLCD plugin for the Video Disk Recorder
  *
  *  state.h  -  status monitor class
  *
@@ -77,9 +77,12 @@ struct tVolumeState
 	unsigned long long lastChange;
 };
 
+class cGraphLCDDisplay;
+
 class cGraphLCDState : public cStatus
 {
 private:
+    cGraphLCDDisplay * mDisplay;
 	bool first;
 	bool tickUsed;
 
@@ -115,7 +118,7 @@ protected:
 	virtual void OsdProgramme(time_t PresentTime, const char *PresentTitle, const char *PresentSubtitle, time_t FollowingTime, const char *FollowingTitle, const char *FollowingSubtitle);
 
 public:
-	cGraphLCDState();
+	cGraphLCDState(cGraphLCDDisplay * Display);
 	virtual ~cGraphLCDState();
 
 	void Tick();

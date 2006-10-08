@@ -19,9 +19,9 @@
 
 #include "compat.h"
 
-
-cGraphLCDState::cGraphLCDState()
-:	first(true),
+cGraphLCDState::cGraphLCDState(cGraphLCDDisplay * Display)
+:   mDisplay(Display),
+    first(true),
 	tickUsed(false)
 {
 	channel.number = 0;
@@ -70,7 +70,7 @@ cGraphLCDState::~cGraphLCDState()
 
 void cGraphLCDState::ChannelSwitch(const cDevice * Device, int ChannelNumber)
 {
-//	printf("graphlcd plugin: cGraphLCDState::ChannelSwitch %d %d\n", Device->CardIndex(), ChannelNumber);
+    //printf("graphlcd plugin: cGraphLCDState::ChannelSwitch %d %d\n", Device->CardIndex(), ChannelNumber);
 	if (GraphLCDSetup.PluginActive)
 	{
 		if (ChannelNumber > 0 && Device->IsPrimaryDevice() && !EITScanner.UsesDevice(Device))
@@ -89,7 +89,7 @@ void cGraphLCDState::Recording(const cDevice * Device, const char * Name)
 void cGraphLCDState::Recording(const cDevice * Device, const char * Name, const char *FileName, bool On)
 #endif
 {
-//	printf("graphlcd plugin: cGraphLCDState::Recording %d %s\n", Device->CardIndex(), Name);
+    //printf("graphlcd plugin: cGraphLCDState::Recording %d %s\n", Device->CardIndex(), Name);
 	if (GraphLCDSetup.PluginActive)
 	{
 		mutex.Lock();
@@ -114,7 +114,7 @@ void cGraphLCDState::Recording(const cDevice * Device, const char * Name, const 
 		}
 		mutex.Unlock();
 
-		Display.Update();
+        mDisplay->Update();
 	}
 }
 
@@ -124,7 +124,7 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name)
 void cGraphLCDState::Replaying(const cControl * Control, const char * Name, const char *FileName, bool On)
 #endif
 {
-//	printf("graphlcd plugin: cGraphLCDState::Replaying %s\n", Name);
+    //printf("graphlcd plugin: cGraphLCDState::Replaying %s\n", Name);
 	if (GraphLCDSetup.PluginActive)
 	{
 #if VDRVERSNUM < 10338
@@ -159,7 +159,7 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name, cons
 						unsigned int i;
 						for (i=6; *(Name + i) != '\0'; ++i) //search for [xx] (xxxx) title
 						{
-							if(*(Name+i)==' ' && *(Name+i-1)==')')
+                            if (*(Name+i)==' ' && *(Name+i-1)==')')
 							{
 								bFound = true;
 								break;
@@ -178,9 +178,9 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name, cons
 							if (replay.loopmode[1] == ']')
 								replay.loopmode = "";
 							//printf ("loopmode=<%s>\n", replay.loopmode.c_str ());
-							for(j=0;*(Name+i+j) != '\0';++j) //trim name
+                            for (j=0;*(Name+i+j) != '\0';++j) //trim name
 							{
-								if(*(Name+i+j)!=' ')
+                                if (*(Name+i+j)!=' ')
 									break;
 							}
 
@@ -201,26 +201,26 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name, cons
 					//                         titleinfo, audiolang,  spulang, aspect, title
 					if (!bFound)
 					{
-						if(slen>7)
+                        if (slen>7)
 						{
 							unsigned int i,n;
-							for(n=0,i=0;*(Name+i) != '\0';++i)
+                            for (n=0,i=0;*(Name+i) != '\0';++i)
 							{ //search volumelabel after 4*", " => xxx, xxx, xxx, xxx, title
-								if(*(Name+i)==' ' && *(Name+i-1)==',')
+                                if (*(Name+i)==' ' && *(Name+i-1)==',')
 								{
-									if(++n == 4)
+                                    if (++n == 4)
 									{
 										bFound = true;
 										break;
 									}
 								}
 							}
-							if(bFound) //found DVD replaymessage
+                            if (bFound) //found DVD replaymessage
 							{
 								unsigned int j;bool b;
-								for(j=0;*(Name+i+j) != '\0';++j) //trim name
+                                for (j=0;*(Name+i+j) != '\0';++j) //trim name
 								{
-									if(*(Name+i+j)!=' ')
+                                    if (*(Name+i+j)!=' ')
 										break;
 								}
 
@@ -250,16 +250,16 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name, cons
 					if (!bFound)
 					{
 						int i;
-						for(i=slen-1;i>0;--i)
+                        for (i=slen-1;i>0;--i)
 						{ //Reversesearch last Subtitle
 							// - filename contains '~' => subdirectory
 							// or filename contains '/' => subdirectory
-							switch(*(Name+i))
+                            switch (*(Name+i))
 							{
 								case '/':
 								{
 									// look for file extentsion like .xxx or .xxxx
-									if(slen>5 && ((*(Name+slen-4) == '.') || (*(Name+slen-5) == '.')))
+                                    if (slen>5 && ((*(Name+slen-4) == '.') || (*(Name+slen-5) == '.')))
 									{
 										replay.mode = eReplayFile;
 									}
@@ -280,13 +280,15 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name, cons
 						}
 					}
 
-					if(0 == strncmp(Name,"[image] ",8)) {
-						if(replay.mode != eReplayFile) //if'nt already Name stripped-down as filename
+                    if (0 == strncmp(Name,"[image] ",8))
+                    {
+                        if (replay.mode != eReplayFile) //if'nt already Name stripped-down as filename
 							replay.name = Name + 8;
 						replay.mode = eReplayImage;
 						bFound = true;
 					}
-					else if(0 == strncmp(Name,"[audiocd] ",10)) {
+                    else if (0 == strncmp(Name,"[audiocd] ",10))
+                    {
 						replay.name = Name + 10;
 						replay.mode = eReplayAudioCD;
 						bFound = true;
@@ -313,9 +315,9 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name, cons
 			SetChannel(channel.number);
 		}
 #if VDRVERSNUM < 10338
-		Display.Replaying(Name ? true : false, replay.mode);
+        mDisplay->Replaying(Name ? true : false, replay.mode);
 #else
-		Display.Replaying(On, replay.mode);
+        mDisplay->Replaying(On, replay.mode);
 #endif
 	}
 }
@@ -343,7 +345,7 @@ void cGraphLCDState::SetVolume(int Volume, bool Absolute)
         {
             volume.lastChange = cTimeMs::Now();
             mutex.Unlock();
-            Display.Update();
+            mDisplay->Update();
         }
         else
         {
@@ -356,7 +358,7 @@ void cGraphLCDState::SetVolume(int Volume, bool Absolute)
 
 void cGraphLCDState::Tick()
 {
-//	printf("graphlcd plugin: cGraphLCDState::Tick\n");
+    //printf("graphlcd plugin: cGraphLCDState::Tick\n");
 	if (GraphLCDSetup.PluginActive)
 	{
 		mutex.Lock();
@@ -381,7 +383,7 @@ void cGraphLCDState::Tick()
 
 void cGraphLCDState::OsdClear()
 {
-//	printf("graphlcd plugin: cGraphLCDState::OsdClear\n");
+    //printf("graphlcd plugin: cGraphLCDState::OsdClear\n");
 	if (GraphLCDSetup.PluginActive)
 	{
 		mutex.Lock();
@@ -396,13 +398,13 @@ void cGraphLCDState::OsdClear()
 		osd.textItem = "";
 
 		mutex.Unlock();
-		Display.SetClear();
+        mDisplay->SetClear();
 	}
 }
 
 void cGraphLCDState::OsdTitle(const char * Title)
 {
-//	printf("graphlcd plugin: cGraphLCDState::OsdTitle '%s'\n", Title);
+    //printf("graphlcd plugin: cGraphLCDState::OsdTitle '%s'\n", Title);
 	if (GraphLCDSetup.PluginActive)
 	{
 		mutex.Lock();
@@ -420,13 +422,13 @@ void cGraphLCDState::OsdTitle(const char * Title)
 		}
 
 		mutex.Unlock();
-		Display.SetOsdTitle();
+        mDisplay->SetOsdTitle();
 	}
 }
 
 void cGraphLCDState::OsdStatusMessage(const char * Message)
 {
-//	printf("graphlcd plugin: cGraphLCDState::OsdStatusMessage '%s'\n", Message);
+    //printf("graphlcd plugin: cGraphLCDState::OsdStatusMessage '%s'\n", Message);
 	if (GraphLCDSetup.PluginActive)
 	{
 		if (GraphLCDSetup.ShowMessages)
@@ -439,14 +441,14 @@ void cGraphLCDState::OsdStatusMessage(const char * Message)
 				osd.message = "";
 
 			mutex.Unlock();
-			Display.Update();
+            mDisplay->Update();
 		}
 	}
 }
 
 void cGraphLCDState::OsdHelpKeys(const char * Red, const char * Green, const char * Yellow, const char * Blue)
 {
-//	printf("graphlcd plugin: cGraphLCDState::OsdHelpKeys %s - %s - %s - %s\n", Red, Green, Yellow, Blue);
+    //printf("graphlcd plugin: cGraphLCDState::OsdHelpKeys %s - %s - %s - %s\n", Red, Green, Yellow, Blue);
 	if (GraphLCDSetup.PluginActive)
 	{
 		if (GraphLCDSetup.ShowColorButtons)
@@ -472,7 +474,7 @@ void cGraphLCDState::OsdHelpKeys(const char * Red, const char * Green, const cha
 
 void cGraphLCDState::OsdItem(const char * Text, int Index)
 {
-//	printf("graphlcd plugin: cGraphLCDState::OsdItem %s, %d\n", Text, Index);
+    //printf("graphlcd plugin: cGraphLCDState::OsdItem %s, %d\n", Text, Index);
 	if (GraphLCDSetup.PluginActive)
 	{
 		if (GraphLCDSetup.ShowMenu)
@@ -486,14 +488,14 @@ void cGraphLCDState::OsdItem(const char * Text, int Index)
 
 			mutex.Unlock();
 			if (Text)
-				Display.SetOsdItem(Text);
+                mDisplay->SetOsdItem(Text);
 		}
 	}
 }
 
 void cGraphLCDState::OsdCurrentItem(const char * Text)
 {
-//	printf("graphlcd plugin: cGraphLCDState::OsdCurrentItem %s\n", Text);
+    //printf("graphlcd plugin: cGraphLCDState::OsdCurrentItem %s\n", Text);
 	if (GraphLCDSetup.PluginActive)
 	{
 		if (GraphLCDSetup.ShowMenu)
@@ -549,14 +551,14 @@ void cGraphLCDState::OsdCurrentItem(const char * Text)
 			}
 			mutex.Unlock();
 			if (Text)
-				Display.SetOsdCurrentItem();
+                mDisplay->SetOsdCurrentItem();
 		}
 	}
 }
 
 void cGraphLCDState::OsdTextItem(const char * Text, bool Scroll)
 {
-//	printf("graphlcd plugin: cGraphLCDState::OsdTextItem %s %d\n", Text, Scroll);
+    //printf("graphlcd plugin: cGraphLCDState::OsdTextItem %s %d\n", Text, Scroll);
 	if (GraphLCDSetup.PluginActive)
 	{
 		mutex.Lock();
@@ -571,14 +573,14 @@ void cGraphLCDState::OsdTextItem(const char * Text, bool Scroll)
 #endif
 		}
 		mutex.Unlock();
-		Display.SetOsdTextItem(Text, Scroll);
+        mDisplay->SetOsdTextItem(Text, Scroll);
 	}
 }
 
 
 void cGraphLCDState::OsdChannel(const char * Text)
 {
-//	printf("graphlcd plugin: cGraphLCDState::OsdChannel %s\n", Text);
+    //printf("graphlcd plugin: cGraphLCDState::OsdChannel %s\n", Text);
 	if (GraphLCDSetup.PluginActive)
 	{
 		mutex.Lock();
@@ -594,16 +596,16 @@ void cGraphLCDState::OsdChannel(const char * Text)
 		mutex.Unlock();
 
 		if (Text)
-			Display.Update();
+            mDisplay->Update();
 	}
 }
 
 void cGraphLCDState::OsdProgramme(time_t PresentTime, const char * PresentTitle, const char * PresentSubtitle, time_t FollowingTime, const char * FollowingTitle, const char * FollowingSubtitle)
 {
-//	printf("graphlcd plugin: cGraphLCDState::OsdProgramme PT : %s\n", PresentTitle);
-//	printf("graphlcd plugin: cGraphLCDState::OsdProgramme PST: %s\n", PresentSubtitle);
-//	printf("graphlcd plugin: cGraphLCDState::OsdProgramme FT : %s\n", FollowingTitle);
-//	printf("graphlcd plugin: cGraphLCDState::OsdProgramme FST: %s\n", FollowingSubtitle);
+    //printf("graphlcd plugin: cGraphLCDState::OsdProgramme PT : %s\n", PresentTitle);
+    //printf("graphlcd plugin: cGraphLCDState::OsdProgramme PST: %s\n", PresentSubtitle);
+    //printf("graphlcd plugin: cGraphLCDState::OsdProgramme FT : %s\n", FollowingTitle);
+    //printf("graphlcd plugin: cGraphLCDState::OsdProgramme FST: %s\n", FollowingSubtitle);
 	if (GraphLCDSetup.PluginActive)
 	{
 		mutex.Lock();
@@ -623,7 +625,7 @@ void cGraphLCDState::OsdProgramme(time_t PresentTime, const char * PresentTitle,
 		if (!isempty(FollowingSubtitle))
 			event.followingSubtitle = FollowingSubtitle;
 		mutex.Unlock();
-		Display.Update();
+        mDisplay->Update();
 	}
 }
 
@@ -647,7 +649,7 @@ void cGraphLCDState::SetChannel(int ChannelNumber)
 
 	mutex.Unlock();
 
-	Display.SetChannel(ChannelNumber);
+    mDisplay->SetChannel(ChannelNumber);
 }
 
 void cGraphLCDState::GetProgramme()

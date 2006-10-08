@@ -57,7 +57,7 @@ DEFINES += -D_GNU_SOURCE
 
 ### The object files (add further files here):
 
-OBJS = display.o global.o i18n.o layout.o logo.o logolist.o menu.o plugin.o setup.o state.o strfct.o widgets.o
+OBJS = display.o i18n.o layout.o logo.o logolist.o menu.o plugin.o setup.o state.o strfct.o widgets.o
 
 
 ### Implicit rules:
