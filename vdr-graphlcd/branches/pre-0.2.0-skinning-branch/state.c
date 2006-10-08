@@ -292,25 +292,32 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name, cons
 
 void cGraphLCDState::SetVolume(int Volume, bool Absolute)
 {
-//	printf("graphlcd plugin: cGraphLCDState::SetVolume %d %d\n", Volume, Absolute);
-	if (GraphLCDSetup.PluginActive)
-	{
-		mutex.Lock();
+    //printf("graphlcd plugin: cGraphLCDState::SetVolume %d %d\n", Volume, Absolute);
+    if (GraphLCDSetup.PluginActive)
+    {
+        mutex.Lock();
 
-		volume.value = Volume;
-		if (!first)
-		{
-			volume.lastChange = cTimeMs::Now();
-			mutex.Unlock();
-			Display.Update();
-		}
-		else
-		{
-			// first time
-			first = false;
-			mutex.Unlock();
-		}
-	}
+        if (!Absolute)
+        {
+            volume.value += Volume;
+        }
+        else
+        {
+            volume.value = Volume;
+        }
+        if (!first)
+        {
+            volume.lastChange = cTimeMs::Now();
+            mutex.Unlock();
+            Display.Update();
+        }
+        else
+        {
+            // first time
+            first = false;
+            mutex.Unlock();
+        }
+    }
 }
 
 void cGraphLCDState::Tick()
