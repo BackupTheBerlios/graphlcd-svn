@@ -1,29 +1,14 @@
-/**
- *  GraphLCD plugin for the Video Disk Recorder
+/*
+ * GraphLCD plugin for the Video Disk Recorder
  *
- *  display.h  -  Display class
+ * display.h - display class
  *
- *  (c) 2001-2004 Carsten Siebholz <c.siebholz AT t-online de>
- **/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program;                                              *
- *   if not, write to the Free Software Foundation, Inc.,                  *
- *   59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *
- *                                                                         *
- ***************************************************************************/
+ * This file is released under the GNU General Public License. Refer
+ * to the COPYING file distributed with this package.
+ *
+ * (c) 2001-2004 Carsten Siebholz <c.siebholz AT t-online.de>
+ * (c) 2004 Andreas Regel <andreas.regel AT powarman.de>
+ */
 
 #ifndef GRAPHLCD_DISPLAY_H
 #define GRAPHLCD_DISPLAY_H
@@ -50,118 +35,116 @@ static const int kMaxTabCount = 10;
 
 enum ThreadState
 {
-	Normal,
-	Replay,
-	Menu
+    Normal,
+    Replay,
+    Menu
 };
 
 // Display update Thread
 class cGraphLCDDisplay : public cThread
 {
 public:
-	cGraphLCDDisplay();
-	~cGraphLCDDisplay();
+    cGraphLCDDisplay(void);
+    ~cGraphLCDDisplay(void);
 
-	int Init(const char * CfgDir, unsigned int DisplayNumber);
-  void Tick(void);
+    int Init(GLCD::cDriver * Lcd, const char * CfgDir);
+    void Tick(void);
 
-	void SetChannel(int ChannelNumber);
-	void SetClear();
-	void SetOsdTitle();
-	void SetOsdItem(const char * Text);
-	void SetOsdCurrentItem();
-	void Recording(const cDevice * Device , const char * Name);
-	void Replaying(bool starting, eReplayMode replayMode);
-	//void SetStatusMessage(const char * Msg);
-	void SetOsdTextItem(const char * Text, bool Scroll);
-	//void SetColorButtons(const char * Red, const char * Green, const char * Yellow, const char * Blue);
-	void SetVolume(int Volume, bool Absolute);
+    void SetChannel(int ChannelNumber);
+    void SetClear();
+    void SetOsdTitle();
+    void SetOsdItem(const char * Text);
+    void SetOsdCurrentItem();
+    void Recording(const cDevice * Device , const char * Name);
+    void Replaying(bool starting, eReplayMode replayMode);
+    //void SetStatusMessage(const char * Msg);
+    void SetOsdTextItem(const char * Text, bool Scroll);
+    //void SetColorButtons(const char * Red, const char * Green, const char * Yellow, const char * Blue);
+    void SetVolume(int Volume, bool Absolute);
 
-	void Update();
+    void Update();
 
 protected:
-	virtual void Action();
+    virtual void Action();
 
 private:
-	bool update;
-	bool active;
-	unsigned int displayNumber;
+    bool update;
+    bool active;
+    GLCD::cDriver * mLcd;
 
-	cFontList fontList;
-	GLCD::cBitmap * bitmap;
-	const GLCD::cFont * largeFont;
-	const GLCD::cFont * normalFont;
-	const GLCD::cFont * smallFont;
-	const GLCD::cFont * symbols;
-	std::string cfgDir;
-	std::string fontDir;
-	std::string logoDir;
+    cFontList fontList;
+    GLCD::cBitmap * bitmap;
+    const GLCD::cFont * largeFont;
+    const GLCD::cFont * normalFont;
+    const GLCD::cFont * smallFont;
+    const GLCD::cFont * symbols;
+    std::string cfgDir;
+    std::string fontDir;
+    std::string logoDir;
 
-	ThreadState State;
-	ThreadState LastState;
+    ThreadState State;
+    ThreadState LastState;
 
-	cMutex mutex;
-	cGraphLCDState * GraphLCDState;
+    cMutex mutex;
+    cGraphLCDState * GraphLCDState;
 
-	int menuTop;
-	int menuCount;
-	int tabCount;
-	int tab[kMaxTabCount];
-	int tabMax[kMaxTabCount];
+    int menuTop;
+    int menuCount;
+    int tabCount;
+    int tab[kMaxTabCount];
+    int tabMax[kMaxTabCount];
 
-	std::vector <std::string> textItemLines;
-	int textItemTop;
-	int textItemVisibleLines;
+    std::vector <std::string> textItemLines;
+    int textItemTop;
+    int textItemVisibleLines;
 
-	bool showVolume;
+    bool showVolume;
 
-	time_t CurrTime;
-	time_t LastTime;
-	time_t LastTimeCheckSym;
-	time_t LastTimeModSym;
-	struct timeval CurrTimeval;
-	struct timeval UpdateAt;
+    time_t CurrTime;
+    time_t LastTime;
+    time_t LastTimeCheckSym;
+    time_t LastTimeModSym;
+    struct timeval CurrTimeval;
+    struct timeval UpdateAt;
 
-	std::vector<cScroller> scroller;
+    std::vector<cScroller> scroller;
 
-	cGraphLCDLogoList * logoList;
-	cGraphLCDLogo * logo;
+    cGraphLCDLogoList * logoList;
+    cGraphLCDLogo * logo;
 
-	char szETSymbols[32];
+    char szETSymbols[32];
 
-	void DisplayChannel();
-	void DisplayTime();
-	void DisplayLogo();
-	void DisplaySymbols();
-	void DisplayProgramme();
-	void DisplayReplay(tReplayState & replay);
-	void DisplayMenu();
-	void DisplayMessage();
-	void DisplayTextItem();
-	void DisplayColorButtons();
-	void DisplayVolume();
+    void DisplayChannel();
+    void DisplayTime();
+    void DisplayLogo();
+    void DisplaySymbols();
+    void DisplayProgramme();
+    void DisplayReplay(tReplayState & replay);
+    void DisplayMenu();
+    void DisplayMessage();
+    void DisplayTextItem();
+    void DisplayColorButtons();
+    void DisplayVolume();
 
-	void UpdateIn(long usec);
-	bool CheckAndUpdateSymbols();
+    void UpdateIn(long usec);
+    bool CheckAndUpdateSymbols();
 
-	/** Check if replay index bigger as one hour */
-	bool IndexIsGreaterAsOneHour(int Index) const;
-	/** Translate replay index to string with minute and second MM:SS */
-	const char *IndexToMS(int Index) const;
-	/** Compare Scroller with new Textbuffer*/
-	bool IsScrollerTextChanged(const std::vector<cScroller> & scroller, const std::vector <std::string> & lines) const;
-	/** Returns true if Logo loaded and active*/
-	bool IsLogoActive() const;
-	/** Returns true if Symbols loaded and active*/
-	bool IsSymbolsActive() const;
+    /** Check if replay index bigger as one hour */
+    bool IndexIsGreaterAsOneHour(int Index) const;
+    /** Translate replay index to string with minute and second MM:SS */
+    const char *IndexToMS(int Index) const;
+    /** Compare Scroller with new Textbuffer*/
+    bool IsScrollerTextChanged(const std::vector<cScroller> & scroller, const std::vector <std::string> & lines) const;
+    /** Returns true if Logo loaded and active*/
+    bool IsLogoActive() const;
+    /** Returns true if Symbols loaded and active*/
+    bool IsSymbolsActive() const;
 
-	/** Set Brightness depends user activity */
-	void SetBrightness();
-	uint64 LastTimeBrightness;
-	int nCurrentBrightness;
-	bool bBrightnessActive;
+    /** Set Brightness depends user activity */
+    void SetBrightness();
+    uint64 LastTimeBrightness;
+    int nCurrentBrightness;
+    bool bBrightnessActive;
 };
-
-extern cGraphLCDDisplay Display;
 
 #endif

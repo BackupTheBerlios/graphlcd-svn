@@ -34,8 +34,10 @@ class cPluginGraphLCD : public cPlugin
 {
 private:
     // Add any member variables or functions you may need here.
-    std::string configName;
-    std::string displayName;
+    std::string mConfigName;
+    std::string mDisplayName;
+    GLCD::cDriver * mLcd;
+    cGraphLCDDisplay * mDisplay;
 
 public:
     cPluginGraphLCD();
@@ -55,17 +57,18 @@ public:
 };
 
 cPluginGraphLCD::cPluginGraphLCD()
-:   configName(""),
-    displayName("")
+:   mConfigName(""),
+    mDisplayName("")
 {
-    LCD = NULL;
+    mLcd = NULL;
 }
 
 cPluginGraphLCD::~cPluginGraphLCD()
 {
-    if (LCD)
-        LCD->DeInit();
-    delete LCD;
+    delete mDisplay;
+    if (mLcd)
+        mLcd->DeInit();
+    delete mLcd;
 }
 
 const char * cPluginGraphLCD::CommandLineHelp()
@@ -87,14 +90,14 @@ bool cPluginGraphLCD::ProcessArgs(int argc, char * argv[])
     int option_index = 0;
     while ((c = getopt_long(argc, argv, "c:d:", long_options, &option_index)) != -1)
     {
-        switch(c)
+        switch (c)
         {
             case 'c':
-                configName = optarg;
+                mConfigName = optarg;
                 break;
 
             case 'd':
-                displayName = optarg;
+                mDisplayName = optarg;
                 break;
 
             default:
@@ -112,28 +115,28 @@ bool cPluginGraphLCD::Initialize()
 
     RegisterI18n(Phrases);
 
-    if (configName.length() == 0)
+    if (mConfigName.length() == 0)
     {
-        configName = kDefaultConfigFile;
-        isyslog("graphlcd: No config file specified, using default (%s).\n", configName.c_str());
+        mConfigName = kDefaultConfigFile;
+        isyslog("graphlcd: No config file specified, using default (%s).\n", mConfigName.c_str());
     }
-    if (GLCD::Config.Load(configName) == false)
+    if (GLCD::Config.Load(mConfigName) == false)
     {
         esyslog("graphlcd: Error loading config file!\n");
         return false;
     }
     if (GLCD::Config.driverConfigs.size() > 0)
     {
-        if (displayName.length() > 0)
+        if (mDisplayName.length() > 0)
         {
             for (displayNumber = 0; displayNumber < GLCD::Config.driverConfigs.size(); displayNumber++)
             {
-                if (GLCD::Config.driverConfigs[displayNumber].name == displayName)
+                if (GLCD::Config.driverConfigs[displayNumber].name == mDisplayName)
                     break;
             }
             if (displayNumber == GLCD::Config.driverConfigs.size())
             {
-                esyslog("graphlcd: ERROR: Specified display %s not found in config file!\n", displayName.c_str());
+                esyslog("graphlcd: ERROR: Specified display %s not found in config file!\n", mDisplayName.c_str());
                 return false;
             }
         }
@@ -141,7 +144,7 @@ bool cPluginGraphLCD::Initialize()
         {
             isyslog("graphlcd: WARNING: No display specified, using first one (%s).\n", GLCD::Config.driverConfigs[0].name.c_str());
             displayNumber = 0;
-            displayName = GLCD::Config.driverConfigs[0].name;
+            mDisplayName = GLCD::Config.driverConfigs[0].name;
         }
     }
     else
@@ -150,11 +153,25 @@ bool cPluginGraphLCD::Initialize()
         return false;
     }
 
+    mLcd = GLCD::CreateDriver(GLCD::Config.driverConfigs[displayNumber].id, &GLCD::Config.driverConfigs[displayNumber]);
+    if (!mLcd)
+    {
+        esyslog("graphlcd: ERROR: Failed creating display object %s\n", mDisplayName.c_str());
+        return false;
+    }
+    if (mLcd->Init() != 0)
+    {
+        esyslog("graphlcd: ERROR: Failed initializing display %s\n", mDisplayName.c_str());
+        return false;
+    }
     cfgDir = ConfigDirectory(PLUGIN_NAME);
     if (!cfgDir)
         return false;
 
-    if (Display.Init(cfgDir, displayNumber) != 0)
+    mDisplay = new cGraphLCDDisplay();
+    if (!mDisplay)
+        return false;
+    if (mDisplay->Init(mLcd, cfgDir) != 0)
         return false;
 
     return true;
@@ -167,7 +184,7 @@ bool cPluginGraphLCD::Start()
     dsyslog("graphlcd: waiting for display thread to get ready");
     for (count = 0; count < 1200; count++)
     {
-        if (Display.Active())
+        if (mDisplay->Active())
         {
             dsyslog ("graphlcd: display thread ready");
             return true;
@@ -184,7 +201,8 @@ void cPluginGraphLCD::Housekeeping()
 
 void cPluginGraphLCD::MainThreadHook()
 {
-    Display.Tick();
+    if (mDisplay)
+        mDisplay->Tick();
 }
 
 cOsdObject * cPluginGraphLCD::MainMenuAction()
