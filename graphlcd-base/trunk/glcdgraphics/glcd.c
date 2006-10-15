@@ -139,7 +139,7 @@ bool cGLCDFile::Load(cImage & image, const string & fileName)
             return false;
         }
         count = (buf[1] << 8) | buf[0];
-        delay = (buf[3] << 24) | (buf[2] << 16) | (buf[1] << 8) | buf[0];
+        delay = (buf[5] << 24) | (buf[4] << 16) | (buf[3] << 8) | buf[2];
         // check file length
         if (count == 0 ||
             fileSize != (long) (count * (height * ((width + 7) / 8)) + 14))
