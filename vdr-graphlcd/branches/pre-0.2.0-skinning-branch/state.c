@@ -289,7 +289,7 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name, cons
             mutex.Unlock();
             SetChannel(channel.number);
         }
-        mDisplay->Replaying(On, replay.mode);
+        //mDisplay->Replaying(On, replay.mode);
     }
 }
 
@@ -365,7 +365,7 @@ void cGraphLCDState::OsdClear()
         osd.textItem = "";
 
         mutex.Unlock();
-        mDisplay->SetClear();
+        //mDisplay->SetClear();
     }
 }
 
@@ -389,7 +389,7 @@ void cGraphLCDState::OsdTitle(const char * Title)
         }
 
         mutex.Unlock();
-        mDisplay->SetOsdTitle();
+        //mDisplay->SetOsdTitle();
     }
 }
 
@@ -454,8 +454,8 @@ void cGraphLCDState::OsdItem(const char * Text, int Index)
                 osd.items.push_back(Text);
 
             mutex.Unlock();
-            if (Text)
-                mDisplay->SetOsdItem(Text);
+            //if (Text)
+            //    mDisplay->SetOsdItem(Text);
         }
     }
 }
@@ -517,8 +517,8 @@ void cGraphLCDState::OsdCurrentItem(const char * Text)
                 }
             }
             mutex.Unlock();
-            if (Text)
-                mDisplay->SetOsdCurrentItem();
+            //if (Text)
+            //    mDisplay->SetOsdCurrentItem();
         }
     }
 }
@@ -532,15 +532,9 @@ void cGraphLCDState::OsdTextItem(const char * Text, bool Scroll)
         if (Text)
         {
             osd.textItem = trim(Text);
-#if 0
-            // replace '\n' with ' '
-            for (unsigned int i = 0; i < osd.textItem.length(); i++)
-                if (osd.textItem[i] == '\n' && (i + 1) < osd.textItem.length() && osd.textItem[i + 1] != '\n')
-                    osd.textItem[i] = ' ';
-#endif
         }
         mutex.Unlock();
-        mDisplay->SetOsdTextItem(Text, Scroll);
+        //mDisplay->SetOsdTextItem(Text, Scroll);
     }
 }
 
@@ -616,7 +610,7 @@ void cGraphLCDState::SetChannel(int ChannelNumber)
 
     mutex.Unlock();
 
-    mDisplay->SetChannel(ChannelNumber);
+    //mDisplay->SetChannel(ChannelNumber);
 }
 
 void cGraphLCDState::GetProgramme()
