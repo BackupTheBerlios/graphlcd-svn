@@ -100,7 +100,7 @@ int cDriverFramebuffer::Init()
 
     // Map the device to memory
     fbp = (char *)mmap(0, screensize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
-    if ((int)fbp == -1)
+    if (fbp == (char *)-1)
     {
         syslog(LOG_ERR, "%s: failed to map framebuffer device to memory.\n", config->name.c_str());
         return -1;
