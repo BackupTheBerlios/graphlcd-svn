@@ -6,7 +6,9 @@ namespace GLCD
 
 cSkinConfig::cSkinConfig(void)
 :   skinPathFunc(NULL),
-    charSetFunc(NULL)
+    charSetFunc(NULL),
+    translateFunc(NULL),
+    getTokenFunc(NULL)
 {
 }
 
