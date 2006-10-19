@@ -10,8 +10,8 @@
  * (c) 2004 Andreas Regel <andreas.regel AT powarman.de>
  */
 
-#ifndef GRAPHLCD_DISPLAY_H
-#define GRAPHLCD_DISPLAY_H
+#ifndef _GRAPHLCD_DISPLAY_H_
+#define _GRAPHLCD_DISPLAY_H_
 
 #include <stdint.h>
 
@@ -19,10 +19,13 @@
 #include <vector>
 
 #include <glcdgraphics/bitmap.h>
+#include <glcddrivers/driver.h>
+#include <glcdskin/skin.h>
 
 #include "global.h"
 #include "setup.h"
 #include "state.h"
+#include "skinconfig.h"
 
 #include <vdr/thread.h>
 
@@ -41,7 +44,7 @@ public:
     cGraphLCDDisplay(void);
     ~cGraphLCDDisplay(void);
 
-    int Init(GLCD::cDriver * Lcd, const char * CfgDir);
+    bool Initialise(GLCD::cDriver * Lcd, const std::string & CfgPath, const std::string & SkinName);
     void Tick(void);
 
     void Update();
@@ -51,13 +54,16 @@ protected:
 
 private:
     GLCD::cDriver * mLcd;
+    GLCD::cBitmap * mScreen;
+    GLCD::cSkin * mSkin;
+    cGraphLCDSkinConfig * mSkinConfig;
 
     bool mUpdate;
     uint64_t mUpdateAt;
     uint64_t mLastTimeMs;
 
-    GLCD::cBitmap * bitmap;
-    std::string cfgDir;
+    std::string mCfgPath;
+    std::string mSkinName;
 
     eThreadState State;
     eThreadState LastState;

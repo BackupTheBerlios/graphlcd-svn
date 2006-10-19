@@ -16,6 +16,7 @@
 
 #include <glcddrivers/config.h>
 #include <glcddrivers/drivers.h>
+#include <glcdskin/parser.h>
 
 #include "display.h"
 #include "global.h"
@@ -30,14 +31,17 @@
 cGraphLCDDisplay::cGraphLCDDisplay()
 :   cThread("glcd_display"),
     mLcd(NULL),
-    bitmap(NULL),
+    mScreen(NULL),
+    mSkin(NULL),
+    mSkinConfig(NULL),
     mGraphLCDState(NULL)
 {
     mUpdate = false;
     mUpdateAt = 0;
     mLastTimeMs = 0;
 
-    cfgDir = "";
+    mCfgPath = "";
+    mSkinName = "";
 
     State = StateNormal;
     LastState = StateNormal;
@@ -50,32 +54,48 @@ cGraphLCDDisplay::~cGraphLCDDisplay()
     Cancel(3);
 
     delete mGraphLCDState;
-    delete bitmap;
+    delete mSkin;
+    delete mSkinConfig;
+    delete mScreen;
 }
 
-int cGraphLCDDisplay::Init(GLCD::cDriver * Lcd, const char * CfgDir)
+bool cGraphLCDDisplay::Initialise(GLCD::cDriver * Lcd, const std::string & CfgPath, const std::string & SkinName)
 {
-    if (!Lcd || !CfgDir)
-        return 2;
-    mLcd = Lcd;
-    cfgDir = CfgDir;
+    std::string skinFileName;
 
-    bitmap = new GLCD::cBitmap(mLcd->Width(), mLcd->Height());
-    if (!bitmap)
+    if (!Lcd)
+        return false;
+    mLcd = Lcd;
+    mCfgPath = CfgPath;
+    mSkinName = SkinName;
+
+    mScreen = new GLCD::cBitmap(mLcd->Width(), mLcd->Height());
+    if (!mScreen)
     {
         esyslog("graphlcd plugin: ERROR creating drawing bitmap\n");
-        return 1;
+        return false;
     }
+
+    mSkinConfig = new cGraphLCDSkinConfig(mCfgPath, mSkinName);
+    if (!mSkinConfig)
+    {
+        esyslog("graphlcd plugin: ERROR creating skin config\n");
+        return false;
+    }
+
+    skinFileName = mSkinConfig->SkinPath() + "/" + mSkinName + ".skin";
+    mSkin = GLCD::XmlParse(*mSkinConfig, mSkinName, skinFileName);
+    mSkin->SetBaseSize(mScreen->Width(), mScreen->Height());
 
     mGraphLCDState = new cGraphLCDState(this);
     if (!mGraphLCDState)
-        return 1;
+        return false;
 
     mLcd->Refresh(true);
     mUpdate = true;
 
     Start();
-    return 0;
+    return true;
 }
 
 void cGraphLCDDisplay::Tick(void)
@@ -119,8 +139,10 @@ void cGraphLCDDisplay::Action(void)
                         mUpdateAt = 0;
                         mUpdate = false;
 
-                        bitmap->Clear();
-                        mLcd->SetScreen(bitmap->Data(), bitmap->Width(), bitmap->Height(), bitmap->LineSize());
+                        GLCD::cSkinDisplay * display = mSkin->Get(GLCD::cSkinDisplay::normal);
+                        mScreen->Clear();
+                        display->Render(mScreen);
+                        mLcd->SetScreen(mScreen->Data(), mScreen->Width(), mScreen->Height(), mScreen->LineSize());
                         mLcd->Refresh(false);
                         mLastTimeMs = currTimeMs;
                     }

@@ -57,7 +57,7 @@ DEFINES += -D_GNU_SOURCE
 
 ### The object files (add further files here):
 
-OBJS = display.o i18n.o menu.o plugin.o setup.o state.o strfct.o
+OBJS = display.o i18n.o menu.o plugin.o setup.o skinconfig.o state.o strfct.o
 
 
 ### Implicit rules:
@@ -83,7 +83,7 @@ all: libvdr-$(PLUGIN).so
 
 
 libvdr-$(PLUGIN).so: $(OBJS)
-	$(CXX) $(CXXFLAGS) -L$(INSTALLPREFIX)/lib -shared $(OBJS) -lglcddrivers -lglcdgraphics -lstdc++ -o $@
+	$(CXX) $(CXXFLAGS) -L$(INSTALLPREFIX)/lib -shared $(OBJS) -lglcddrivers -lglcdgraphics -lglcdskin -lstdc++ -o $@
 	@cp $@ $(LIBDIR)/$@.$(APIVERSION)
 
 dist: clean
