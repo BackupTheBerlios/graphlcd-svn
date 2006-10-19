@@ -33,7 +33,7 @@ class cSkin
     friend bool EndElem(const std::string & name);
 
 private:
-    cSkinConfig config;
+    const cSkinConfig & config;
     std::string name;
     std::string title;
     std::string version;

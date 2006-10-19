@@ -22,31 +22,13 @@ namespace GLCD
 class cType;
 struct tSkinToken;
 
-typedef std::string (*tSkinPathFunc)(void);
-typedef std::string (*tCharSetFunc)(void);
-typedef std::string (*tTranslateFunc)(const std::string &);
-typedef cType (*tGetTokenFunc)(const tSkinToken &);
-
 class cSkinConfig
 {
-private:
-    tSkinPathFunc skinPathFunc;
-    tCharSetFunc charSetFunc;
-    tTranslateFunc translateFunc;
-    tGetTokenFunc getTokenFunc;
 public:
-    cSkinConfig(void);
-    cSkinConfig(const cSkinConfig & Config);
-
-    std::string SkinPath(void) const;
-    std::string CharSet(void) const;
-    std::string Translate(const std::string & Text) const;
-    cType GetToken(const tSkinToken & Token) const;
-
-    void SetSkinPathFunc(tSkinPathFunc Function);
-    void SetCharSetFunc(tCharSetFunc Function);
-    void SetTranslateFunc(tTranslateFunc Function);
-    void SetGetTokenFunc(tGetTokenFunc Function);
+    virtual std::string SkinPath(void) const;
+    virtual std::string CharSet(void) const;
+    virtual std::string Translate(const std::string & Text) const;
+    virtual cType GetToken(const tSkinToken & Token) const;
 };
 
 } // end of namespace
