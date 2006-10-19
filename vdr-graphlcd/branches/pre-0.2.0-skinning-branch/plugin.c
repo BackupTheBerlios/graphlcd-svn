@@ -23,6 +23,7 @@
 #include <vdr/plugin.h>
 
 
+static const char * kPluginName = "graphlcd";
 static const char *VERSION        = "0.2.0-pre1";
 static const char *DESCRIPTION    = "Output to graphic LCD";
 static const char *MAINMENUENTRY  = NULL;
@@ -36,6 +37,7 @@ private:
     // Add any member variables or functions you may need here.
     std::string mConfigName;
     std::string mDisplayName;
+    std::string mSkinName;
     GLCD::cDriver * mLcd;
     cGraphLCDDisplay * mDisplay;
 
@@ -74,7 +76,8 @@ cPluginGraphLCD::~cPluginGraphLCD()
 const char * cPluginGraphLCD::CommandLineHelp()
 {
     return "  -c CFG,   --config=CFG   use CFG as driver config file\n"
-           "  -d DISP,  --display=DISP use display DISP for output\n";
+           "  -d DISP,  --display=DISP use display DISP for output\n"
+           "  -s SKIN,  --skin=SKIN    use skin SKIN\n";
 }
 
 bool cPluginGraphLCD::ProcessArgs(int argc, char * argv[])
@@ -83,12 +86,13 @@ bool cPluginGraphLCD::ProcessArgs(int argc, char * argv[])
     {
         {"config",  required_argument, NULL, 'c'},
         {"display", required_argument, NULL, 'd'},
+        {"skin",    required_argument, NULL, 's'},
         {NULL}
     };
 
     int c;
     int option_index = 0;
-    while ((c = getopt_long(argc, argv, "c:d:", long_options, &option_index)) != -1)
+    while ((c = getopt_long(argc, argv, "c:d:s:", long_options, &option_index)) != -1)
     {
         switch (c)
         {
@@ -98,6 +102,10 @@ bool cPluginGraphLCD::ProcessArgs(int argc, char * argv[])
 
             case 'd':
                 mDisplayName = optarg;
+                break;
+
+            case 's':
+                mSkinName = optarg;
                 break;
 
             default:
@@ -164,14 +172,14 @@ bool cPluginGraphLCD::Initialize()
         esyslog("graphlcd: ERROR: Failed initializing display %s\n", mDisplayName.c_str());
         return false;
     }
-    cfgDir = ConfigDirectory(PLUGIN_NAME);
+    cfgDir = ConfigDirectory(kPluginName);
     if (!cfgDir)
         return false;
 
     mDisplay = new cGraphLCDDisplay();
     if (!mDisplay)
         return false;
-    if (mDisplay->Init(mLcd, cfgDir) != 0)
+    if (!mDisplay->Initialise(mLcd, cfgDir, mSkinName))
         return false;
 
     return true;
