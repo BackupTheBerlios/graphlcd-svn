@@ -16,17 +16,31 @@
 #include <glcdskin/config.h>
 #include <glcdskin/string.h>
 
-std::string SkinPath(void)
+class cMySkinConfig : public GLCD::cSkinConfig
+{
+public:
+    virtual std::string SkinPath(void) const;
+    virtual std::string CharSet(void) const;
+    virtual std::string Translate(const std::string & Text) const;
+    virtual GLCD::cType GetToken(const GLCD::tSkinToken & Token) const;
+};
+
+std::string cMySkinConfig::SkinPath(void) const
 {
     return ".";
 }
 
-std::string CharSet(void)
+std::string cMySkinConfig::CharSet(void) const
 {
     return "iso8859-15";
 }
 
-GLCD::cType GetToken(const GLCD::tSkinToken & Token)
+std::string cMySkinConfig::Translate(const std::string & Text) const
+{
+    return Text;
+}
+
+GLCD::cType cMySkinConfig::GetToken(const GLCD::tSkinToken & Token) const
 {
     return 0;
 }
@@ -151,10 +165,7 @@ int main(int argc, char ** argv)
     GLCD::cBitmap * screen = new GLCD::cBitmap(lcd->Width(), lcd->Height());
     screen->Clear();
 
-    GLCD::cSkinConfig skinConfig;
-    skinConfig.SetSkinPathFunc(SkinPath);
-    skinConfig.SetCharSetFunc(CharSet);
-    skinConfig.SetGetTokenFunc(GetToken);
+    cMySkinConfig skinConfig;
     GLCD::cSkin * skin = GLCD::XmlParse(skinConfig, "test", skinFileName);
     skin->SetBaseSize(screen->Width(), screen->Height());
     GLCD::cSkinDisplay * display = skin->Get(GLCD::cSkinDisplay::normal);
