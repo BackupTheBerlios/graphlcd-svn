@@ -65,31 +65,20 @@ inline bool operator<  (const tSkinAttrib & A, const tSkinAttrib & B)
 
 struct tSkinToken
 {
+    int         Id;
     std::string Name;
     uint        Offset;
     tSkinAttrib Attrib;
     int         Index;
     int         Tab;
 
-    tSkinToken(void): Index(-1), Tab(-1) {}
-    tSkinToken(std::string n, uint o, const std::string & a):
-            Name(n), Offset(o), Attrib(a), Index(-1), Tab(-1) {}
+    tSkinToken(void);
+    tSkinToken(int id, std::string n, uint o, const std::string & a);
 
     friend bool operator< (const tSkinToken & A, const tSkinToken & B);
 
     static std::string Token(const tSkinToken & Token);
 };
-
-inline bool operator< (const tSkinToken & A, const tSkinToken & B)
-{
-    return A.Name == B.Name
-        ? A.Attrib == B.Attrib
-            ? A.Index == B.Index
-                ? A.Tab < B.Tab
-                : A.Index < B.Index
-            : A.Attrib < B.Attrib
-        : A.Name < B.Name;
-}
 
 class cSkinObject;
 class cSkin;

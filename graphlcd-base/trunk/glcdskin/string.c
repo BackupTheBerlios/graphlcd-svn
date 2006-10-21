@@ -19,6 +19,35 @@
 namespace GLCD
 {
 
+tSkinToken::tSkinToken(void)
+:   Index(-1),
+    Tab(-1)
+{
+}
+
+tSkinToken::tSkinToken(int id, std::string n, uint o, const std::string & a)
+:   Id(id),
+    Name(n),
+    Offset(o),
+    Attrib(a),
+    Index(-1),
+    Tab(-1)
+{
+}
+
+bool operator< (const tSkinToken & A, const tSkinToken & B)
+{
+    return A.Id == B.Id
+        ? A.Name == B.Name
+            ? A.Attrib == B.Attrib
+                ? A.Index == B.Index
+                    ? A.Tab < B.Tab
+                    : A.Index < B.Index
+                : A.Attrib < B.Attrib
+            : A.Name < B.Name
+        : A.Id < B.Id;
+}
+
 std::string tSkinToken::Token(const tSkinToken & Token)
 {
     std::string result = (std::string) "{" + Token.Name;
@@ -141,7 +170,7 @@ bool cSkinString::Parse(const std::string & Text, bool Translate)
                 {
                     std::string tmp;
                     tmp.assign(last, ptr - last);
-                    tSkinToken token(tmp, offset, "");
+                    tSkinToken token(mSkin->Config().GetTokenId(tmp), tmp, offset, "");
                     mTokens.push_back(token);
                 }
                 else
