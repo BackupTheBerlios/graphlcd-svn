@@ -27,12 +27,16 @@ cGraphLCDState::cGraphLCDState(cGraphLCDDisplay * Display)
     channel.str = "";
     channel.strTmp = "";
 
-    event.presentTime = 0;
-    event.presentTitle = "";
-    event.presentSubtitle = "";
-    event.followingTime = 0;
-    event.followingTitle = "";
-    event.followingSubtitle = "";
+    mPresent.startTime = 0;
+    mPresent.duration = 0;
+    mPresent.title = "";
+    mPresent.shortText = "";
+    mPresent.description = "";
+    mFollowing.startTime = 0;
+    mFollowing.duration = 0;
+    mFollowing.title = "";
+    mFollowing.shortText = "";
+    mFollowing.description = "";
 
     replay.name = "";
     replay.loopmode = "";
@@ -569,23 +573,6 @@ void cGraphLCDState::OsdProgramme(time_t PresentTime, const char * PresentTitle,
     //printf("graphlcd plugin: cGraphLCDState::OsdProgramme FST: %s\n", FollowingSubtitle);
     if (GraphLCDSetup.PluginActive)
     {
-        mutex.Lock();
-        event.presentTime = PresentTime;
-        event.presentTitle = "";
-        if (!isempty(PresentTitle))
-            event.presentTitle = PresentTitle;
-        event.presentSubtitle = "";
-        if (!isempty(PresentSubtitle))
-            event.presentSubtitle = PresentSubtitle;
-
-        event.followingTime = FollowingTime;
-        event.followingTitle = "";
-        if (!isempty(FollowingTitle))
-            event.followingTitle = FollowingTitle;
-        event.followingSubtitle = "";
-        if (!isempty(FollowingSubtitle))
-            event.followingSubtitle = FollowingSubtitle;
-        mutex.Unlock();
         mDisplay->Update();
     }
 }
@@ -605,12 +592,12 @@ void cGraphLCDState::SetChannel(int ChannelNumber)
     sprintf(tmp, "%d ", channel.number);
     channel.str = tmp;
     channel.str += ch->Name();
-    event.presentTime = 0;
-    event.followingTime = 0;
+    mPresent.startTime = 0;
+    mFollowing.startTime = 0;
 
     mutex.Unlock();
 
-    //mDisplay->SetChannel(ChannelNumber);
+    mDisplay->Update();
 }
 
 void cGraphLCDState::GetProgramme()
@@ -628,28 +615,41 @@ void cGraphLCDState::GetProgramme()
             {
                 if ((present = schedule->GetPresentEvent()) != NULL)
                 {
-                    event.presentTime = present->StartTime();
-                    event.presentTitle = "";
-                    if (!isempty(present->Title()))
-                        event.presentTitle = present->Title();
-                    event.presentSubtitle = "";
-                    if (!isempty(present->ShortText()))
-                        event.presentSubtitle = present->ShortText();
+                    mPresent.startTime = present->StartTime();
+                    mPresent.duration = present->Duration();
+                    mPresent.title = "";
+                    if (present->Title())
+                        mPresent.title = present->Title();
+                    mPresent.shortText = "";
+                    if (present->ShortText())
+                        mPresent.shortText = present->ShortText();
+                    mPresent.description = "";
+                    if (present->Description())
+                        mPresent.description = present->Description();
                 }
                 if ((following = schedule->GetFollowingEvent()) != NULL)
                 {
-                    event.followingTime = following->StartTime();
-                    event.followingTitle = "";
-                    if (!isempty(following->Title()))
-                        event.followingTitle = following->Title();
-                    event.followingSubtitle = "";
-                    if (!isempty(following->ShortText()))
-                        event.followingSubtitle = following->ShortText();
+                    mFollowing.startTime = following->StartTime();
+                    mFollowing.duration = following->Duration();
+                    mFollowing.title = "";
+                    if (following->Title())
+                        mFollowing.title = following->Title();
+                    mFollowing.shortText = "";
+                    if (following->ShortText())
+                        mFollowing.shortText = following->ShortText();
+                    mFollowing.description = "";
+                    if (following->Description())
+                        mFollowing.description = following->Description();
                 }
             }
         }
     }
     mutex.Unlock();
+}
+
+void cGraphLCDState::Update()
+{
+    GetProgramme();
 }
 
 tChannelState cGraphLCDState::GetChannelState()
@@ -663,13 +663,23 @@ tChannelState cGraphLCDState::GetChannelState()
     return ret;
 }
 
-tEventState cGraphLCDState::GetEventState()
+tEvent cGraphLCDState::GetPresentEvent()
 {
-    tEventState ret;
+    tEvent ret;
 
-    GetProgramme();
     mutex.Lock();
-    ret = event;
+    ret = mPresent;
+    mutex.Unlock();
+
+    return ret;
+}
+
+tEvent cGraphLCDState::GetFollowingEvent()
+{
+    tEvent ret;
+
+    mutex.Lock();
+    ret = mFollowing;
     mutex.Unlock();
 
     return ret;
