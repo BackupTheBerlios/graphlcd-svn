@@ -57,7 +57,7 @@ DEFINES += -D_GNU_SOURCE
 
 ### The object files (add further files here):
 
-OBJS = display.o i18n.o menu.o plugin.o setup.o skinconfig.o state.o strfct.o
+OBJS = common.o display.o i18n.o menu.o plugin.o setup.o skinconfig.o state.o strfct.o
 
 
 ### Implicit rules:
