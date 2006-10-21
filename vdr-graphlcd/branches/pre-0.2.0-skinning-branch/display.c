@@ -53,10 +53,10 @@ cGraphLCDDisplay::~cGraphLCDDisplay()
 {
     Cancel(3);
 
-    delete mGraphLCDState;
     delete mSkin;
     delete mSkinConfig;
     delete mScreen;
+    delete mGraphLCDState;
 }
 
 bool cGraphLCDDisplay::Initialise(GLCD::cDriver * Lcd, const std::string & CfgPath, const std::string & SkinName)
@@ -69,6 +69,10 @@ bool cGraphLCDDisplay::Initialise(GLCD::cDriver * Lcd, const std::string & CfgPa
     mCfgPath = CfgPath;
     mSkinName = SkinName;
 
+    mGraphLCDState = new cGraphLCDState(this);
+    if (!mGraphLCDState)
+        return false;
+
     mScreen = new GLCD::cBitmap(mLcd->Width(), mLcd->Height());
     if (!mScreen)
     {
@@ -76,7 +80,7 @@ bool cGraphLCDDisplay::Initialise(GLCD::cDriver * Lcd, const std::string & CfgPa
         return false;
     }
 
-    mSkinConfig = new cGraphLCDSkinConfig(mCfgPath, mSkinName);
+    mSkinConfig = new cGraphLCDSkinConfig(mCfgPath, mSkinName, mGraphLCDState);
     if (!mSkinConfig)
     {
         esyslog("graphlcd plugin: ERROR creating skin config\n");
@@ -86,10 +90,6 @@ bool cGraphLCDDisplay::Initialise(GLCD::cDriver * Lcd, const std::string & CfgPa
     skinFileName = mSkinConfig->SkinPath() + "/" + mSkinName + ".skin";
     mSkin = GLCD::XmlParse(*mSkinConfig, mSkinName, skinFileName);
     mSkin->SetBaseSize(mScreen->Width(), mScreen->Height());
-
-    mGraphLCDState = new cGraphLCDState(this);
-    if (!mGraphLCDState)
-        return false;
 
     mLcd->Refresh(true);
     mUpdate = true;
@@ -139,6 +139,7 @@ void cGraphLCDDisplay::Action(void)
                         mUpdateAt = 0;
                         mUpdate = false;
 
+                        mGraphLCDState->Update();
                         GLCD::cSkinDisplay * display = mSkin->Get(GLCD::cSkinDisplay::normal);
                         mScreen->Clear();
                         display->Render(mScreen);
