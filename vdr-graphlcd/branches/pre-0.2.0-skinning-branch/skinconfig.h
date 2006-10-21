@@ -16,14 +16,16 @@ class cGraphLCDSkinConfig : public GLCD::cSkinConfig
 {
 private:
     std::string mSkinPath;
+    cGraphLCDState * mState;
 public:
-    cGraphLCDSkinConfig(const std::string & CfgPath, const std::string & SkinName);
+    cGraphLCDSkinConfig(const std::string & CfgPath, const std::string & SkinName, cGraphLCDState * State);
     virtual ~cGraphLCDSkinConfig();
 
     virtual std::string SkinPath(void) const;
     virtual std::string CharSet(void) const;
     virtual std::string Translate(const std::string & Text) const;
     virtual GLCD::cType GetToken(const GLCD::tSkinToken & Token) const;
+    virtual int GetTokenId(const std::string & Name) const;
 };
 
 #endif
