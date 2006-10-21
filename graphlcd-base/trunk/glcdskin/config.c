@@ -24,4 +24,9 @@ cType cSkinConfig::GetToken(const tSkinToken & Token) const
     return "";
 }
 
+int cSkinConfig::GetTokenId(const std::string & Name) const
+{
+    return 0;
+}
+
 } // end of namespace

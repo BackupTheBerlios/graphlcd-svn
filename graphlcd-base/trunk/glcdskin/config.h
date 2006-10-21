@@ -29,6 +29,7 @@ public:
     virtual std::string CharSet(void) const;
     virtual std::string Translate(const std::string & Text) const;
     virtual cType GetToken(const tSkinToken & Token) const;
+    virtual int GetTokenId(const std::string & Name) const;
 };
 
 } // end of namespace
