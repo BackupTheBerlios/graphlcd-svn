@@ -52,7 +52,19 @@ public:
         fun_le,
         fun_ne,
         fun_file,
-        fun_trans
+        fun_trans,
+
+        funAdd,
+        funSub,
+        funMul,
+
+        funFontTotalWidth,
+        funFontTotalHeight,
+        funFontTotalAscent,
+        funFontSpaceBetween,
+        funFontLineHeight,
+        funFontTextWidth,
+        funFontTextHeight
     };
 
 private:
@@ -67,6 +79,7 @@ private:
 protected:
     cType FunFile  (const cType &Param) const;
     cType FunPlugin(const cType &Param) const;
+    cType FunFont  (eType Function, const cType &Param1, const cType &Param2) const;
 
 public:
     cSkinFunction(cSkinObject *Parent);

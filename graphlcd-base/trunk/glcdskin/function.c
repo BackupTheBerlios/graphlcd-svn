@@ -20,7 +20,16 @@ namespace GLCD
 
 static const char * Internals[] =
 {
-    "not", "and", "or", "equal", "gt",  "lt", "ge", "le", "ne", "file", "trans", NULL
+    "not", "and", "or", "equal", "gt",  "lt", "ge", "le", "ne", "file", "trans",
+    "add", "sub", "mul",
+    "FontTotalWidth",
+    "FontTotalHeight",
+    "FontTotalAscent",
+    "FontSpaceBetween",
+    "FontLineHeight",
+    "FontTextWidth",
+    "FontTextHeight",
+    NULL
 };
 
 cSkinFunction::cSkinFunction(cSkinObject *Parent)
@@ -176,7 +185,8 @@ bool cSkinFunction::Parse(const std::string & Text)
                         {
                             case fun_and:
                             case fun_or:
-                                params = -1; break;
+                                params = -1;
+                                break;
 
                             case fun_eq:
                             case fun_ne:
@@ -184,11 +194,34 @@ bool cSkinFunction::Parse(const std::string & Text)
                             case fun_lt:
                             case fun_ge:
                             case fun_le:
-                                ++params;
+                                params = 2;
+                                break;
+
                             case fun_not:
                             case fun_trans:
                             case fun_file:
-                                ++params;
+                                params = 1;
+                                break;
+
+                            case funAdd:
+                            case funSub:
+                            case funMul:
+                                params = 2;
+                                break;
+
+                            case funFontTotalWidth:
+                            case funFontTotalHeight:
+                            case funFontTotalAscent:
+                            case funFontSpaceBetween:
+                            case funFontLineHeight:
+                                params = 1;
+                                break;
+
+                            case funFontTextWidth:
+                            case funFontTextHeight:
+                                params = 2;
+                                break;
+
                             default:
                                 break;
                         }
@@ -221,6 +254,37 @@ cType cSkinFunction::FunFile(const cType & Param) const
     cImageCache * cache = mSkin->ImageCache();
     GLCD::cImage * image = cache->Get(Param);
     return image ? (cType) Param : (cType) false;
+}
+
+cType cSkinFunction::FunFont(eType Function, const cType &Param1, const cType &Param2) const
+{
+    cSkinFont * skinFont = mSkin->GetFont(Param1);
+    if (!skinFont)
+        return false;
+
+    const cFont * font = skinFont->Font();
+    if (!font)
+        return false;
+    switch (Function)
+    {
+        case funFontTotalWidth:
+            return font->TotalWidth();
+        case funFontTotalHeight:
+            return font->TotalHeight();
+        case funFontTotalAscent:
+            return font->TotalAscent();
+        case funFontSpaceBetween:
+            return font->SpaceBetween();
+        case funFontLineHeight:
+            return font->LineHeight();
+        case funFontTextWidth:
+            return font->Width((const std::string) Param2);
+        case funFontTextHeight:
+            return font->Height((const std::string) Param2);
+        default:
+            break;
+    }
+    return false;
 }
 
 cType cSkinFunction::Evaluate(void) const
@@ -275,6 +339,26 @@ cType cSkinFunction::Evaluate(void) const
 
         case fun_trans:
             return mSkin->Config().Translate(mParams[0]->Evaluate());
+
+        case funAdd:
+            return ((int) mParams[0]->Evaluate() + (int) mParams[1]->Evaluate());
+
+        case funSub:
+            return ((int) mParams[0]->Evaluate() - (int) mParams[1]->Evaluate());
+
+        case funMul:
+            return ((int) mParams[0]->Evaluate() * (int) mParams[1]->Evaluate());
+
+        case funFontTotalWidth:
+        case funFontTotalHeight:
+        case funFontTotalAscent:
+        case funFontSpaceBetween:
+        case funFontLineHeight:
+            return FunFont(mType, mParams[0]->Evaluate(), "");
+
+        case funFontTextWidth:
+        case funFontTextHeight:
+            return FunFont(mType, mParams[0]->Evaluate(), mParams[1]->Evaluate());
 
         default:
             //Dprintf("unknown function code\n");
