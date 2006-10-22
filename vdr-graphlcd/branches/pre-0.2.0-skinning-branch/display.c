@@ -89,6 +89,11 @@ bool cGraphLCDDisplay::Initialise(GLCD::cDriver * Lcd, const std::string & CfgPa
 
     skinFileName = mSkinConfig->SkinPath() + "/" + mSkinName + ".skin";
     mSkin = GLCD::XmlParse(*mSkinConfig, mSkinName, skinFileName);
+    if (!mSkin)
+    {
+        esyslog("graphlcd plugin: ERROR loading skin\n");
+        return false;
+    }
     mSkin->SetBaseSize(mScreen->Width(), mScreen->Height());
 
     mLcd->Refresh(true);
