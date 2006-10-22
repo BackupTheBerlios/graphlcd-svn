@@ -14,17 +14,26 @@
 #include <vdr/status.h>
 
 
-struct tChannelState
+struct tChannel
 {
     tChannelID id;
     int number;
-    std::string str;
-    std::string strTmp;
+    std::string name;
+    std::string shortName;
+    std::string provider;
+    std::string portal;
+    std::string source;
+    bool hasTeletext;
+    bool hasMultiLanguage;
+    bool hasDolby;
+    bool isEncrypted;
+    bool isRadio;
 };
 
 struct tEvent
 {
     time_t startTime;
+    time_t vpsTime;
     int duration;
     std::string title;
     std::string shortText;
@@ -87,7 +96,7 @@ private:
 
     cMutex mutex;
 
-    tChannelState channel;
+    tChannel mChannel;
     tEvent mPresent;
     tEvent mFollowing;
     tReplayState replay;
@@ -96,7 +105,8 @@ private:
     tVolumeState volume;
 
     void SetChannel(int ChannelNumber);
-    void GetProgramme();
+    void UpdateChannelInfo(void);
+    void UpdateEventInfo(void);
 protected:
     virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber);
     virtual void Recording(const cDevice *Device, const char *Name, const char *FileName, bool On);
@@ -118,7 +128,7 @@ public:
 
     void Update();
     void Tick();
-    tChannelState GetChannelState();
+    tChannel GetChannelInfo();
     tEvent GetPresentEvent();
     tEvent GetFollowingEvent();
     tReplayState GetReplayState();

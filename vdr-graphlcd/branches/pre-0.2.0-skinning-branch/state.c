@@ -23,16 +23,27 @@ cGraphLCDState::cGraphLCDState(cGraphLCDDisplay * Display)
     first(true),
     tickUsed(false)
 {
-    channel.number = 0;
-    channel.str = "";
-    channel.strTmp = "";
+    mChannel.id = tChannelID::InvalidID;
+    mChannel.number = 0;
+    mChannel.name = "";
+    mChannel.shortName = "";
+    mChannel.provider = "";
+    mChannel.portal = "";
+    mChannel.source = "";
+    mChannel.hasTeletext = false;
+    mChannel.hasMultiLanguage = false;
+    mChannel.hasDolby = false;
+    mChannel.isEncrypted = false;
+    mChannel.isRadio = false;
 
     mPresent.startTime = 0;
+    mPresent.vpsTime = 0;
     mPresent.duration = 0;
     mPresent.title = "";
     mPresent.shortText = "";
     mPresent.description = "";
     mFollowing.startTime = 0;
+    mFollowing.vpsTime = 0;
     mFollowing.duration = 0;
     mFollowing.title = "";
     mFollowing.shortText = "";
@@ -291,7 +302,7 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name, cons
             mutex.Lock();
             replay.control = NULL;
             mutex.Unlock();
-            SetChannel(channel.number);
+            SetChannel(mChannel.number);
         }
         //mDisplay->Replaying(On, replay.mode);
     }
@@ -358,8 +369,6 @@ void cGraphLCDState::OsdClear()
     if (GraphLCDSetup.PluginActive)
     {
         mutex.Lock();
-
-        channel.strTmp = "";
 
         osd.title = "";
         osd.items.clear();
@@ -548,18 +557,6 @@ void cGraphLCDState::OsdChannel(const char * Text)
     //printf("graphlcd plugin: cGraphLCDState::OsdChannel %s\n", Text);
     if (GraphLCDSetup.PluginActive)
     {
-        mutex.Lock();
-        if (Text)
-        {
-            channel.strTmp = Text;
-            channel.strTmp = compactspace(channel.strTmp);
-        }
-        else
-        {
-            channel.strTmp = "";
-        }
-        mutex.Unlock();
-
         if (Text)
             mDisplay->Update();
     }
@@ -579,19 +576,12 @@ void cGraphLCDState::OsdProgramme(time_t PresentTime, const char * PresentTitle,
 
 void cGraphLCDState::SetChannel(int ChannelNumber)
 {
-    char tmp[16];
-
     if (ChannelNumber == 0)
         return;
 
     mutex.Lock();
 
-    channel.number = ChannelNumber;
-    cChannel * ch = Channels.GetByNumber(channel.number);
-    channel.id = ch->GetChannelID();
-    sprintf(tmp, "%d ", channel.number);
-    channel.str = tmp;
-    channel.str += ch->Name();
+    mChannel.number = ChannelNumber;
     mPresent.startTime = 0;
     mFollowing.startTime = 0;
 
@@ -600,22 +590,63 @@ void cGraphLCDState::SetChannel(int ChannelNumber)
     mDisplay->Update();
 }
 
-void cGraphLCDState::GetProgramme()
+void cGraphLCDState::UpdateChannelInfo(void)
+{
+    if (mChannel.number == 0)
+        return;
+
+    mutex.Lock();
+
+    cChannel * ch = Channels.GetByNumber(mChannel.number);
+    if (ch)
+    {
+        mChannel.id = ch->GetChannelID();
+        mChannel.name = ch->Name();
+        mChannel.shortName = ch->ShortName(true);
+        mChannel.provider = ch->Provider();
+        mChannel.portal = ch->PortalName();
+        mChannel.source = Sources.Get(ch->Source())->Description();
+        mChannel.hasTeletext = ch->Tpid() != 0;
+        mChannel.hasMultiLanguage = ch->Apid(1) != 0;
+        mChannel.hasDolby = ch->Dpid(0) != 0;
+        mChannel.isEncrypted = ch->Ca() != 0;
+        mChannel.isRadio = (ch->Vpid() == 0) || (ch->Vpid() == 1) || (ch->Vpid() == 0x1FFF);
+    }
+    else
+    {
+        mChannel.id = tChannelID::InvalidID;
+        mChannel.name = tr("*** Invalid Channel ***");
+        mChannel.shortName = tr("*** Invalid Channel ***");
+        mChannel.provider = "";
+        mChannel.portal = "";
+        mChannel.source = "";
+        mChannel.hasTeletext = false;
+        mChannel.hasMultiLanguage = false;
+        mChannel.hasDolby = false;
+        mChannel.isEncrypted = false;
+        mChannel.isRadio = false;
+    }
+
+    mutex.Unlock();
+}
+
+void cGraphLCDState::UpdateEventInfo(void)
 {
     mutex.Lock();
     const cEvent * present = NULL, * following = NULL;
     cSchedulesLock schedulesLock;
     const cSchedules * schedules = cSchedules::Schedules(schedulesLock);
-    if (channel.id.Valid())
+    if (mChannel.id.Valid())
     {
         if (schedules)
         {
-            const cSchedule * schedule = schedules->GetSchedule(channel.id);
+            const cSchedule * schedule = schedules->GetSchedule(mChannel.id);
             if (schedule)
             {
                 if ((present = schedule->GetPresentEvent()) != NULL)
                 {
                     mPresent.startTime = present->StartTime();
+                    mPresent.vpsTime = present->Vps();
                     mPresent.duration = present->Duration();
                     mPresent.title = "";
                     if (present->Title())
@@ -630,6 +661,7 @@ void cGraphLCDState::GetProgramme()
                 if ((following = schedule->GetFollowingEvent()) != NULL)
                 {
                     mFollowing.startTime = following->StartTime();
+                    mFollowing.vpsTime = following->Vps();
                     mFollowing.duration = following->Duration();
                     mFollowing.title = "";
                     if (following->Title())
@@ -649,15 +681,16 @@ void cGraphLCDState::GetProgramme()
 
 void cGraphLCDState::Update()
 {
-    GetProgramme();
+    UpdateChannelInfo();
+    UpdateEventInfo();
 }
 
-tChannelState cGraphLCDState::GetChannelState()
+tChannel cGraphLCDState::GetChannelInfo()
 {
-    tChannelState ret;
+    tChannel ret;
 
     mutex.Lock();
-    ret = channel;
+    ret = mChannel;
     mutex.Unlock();
 
     return ret;
