@@ -126,6 +126,56 @@ bool cSkinObject::ParseAlignment(const std::string & Text)
     return true;
 }
 
+bool cSkinObject::ParseIntParam(const std::string &Text, int & Param)
+{
+    if (isalpha(Text[0]))
+    {
+        cSkinFunction * func = new cSkinFunction(this);
+        if (func->Parse(Text))
+        {
+            Param = (int) func->Evaluate();
+            delete func;
+            return true;
+        }
+        delete func;
+    }
+    char * e;
+    const char * t = Text.c_str();
+    long l = strtol(t, &e, 10);
+    if (e ==t || *e != '\0')
+    {
+      return false;
+    }
+    Param = l;
+    return true;
+}
+
+bool cSkinObject::ParseWidth(const std::string &Text)
+{
+    int w;
+    if (!ParseIntParam(Text, w))
+        return false;
+    if (w > 0)
+    {
+        mPos2.x = mPos1.x + w - 1;
+        return true;
+    }
+    return false;
+}
+
+bool cSkinObject::ParseHeight(const std::string &Text)
+{
+    int h;
+    if (!ParseIntParam(Text, h))
+        return false;
+    if (h > 0)
+    {
+        mPos2.y = mPos1.y + h - 1;
+        return true;
+    }
+    return false;
+}
+
 bool cSkinObject::ParseFontFace(const std::string & Text)
 {
     return mFont.Parse(Text);

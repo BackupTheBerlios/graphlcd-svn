@@ -108,6 +108,9 @@ public:
     bool ParseCondition(const std::string &Text);
     bool ParseAlignment(const std::string &Text);
     bool ParseFontFace(const std::string &Text);
+    bool ParseIntParam(const std::string &Text, int & Param);
+    bool ParseWidth(const std::string &Text);
+    bool ParseHeight(const std::string &Text);
 
     void SetListIndex(uint Index, int Tab);
 

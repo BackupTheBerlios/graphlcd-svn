@@ -112,6 +112,23 @@ namespace GLCD
     return false; \
   }
 
+#define ATTRIB_OPT_FUNC_PARAM(_attr,_func,_param) \
+  if (attrs.find(_attr) != attrs.end()) { \
+    if (!_func(attrs[_attr],_param)) { \
+      syslog(LOG_ERR, "ERROR: Text2Skin: Unexpected value %s for attribute %s", \
+          attrs[_attr].c_str(), _attr); \
+      return false; \
+    } \
+  }
+
+#define ATTRIB_MAN_FUNC_PARAM(_attr,_func,_param) \
+  ATTRIB_OPT_FUNC_PARAM(_attr,_func,_param) \
+  else { \
+    syslog(LOG_ERR, "ERROR: Text2Skin: Mandatory attribute %s missing in tag %s", \
+        _attr, name.c_str()); \
+    return false; \
+  }
+
 static std::vector<std::string> context;
 static cSkin * skin = NULL;
 static cSkinFont * font = NULL;
@@ -163,18 +180,20 @@ bool StartElem(const std::string & name, std::map<std::string,std::string> & att
         object = new cSkinObject(display);
         if (object->ParseType(name))
         {
-            ATTRIB_OPT_NUMBER("x1", object->mPos1.x);
-            ATTRIB_OPT_NUMBER("y1", object->mPos1.y);
-            ATTRIB_OPT_NUMBER("x2", object->mPos2.x);
-            ATTRIB_OPT_NUMBER("y2", object->mPos2.y);
+            ATTRIB_OPT_FUNC_PARAM("x1", object->ParseIntParam, object->mPos1.x);
+            ATTRIB_OPT_FUNC_PARAM("y1", object->ParseIntParam, object->mPos1.y);
+            ATTRIB_OPT_FUNC_PARAM("x2", object->ParseIntParam, object->mPos2.x);
+            ATTRIB_OPT_FUNC_PARAM("y2", object->ParseIntParam, object->mPos2.y);
+            ATTRIB_OPT_FUNC("width", object->ParseWidth);
+            ATTRIB_OPT_FUNC("height", object->ParseHeight);
             ATTRIB_OPT_FUNC("condition", object->ParseCondition);
 
             if (name == "image")
             {
-                ATTRIB_OPT_NUMBER("x", object->mPos1.x);
-                ATTRIB_OPT_NUMBER("y", object->mPos1.y);
-                ATTRIB_OPT_NUMBER("x", object->mPos2.x);
-                ATTRIB_OPT_NUMBER("y", object->mPos2.y);
+                ATTRIB_OPT_FUNC_PARAM("x", object->ParseIntParam, object->mPos1.x);
+                ATTRIB_OPT_FUNC_PARAM("y", object->ParseIntParam, object->mPos1.y);
+                ATTRIB_OPT_FUNC_PARAM("x", object->ParseIntParam, object->mPos2.x);
+                ATTRIB_OPT_FUNC_PARAM("y", object->ParseIntParam, object->mPos2.y);
                 ATTRIB_OPT_FUNC("color", object->ParseColor);
                 ATTRIB_MAN_FUNC("path", object->mPath.Parse);
             }
