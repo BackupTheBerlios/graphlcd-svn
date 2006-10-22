@@ -20,15 +20,26 @@
 typedef enum _eTokenId
 {
 	// current channel
-	tokChannelNumber,
-	tokChannelName,
-	tokChannelShortName,
-	tokChannelProvider,
-	tokChannelPortal,
-	tokChannelSource,
-	tokChannelID,
-	// present event
+    tokChannelNumber,
+    tokChannelName,
+    tokChannelShortName,
+    tokChannelProvider,
+    tokChannelPortal,
+    tokChannelSource,
+    tokChannelID,
+    tokHasTeletext,
+    tokChannelHasTeletext,
+    tokHasMultilang,
+    tokChannelHasMultilang,
+    tokHasDolby,
+    tokChannelHasDolby,
+    tokIsEncrypted,
+    tokChannelIsEncrypted,
+    tokIsRadio,
+    tokChannelIsRadio,
+    // present event
     tokPresentStartDateTime,
+    tokPresentVpsDateTime,
     tokPresentEndDateTime,
     tokPresentDuration,
     tokPresentProgress,
@@ -38,6 +49,7 @@ typedef enum _eTokenId
     tokPresentDescription,
     // following event
     tokFollowingStartDateTime,
+    tokFollowingVpsDateTime,
     tokFollowingEndDateTime,
     tokFollowingDuration,
     tokFollowingTitle,
@@ -49,15 +61,26 @@ typedef enum _eTokenId
 
 static const std::string Tokens[tokCountToken] =
 {
-	"ChannelNumber",
-	"ChannelName",
-	"ChannelShortName",
-	"ChannelProvider",
-	"ChannelPortal",
-	"ChannelSource",
-	"ChannelID",
+    "ChannelNumber",
+    "ChannelName",
+    "ChannelShortName",
+    "ChannelProvider",
+    "ChannelPortal",
+    "ChannelSource",
+    "ChannelID",
+    "HasTeletext",
+    "ChannelHasTeletext",
+    "HasMultilang",
+    "ChannelHasMultilang",
+    "HasDolby",
+    "ChannelHasDolby",
+    "IsEncrypted",
+    "ChannelIsEncrypted",
+    "IsRadio",
+    "ChannelIsRadio",
 
     "PresentStartDateTime",
+    "PresentVpsDateTime",
     "PresentEndDateTime",
     "PresentDuration",
     "PresentProgress",
@@ -67,6 +90,7 @@ static const std::string Tokens[tokCountToken] =
     "PresentDescription",
 
     "FollowingStartDateTime",
+    "FollowingVpsDateTime",
     "FollowingEndDateTime",
     "FollowingDuration",
     "FollowingTitle",
@@ -101,15 +125,40 @@ std::string cGraphLCDSkinConfig::Translate(const std::string & Text) const
 
 GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token) const
 {
-    if (Token.Id >= tokChannelNumber && Token.Id <= tokChannelID)
+    if (Token.Id >= tokChannelNumber && Token.Id <= tokChannelIsRadio)
     {
-        tChannelState channel = mState->GetChannelState();
+        tChannel channel = mState->GetChannelInfo();
         switch (Token.Id)
         {
             case tokChannelNumber:
                 return channel.number;
             case tokChannelName:
-                return channel.str;
+                return channel.name;
+            case tokChannelShortName:
+                return channel.shortName;
+            case tokChannelProvider:
+                return channel.provider;
+            case tokChannelPortal:
+                return channel.portal;
+            case tokChannelSource:
+                return channel.source;
+            case tokChannelID:
+                return (GLCD::cType) channel.id.ToString();
+            case tokHasTeletext:
+            case tokChannelHasTeletext:
+                return channel.hasTeletext;
+            case tokHasMultilang:
+            case tokChannelHasMultilang:
+                return channel.hasMultiLanguage;
+            case tokHasDolby:
+            case tokChannelHasDolby:
+                return channel.hasDolby;
+            case tokIsEncrypted:
+            case tokChannelIsEncrypted:
+                return channel.isEncrypted;
+            case tokIsRadio:
+            case tokChannelIsRadio:
+                return channel.isRadio;
         }
     }
     else if (Token.Id >= tokPresentStartDateTime && Token.Id <= tokPresentDescription)
@@ -119,6 +168,8 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token) const
         {
             case tokPresentStartDateTime:
                 return TimeType(event.startTime, Token.Attrib.Text);
+            case tokPresentVpsDateTime:
+                return TimeType(event.vpsTime, Token.Attrib.Text);
             case tokPresentEndDateTime:
                 return TimeType(event.startTime + event.duration, Token.Attrib.Text);
             case tokPresentDuration:
@@ -146,6 +197,8 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token) const
         {
             case tokFollowingStartDateTime:
                 return TimeType(event.startTime, Token.Attrib.Text);
+            case tokFollowingVpsDateTime:
+                return TimeType(event.vpsTime, Token.Attrib.Text);
             case tokFollowingEndDateTime:
                 return TimeType(event.startTime + event.duration, Token.Attrib.Text);
             case tokFollowingDuration:
