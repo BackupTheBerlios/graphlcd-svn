@@ -46,7 +46,7 @@ cGraphLCDDisplay::cGraphLCDDisplay()
     State = StateNormal;
     LastState = StateNormal;
 
-    showVolume = false;
+    mShowVolume = false;
 }
 
 cGraphLCDDisplay::~cGraphLCDDisplay()
@@ -96,6 +96,7 @@ bool cGraphLCDDisplay::Initialise(GLCD::cDriver * Lcd, const std::string & CfgPa
     }
     mSkin->SetBaseSize(mScreen->Width(), mScreen->Height());
 
+    mLcd->Clear();
     mLcd->Refresh(true);
     mUpdate = true;
 
@@ -126,40 +127,65 @@ void cGraphLCDDisplay::Action(void)
                     mUpdate = true;
                 }
             }
-            if (GraphLCDSetup.ShowVolume && !mUpdate && showVolume)
+
+            if (GraphLCDSetup.ShowVolume)
             {
-                if (currTimeMs - mGraphLCDState->GetVolumeState().lastChange > 2000)
+                tVolumeState volume;
+                volume = mGraphLCDState->GetVolumeState();
+
+                if (volume.lastChange > 0)
                 {
-                    mUpdate = true;
-                    showVolume = false;
-                }
-            }
-
-            switch (State)
-            {
-                case StateNormal:
-                    // update Display every minute or due to an update
-                    if (currTimeMs/60000 != mLastTimeMs/60000 || mUpdate)
+                    if (!mShowVolume)
                     {
-                        mUpdateAt = 0;
-                        mUpdate = false;
-
-                        mGraphLCDState->Update();
-                        GLCD::cSkinDisplay * display = mSkin->Get(GLCD::cSkinDisplay::normal);
-                        mScreen->Clear();
-                        display->Render(mScreen);
-                        mLcd->SetScreen(mScreen->Data(), mScreen->Width(), mScreen->Height(), mScreen->LineSize());
-                        mLcd->Refresh(false);
-                        mLastTimeMs = currTimeMs;
+                        if (currTimeMs - volume.lastChange < 2000)
+                        {
+                            mShowVolume = true;
+                            mUpdate = true;
+                        }
                     }
                     else
                     {
-                        cCondWait::SleepMs(100);
+                        if (currTimeMs - volume.lastChange > 2000)
+                        {
+                            mShowVolume = false;
+                            mUpdate = true;
+                        }
                     }
-                    break;
+                }
+            }
 
-                default:
-                    break;
+            // update Display every minute
+            if (currTimeMs/60000 != mLastTimeMs/60000)
+            {
+                mUpdate = true;
+            }
+
+            if (mUpdate)
+            {
+                mUpdateAt = 0;
+                mUpdate = false;
+
+                mGraphLCDState->Update();
+                GLCD::cSkinDisplay * display = mSkin->Get(GLCD::cSkinDisplay::normal);
+                mScreen->Clear();
+                display->Render(mScreen);
+                if (mShowVolume)
+                {
+                    display = mSkin->Get(GLCD::cSkinDisplay::volume);
+                    display->Render(mScreen);
+                }
+                if (GraphLCDSetup.ShowMessages && mGraphLCDState->ShowMessage())
+                {
+                    display = mSkin->Get(GLCD::cSkinDisplay::message);
+                    display->Render(mScreen);
+                }
+                mLcd->SetScreen(mScreen->Data(), mScreen->Width(), mScreen->Height(), mScreen->LineSize());
+                mLcd->Refresh(false);
+                mLastTimeMs = currTimeMs;
+            }
+            else
+            {
+                cCondWait::SleepMs(100);
             }
         }
         else

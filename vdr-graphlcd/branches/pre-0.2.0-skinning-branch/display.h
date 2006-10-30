@@ -71,7 +71,7 @@ private:
     cMutex mMutex;
     cGraphLCDState * mGraphLCDState;
 
-    bool showVolume;
+    bool mShowVolume;
 
     void UpdateIn(uint64_t msec);
 };

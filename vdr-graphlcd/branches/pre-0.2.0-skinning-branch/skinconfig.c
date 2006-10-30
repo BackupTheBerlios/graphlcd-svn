@@ -20,6 +20,7 @@
 typedef enum _eTokenId
 {
 	// current channel
+	tokChannelStart,
     tokChannelNumber,
     tokChannelName,
     tokChannelShortName,
@@ -37,7 +38,11 @@ typedef enum _eTokenId
     tokChannelIsEncrypted,
     tokIsRadio,
     tokChannelIsRadio,
+    tokChannelAlias,
+    tokChannelEnd,
+
     // present event
+    tokPresentStart,
     tokPresentStartDateTime,
     tokPresentVpsDateTime,
     tokPresentEndDateTime,
@@ -47,7 +52,10 @@ typedef enum _eTokenId
     tokPresentTitle,
     tokPresentShortText,
     tokPresentDescription,
+    tokPresentEnd,
+
     // following event
+    tokFollowingStart,
     tokFollowingStartDateTime,
     tokFollowingVpsDateTime,
     tokFollowingEndDateTime,
@@ -55,12 +63,30 @@ typedef enum _eTokenId
     tokFollowingTitle,
     tokFollowingShortText,
     tokFollowingDescription,
+    tokFollowingEnd,
+
+    // volume display
+    tokVolumeStart,
+    tokVolumeCurrent,
+    tokVolumeTotal,
+    tokIsMute,
+    tokVolumeIsMute,
+    tokVolumeEnd,
+
+    tokOsdStart,
+    tokMessage,
+    tokOsdEnd,
+
+    tokDateTime,
+    tokConfigPath,
+    tokSkinPath,
 
     tokCountToken
 } eTokenId;
 
 static const std::string Tokens[tokCountToken] =
 {
+    "privateChannelStart",
     "ChannelNumber",
     "ChannelName",
     "ChannelShortName",
@@ -78,7 +104,10 @@ static const std::string Tokens[tokCountToken] =
     "ChannelIsEncrypted",
     "IsRadio",
     "ChannelIsRadio",
+    "ChannelAlias",
+    "privateChannelEnd",
 
+    "privatePresentStart",
     "PresentStartDateTime",
     "PresentVpsDateTime",
     "PresentEndDateTime",
@@ -88,20 +117,40 @@ static const std::string Tokens[tokCountToken] =
     "PresentTitle",
     "PresentShortText",
     "PresentDescription",
+    "privatePresentEnd",
 
+    "privateFollowingStart",
     "FollowingStartDateTime",
     "FollowingVpsDateTime",
     "FollowingEndDateTime",
     "FollowingDuration",
     "FollowingTitle",
     "FollowingShortText",
-    "FollowingDescription"
+    "FollowingDescription",
+    "privateFollowingEnd",
+
+    "privateVolumeStart",
+    "VolumeCurrent",
+    "VolumeTotal",
+    "IsMute",
+    "VolumeIsMute",
+    "privateVolumeEnd",
+
+    "privateOsdStart",
+    "Message",
+    "privateOsdEnd",
+
+    "DateTime",
+    "ConfigPath",
+    "SkinPath"
 };
 
 cGraphLCDSkinConfig::cGraphLCDSkinConfig(const std::string & CfgPath, const std::string & SkinName, cGraphLCDState * State)
 {
+    mConfigPath = CfgPath;
     mSkinPath = CfgPath + "/skins/" + SkinName;
     mState = State;
+    mAliasList.Load(CfgPath);
 }
 
 cGraphLCDSkinConfig::~cGraphLCDSkinConfig()
@@ -125,7 +174,7 @@ std::string cGraphLCDSkinConfig::Translate(const std::string & Text) const
 
 GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token) const
 {
-    if (Token.Id >= tokChannelNumber && Token.Id <= tokChannelIsRadio)
+    if (Token.Id > tokChannelStart && Token.Id < tokChannelEnd)
     {
         tChannel channel = mState->GetChannelInfo();
         switch (Token.Id)
@@ -159,9 +208,20 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token) const
             case tokIsRadio:
             case tokChannelIsRadio:
                 return channel.isRadio;
+            case tokChannelAlias:
+            {
+                char tmp[64];
+                std::string alias;
+
+                sprintf(tmp, "%d-%d-%d", channel.id.Nid(), channel.id.Tid(), channel.id.Sid());
+                alias = mAliasList.GetAlias(tmp);
+                return alias;
+            }
+            default:
+                break;
         }
     }
-    else if (Token.Id >= tokPresentStartDateTime && Token.Id <= tokPresentDescription)
+    else if (Token.Id > tokPresentStart && Token.Id < tokPresentEnd)
     {
         tEvent event = mState->GetPresentEvent();
         switch (Token.Id)
@@ -188,9 +248,11 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token) const
                 return event.shortText;
             case tokPresentDescription:
                 return event.description;
+            default:
+                break;
         }
     }
-    else if (Token.Id >= tokFollowingStartDateTime && Token.Id <= tokFollowingDescription)
+    else if (Token.Id > tokFollowingStart && Token.Id < tokFollowingEnd)
     {
         tEvent event = mState->GetFollowingEvent();
         switch (Token.Id)
@@ -209,6 +271,49 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token) const
                 return event.shortText;
             case tokFollowingDescription:
                 return event.description;
+            default:
+                break;
+        }
+    }
+    else if (Token.Id > tokVolumeStart && Token.Id < tokVolumeEnd)
+    {
+        tVolumeState volume = mState->GetVolumeState();
+        switch (Token.Id)
+        {
+            case tokVolumeCurrent:
+                return volume.value;
+            case tokVolumeTotal:
+                return 255;
+            case tokIsMute:
+            case tokVolumeIsMute:
+                return volume.value == 0;
+            default:
+                break;
+        }
+    }
+    else if (Token.Id > tokOsdStart && Token.Id < tokOsdEnd)
+    {
+        tOsdState osd = mState->GetOsdState();
+        switch (Token.Id)
+        {
+            case tokMessage:
+                return osd.message;
+            default:
+                break;
+        }
+    }
+    else
+    {
+        switch (Token.Id)
+        {
+            case tokDateTime:
+                return TimeType(time(NULL), Token.Attrib.Text);
+            case tokConfigPath:
+                return mConfigPath;
+            case tokSkinPath:
+                return mSkinPath;
+            default:
+                break;
         }
     }
     return "";

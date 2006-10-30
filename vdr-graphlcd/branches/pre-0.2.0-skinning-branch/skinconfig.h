@@ -12,11 +12,15 @@
 #ifndef _GRAPHLCD_SKINCONFIG_H_
 #define _GRAPHLCD_SKINCONFIG_H_
 
+#include "alias.h"
+
 class cGraphLCDSkinConfig : public GLCD::cSkinConfig
 {
 private:
+    std::string mConfigPath;
     std::string mSkinPath;
     cGraphLCDState * mState;
+    cChannelAliasList mAliasList;
 public:
     cGraphLCDSkinConfig(const std::string & CfgPath, const std::string & SkinName, cGraphLCDState * State);
     virtual ~cGraphLCDSkinConfig();

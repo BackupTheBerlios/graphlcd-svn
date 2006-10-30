@@ -9,7 +9,8 @@
 #ifndef _GRAPHLCD_STATE_H_
 #define _GRAPHLCD_STATE_H_
 
-#include <string.h>
+#include <map>
+#include <string>
 
 #include <vdr/status.h>
 
@@ -64,8 +65,7 @@ struct tReplayState
 
 struct tCardState
 {
-    int recordingCount;
-    std::string recordingName;
+    std::map<std::string, std::string> recordings;
 };
 
 struct tOsdState
@@ -82,7 +82,7 @@ struct tOsdState
 struct tVolumeState
 {
     int value;
-    unsigned long long lastChange;
+    uint64_t lastChange;
 };
 
 class cGraphLCDDisplay;
@@ -99,10 +99,10 @@ private:
     tChannel mChannel;
     tEvent mPresent;
     tEvent mFollowing;
-    tReplayState replay;
-    tCardState card[MAXDEVICES];
+    tReplayState mReplay;
+    tCardState mCards[MAXDEVICES];
     tOsdState osd;
-    tVolumeState volume;
+    tVolumeState mVolume;
 
     void SetChannel(int ChannelNumber);
     void UpdateChannelInfo(void);
@@ -135,6 +135,7 @@ public:
     tCardState GetCardState(int number);
     tOsdState GetOsdState();
     tVolumeState GetVolumeState();
+    bool ShowMessage();
 };
 
 #endif
