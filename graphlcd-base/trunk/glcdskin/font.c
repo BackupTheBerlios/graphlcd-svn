@@ -16,7 +16,7 @@ bool cSkinFont::ParseUrl(const std::string & url)
     if (url.find("fnt:") == 0)
     {
         type = ftFNT;
-        if (url[4] == '/')
+        if (url[4] == '/' || url.find("./") == 4 || url.find("../") == 4)
             file = url.substr(4);
         else
         {
@@ -43,7 +43,7 @@ bool cSkinFont::ParseUrl(const std::string & url)
         }
         std::string tmp = url.substr(pos + 1);
         size = atoi(tmp.c_str());
-        if (url[4] == '/')
+        if (url[4] == '/' || url.find("./") == 4 || url.find("../") == 4)
             file = url.substr(4, pos - 4);
         else
         {

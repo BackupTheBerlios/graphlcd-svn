@@ -123,7 +123,7 @@ cImageItem * cImageCache::LoadImage(const std::string & path)
     if (!image)
         return NULL;
 
-    if (path[0] == '/')
+    if (path[0] == '/' || path.find("./") == 0 || path.find("../") == 0)
         file = path;
     else
     {
