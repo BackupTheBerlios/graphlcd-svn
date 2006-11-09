@@ -54,9 +54,7 @@ cGraphLCDState::cGraphLCDState(cGraphLCDDisplay * Display)
     mReplay.control = NULL;
     mReplay.mode = eReplayNormal;
     mReplay.current = 0;
-    mReplay.currentLast = FRAMESPERSEC;
     mReplay.total = 0;
-    mReplay.totalLast = 1;
 
     osd.currentItem = "";
     osd.title = "";
@@ -295,8 +293,6 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name, cons
                     mReplay.name = Name;
                 }
             }
-            mReplay.currentLast = FRAMESPERSEC;
-            mReplay.totalLast = 1;
             mutex.Unlock();
         }
         else
@@ -306,7 +302,7 @@ void cGraphLCDState::Replaying(const cControl * Control, const char * Name, cons
             mutex.Unlock();
             SetChannel(mChannel.number);
         }
-        //mDisplay->Replaying(On, mReplay.mode);
+        mDisplay->Replaying(On);
     }
 }
 
@@ -351,6 +347,7 @@ void cGraphLCDState::Tick()
 
         if (mReplay.control)
         {
+            mReplay.control->GetReplayMode(mReplay.play, mReplay.forward, mReplay.speed);
             if (mReplay.control->GetIndex(mReplay.current, mReplay.total, false))
             {
                 mReplay.total = (mReplay.total == 0) ? 1 : mReplay.total;
@@ -681,10 +678,32 @@ void cGraphLCDState::UpdateEventInfo(void)
     mutex.Unlock();
 }
 
+void cGraphLCDState::UpdateReplayInfo(void)
+{
+    mutex.Lock();
+    if (!tickUsed)
+    {
+        if (mReplay.control)
+        {
+            mReplay.control->GetReplayMode(mReplay.play, mReplay.forward, mReplay.speed);
+            if (mReplay.control->GetIndex(mReplay.current, mReplay.total, false))
+            {
+                mReplay.total = (mReplay.total == 0) ? 1 : mReplay.total;
+            }
+            else
+            {
+                mReplay.control = NULL;
+            }
+        }
+    }
+    mutex.Unlock();
+}
+
 void cGraphLCDState::Update()
 {
     UpdateChannelInfo();
     UpdateEventInfo();
+    UpdateReplayInfo();
 }
 
 tChannel cGraphLCDState::GetChannelInfo()
@@ -725,42 +744,7 @@ tReplayState cGraphLCDState::GetReplayState()
     tReplayState ret;
 
     mutex.Lock();
-
-    if (tickUsed)
-    {
-        if (mReplay.control)
-        {
-            ret = mReplay;
-            mReplay.currentLast = mReplay.current;
-            mReplay.totalLast = mReplay.total;
-        }
-        else
-        {
-            ret = mReplay;
-        }
-    }
-    else
-    {
-        if (mReplay.control)
-        {
-            if (mReplay.control->GetIndex(mReplay.current, mReplay.total, false))
-            {
-                mReplay.total = (mReplay.total == 0) ? 1 : mReplay.total;
-                ret = mReplay;
-                mReplay.currentLast = mReplay.current;
-                mReplay.totalLast = mReplay.total;
-            }
-            else
-            {
-                mReplay.control = NULL;
-                ret = mReplay;
-            }
-        }
-        else
-        {
-            ret = mReplay;
-        }
-    }
+    ret = mReplay;
     mutex.Unlock();
 
     return ret;

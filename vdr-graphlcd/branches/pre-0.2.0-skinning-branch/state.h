@@ -58,9 +58,10 @@ struct tReplayState
     cControl * control;
     eReplayMode mode;
     int current;
-    int currentLast;
     int total;
-    int totalLast;
+    bool play;
+    bool forward;
+    int speed;
 };
 
 struct tCardState
@@ -107,6 +108,7 @@ private:
     void SetChannel(int ChannelNumber);
     void UpdateChannelInfo(void);
     void UpdateEventInfo(void);
+    void UpdateReplayInfo(void);
 protected:
     virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber);
     virtual void Recording(const cDevice *Device, const char *Name, const char *FileName, bool On);
