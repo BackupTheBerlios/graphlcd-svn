@@ -20,7 +20,7 @@
 typedef enum _eTokenId
 {
 	// current channel
-	tokChannelStart,
+	tokPrivateChannelStart,
     tokChannelNumber,
     tokChannelName,
     tokChannelShortName,
@@ -39,10 +39,10 @@ typedef enum _eTokenId
     tokIsRadio,
     tokChannelIsRadio,
     tokChannelAlias,
-    tokChannelEnd,
+    tokPrivateChannelEnd,
 
     // present event
-    tokPresentStart,
+    tokPrivatePresentStart,
     tokPresentStartDateTime,
     tokPresentVpsDateTime,
     tokPresentEndDateTime,
@@ -52,10 +52,10 @@ typedef enum _eTokenId
     tokPresentTitle,
     tokPresentShortText,
     tokPresentDescription,
-    tokPresentEnd,
+    tokPrivatePresentEnd,
 
     // following event
-    tokFollowingStart,
+    tokPrivateFollowingStart,
     tokFollowingStartDateTime,
     tokFollowingVpsDateTime,
     tokFollowingEndDateTime,
@@ -63,19 +63,43 @@ typedef enum _eTokenId
     tokFollowingTitle,
     tokFollowingShortText,
     tokFollowingDescription,
-    tokFollowingEnd,
+    tokPrivateFollowingEnd,
 
     // volume display
-    tokVolumeStart,
+    tokPrivateVolumeStart,
     tokVolumeCurrent,
     tokVolumeTotal,
     tokIsMute,
     tokVolumeIsMute,
-    tokVolumeEnd,
+    tokPrivateVolumeEnd,
 
-    tokOsdStart,
+    tokPrivateReplayStart,
+    tokReplayTitle,
+    tokReplayPositionIndex,
+    tokReplayDurationIndex,
+    tokIsPlaying,
+    tokReplayIsPlaying,
+    tokIsFastForward,
+    tokReplayIsFastForward,
+    tokIsFastRewind,
+    tokReplayIsFastRewind,
+    tokIsSlowForward,
+    tokReplayIsSlowForward,
+    tokIsSlowRewind,
+    tokReplayIsSlowRewind,
+    tokIsPausing,
+    tokReplayIsPausing,
+    tokReplayPosition,
+    tokReplayDuration,
+    tokReplayRemaining,
+    tokReplayMode,
+    tokReplayIsShuffle,
+    tokReplayIsLoop,
+    tokPrivateReplayEnd,
+
+    tokPrivateOsdStart,
     tokMessage,
-    tokOsdEnd,
+    tokPrivateOsdEnd,
 
     tokDateTime,
     tokConfigPath,
@@ -136,6 +160,30 @@ static const std::string Tokens[tokCountToken] =
     "VolumeIsMute",
     "privateVolumeEnd",
 
+    "privateReplayStart",
+    "ReplayTitle",
+    "ReplayPositionIndex",
+    "ReplayDurationIndex",
+    "IsPlaying",
+    "ReplayIsPlaying",
+    "IsFastForward",
+    "ReplayIsFastForward",
+    "IsFastRewind",
+    "ReplayIsFastRewind",
+    "IsSlowForward",
+    "ReplayIsSlowForward",
+    "IsSlowRewind",
+    "ReplayIsSlowRewind",
+    "IsPausing",
+    "ReplayIsPausing",
+    "ReplayPosition",
+    "ReplayDuration",
+    "ReplayRemaining",
+    "ReplayMode",
+    "ReplayIsShuffle",
+    "ReplayIsLoop",
+    "privateReplayEnd",
+
     "privateOsdStart",
     "Message",
     "privateOsdEnd",
@@ -174,7 +222,7 @@ std::string cGraphLCDSkinConfig::Translate(const std::string & Text) const
 
 GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token) const
 {
-    if (Token.Id > tokChannelStart && Token.Id < tokChannelEnd)
+    if (Token.Id > tokPrivateChannelStart && Token.Id < tokPrivateChannelEnd)
     {
         tChannel channel = mState->GetChannelInfo();
         switch (Token.Id)
@@ -221,7 +269,7 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token) const
                 break;
         }
     }
-    else if (Token.Id > tokPresentStart && Token.Id < tokPresentEnd)
+    else if (Token.Id > tokPrivatePresentStart && Token.Id < tokPrivatePresentEnd)
     {
         tEvent event = mState->GetPresentEvent();
         switch (Token.Id)
@@ -252,7 +300,7 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token) const
                 break;
         }
     }
-    else if (Token.Id > tokFollowingStart && Token.Id < tokFollowingEnd)
+    else if (Token.Id > tokPrivateFollowingStart && Token.Id < tokPrivateFollowingEnd)
     {
         tEvent event = mState->GetFollowingEvent();
         switch (Token.Id)
@@ -275,7 +323,7 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token) const
                 break;
         }
     }
-    else if (Token.Id > tokVolumeStart && Token.Id < tokVolumeEnd)
+    else if (Token.Id > tokPrivateVolumeStart && Token.Id < tokPrivateVolumeEnd)
     {
         tVolumeState volume = mState->GetVolumeState();
         switch (Token.Id)
@@ -291,7 +339,73 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token) const
                 break;
         }
     }
-    else if (Token.Id > tokOsdStart && Token.Id < tokOsdEnd)
+    else if (Token.Id > tokPrivateReplayStart && Token.Id < tokPrivateReplayEnd)
+    {
+        tReplayState replay = mState->GetReplayState();
+        switch (Token.Id)
+        {
+            case tokReplayTitle:
+                return replay.name;
+            case tokReplayPositionIndex:
+                return DurationType(replay.current, Token.Attrib.Text);
+            case tokReplayDurationIndex:
+                return DurationType(replay.total, Token.Attrib.Text);
+            case tokReplayPosition:
+                return replay.current;
+            case tokReplayDuration:
+                return replay.total;
+            case tokReplayRemaining:
+                return DurationType(replay.total - replay.current, Token.Attrib.Text);
+            case tokIsPlaying:
+            case tokReplayIsPlaying:
+                return replay.play && replay.speed == -1;
+            case tokIsPausing:
+            case tokReplayIsPausing:
+                return !replay.play && replay.speed == -1;
+            case tokIsFastForward:
+            case tokReplayIsFastForward:
+                if (replay.play && replay.forward && replay.speed != -1)
+                {
+                    return Token.Attrib.Type == GLCD::aNumber
+                        ? (GLCD::cType) (replay.speed == Token.Attrib.Number)
+                        : (GLCD::cType) true;
+                }
+                return false;
+            case tokIsFastRewind:
+            case tokReplayIsFastRewind:
+                if (replay.play && !replay.forward && replay.speed != -1)
+                {
+                    return Token.Attrib.Type == GLCD::aNumber
+                        ? (GLCD::cType) (replay.speed == Token.Attrib.Number)
+                        : (GLCD::cType) true;
+                }
+                return false;
+            case tokIsSlowForward:
+            case tokReplayIsSlowForward:
+                if (!replay.play && replay.forward && replay.speed != -1)
+                {
+                    return Token.Attrib.Type == GLCD::aNumber
+                        ? (GLCD::cType) (replay.speed == Token.Attrib.Number)
+                        : (GLCD::cType) true;
+                }
+                return false;
+            case tokIsSlowRewind:
+            case tokReplayIsSlowRewind:
+                if (!replay.play && !replay.forward && replay.speed != -1)
+                {
+                    return Token.Attrib.Type == GLCD::aNumber
+                        ? (GLCD::cType) (replay.speed == Token.Attrib.Number)
+                        : (GLCD::cType) true;
+                }
+                return false;
+            case tokReplayMode:
+            case tokReplayIsShuffle:
+            case tokReplayIsLoop:
+            default:
+                break;
+        }
+    }
+    else if (Token.Id > tokPrivateOsdStart && Token.Id < tokPrivateOsdEnd)
     {
         tOsdState osd = mState->GetOsdState();
         switch (Token.Id)
