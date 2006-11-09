@@ -43,8 +43,8 @@ cGraphLCDDisplay::cGraphLCDDisplay()
     mCfgPath = "";
     mSkinName = "";
 
-    State = StateNormal;
-    LastState = StateNormal;
+    mState = StateNormal;
+    mLastState = StateNormal;
 
     mShowVolume = false;
 }
@@ -155,7 +155,13 @@ void cGraphLCDDisplay::Action(void)
             }
 
             // update Display every minute
-            if (currTimeMs/60000 != mLastTimeMs/60000)
+            if (mState == StateNormal && currTimeMs/60000 != mLastTimeMs/60000)
+            {
+                mUpdate = true;
+            }
+
+            // update Display every second in replay state
+            if (mState == StateReplay && currTimeMs/1000 != mLastTimeMs/1000)
             {
                 mUpdate = true;
             }
@@ -166,18 +172,26 @@ void cGraphLCDDisplay::Action(void)
                 mUpdate = false;
 
                 mGraphLCDState->Update();
-                GLCD::cSkinDisplay * display = mSkin->Get(GLCD::cSkinDisplay::normal);
+
                 mScreen->Clear();
-                display->Render(mScreen);
+                GLCD::cSkinDisplay * display;
+                if (mState == StateNormal)
+                    display = mSkin->Get(GLCD::cSkinDisplay::normal);
+                if (mState == StateReplay)
+                    display = mSkin->Get(GLCD::cSkinDisplay::replay);
+                if (display)
+                    display->Render(mScreen);
                 if (mShowVolume)
                 {
                     display = mSkin->Get(GLCD::cSkinDisplay::volume);
-                    display->Render(mScreen);
+                    if (display)
+                        display->Render(mScreen);
                 }
                 if (GraphLCDSetup.ShowMessages && mGraphLCDState->ShowMessage())
                 {
                     display = mSkin->Get(GLCD::cSkinDisplay::message);
-                    display->Render(mScreen);
+                    if (display)
+                        display->Render(mScreen);
                 }
                 mLcd->SetScreen(mScreen->Data(), mScreen->Width(), mScreen->Height(), mScreen->LineSize());
                 mLcd->Refresh(false);
@@ -210,4 +224,31 @@ void cGraphLCDDisplay::UpdateIn(uint64_t msec)
     {
         mUpdateAt = cTimeMs::Now() + msec;
     }
+}
+
+void cGraphLCDDisplay::Replaying(bool Starting)
+{
+    if (Starting)
+    {
+        if (mState != StateMenu)
+        {
+            mState = StateReplay;
+        }
+        else
+        {
+            mLastState = StateReplay;
+        }
+    }
+    else
+    {
+        if (mState != StateMenu)
+        {
+            mState = StateNormal;
+        }
+        else
+        {
+            mLastState = StateNormal;
+        }
+    }
+    Update();
 }

@@ -45,9 +45,9 @@ public:
     ~cGraphLCDDisplay(void);
 
     bool Initialise(GLCD::cDriver * Lcd, const std::string & CfgPath, const std::string & SkinName);
-    void Tick(void);
-
+    void Tick();
     void Update();
+    void Replaying(bool Starting);
 
 protected:
     virtual void Action();
@@ -65,8 +65,8 @@ private:
     std::string mCfgPath;
     std::string mSkinName;
 
-    eThreadState State;
-    eThreadState LastState;
+    eThreadState mState;
+    eThreadState mLastState;
 
     cMutex mMutex;
     cGraphLCDState * mGraphLCDState;
