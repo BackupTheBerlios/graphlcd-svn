@@ -32,6 +32,7 @@ private:
 
     int   supports_options;
     long  fg_colour;
+    long  bg_colour;
 
     void* sdhnd; // serdisplib handle
     void* dd;    // display descriptor

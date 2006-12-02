@@ -74,6 +74,7 @@ int cDriverSerDisp::Init(void)
     /* pre-init some flags, function pointers, ... */
     supports_options = 0;
     fg_colour = 1;
+    bg_colour = -1;
 
     // get serdisp version
     fp_serdisp_getversioncode = (long int (*)()) dlsym(sdhnd, "serdisp_getversioncode");
@@ -97,12 +98,6 @@ int cDriverSerDisp::Init(void)
             if ( (errmsg = dlerror()) != NULL  ) { // should not happen
                 syslog(LOG_ERR, "%s: error: cannot load symbol %s. Err:%s (cDriver::Init)\n",
                     config->name.c_str(), "PP_close", errmsg);
-                return -1;
-            }
-            fp_serdisp_close = (void (*)(void*))dlsym(sdhnd, "serdisp_close");
-            if ( (errmsg = dlerror()) != NULL  ) { // should not happen
-                syslog(LOG_ERR, "%s: error: cannot load symbol %s. Err:%s (cDriver::Init)\n",
-                    config->name.c_str(), "serdisp_close", errmsg);
                 return -1;
             }
         } else {
@@ -205,6 +200,13 @@ int cDriverSerDisp::Init(void)
         return -1;
     }
 
+    fp_serdisp_close = (void (*)(void*))dlsym(sdhnd, "serdisp_close");
+    if ( (errmsg = dlerror()) != NULL  ) { // should not happen
+        syslog(LOG_ERR, "%s: error: cannot load symbol %s. Err:%s (cDriver::Init)\n",
+            config->name.c_str(), "serdisp_close", errmsg);
+        return -1;
+    }
+
     fp_serdisp_getwidth = (int (*)(void*)) dlsym(sdhnd, "serdisp_getwidth");
     if ( (errmsg = dlerror()) != NULL  ) { // should not happen
         syslog(LOG_ERR, "%s: error: cannot load symbol %s. Err:%s (cDriver::Init)\n",
@@ -234,6 +236,12 @@ int cDriverSerDisp::Init(void)
             optionstring = config->options[i].value;
         } else if (config->options[i].name == "Wiring") {
             wiringstring = config->options[i].value;
+        } else if (config->options[i].name == "FGColour") {
+            fg_colour = strtoul(config->options[i].value.c_str(), (char **)NULL, 0);
+            fg_colour |= 0xFF000000L;  /* force alpha to 0xFF */
+        } else if (config->options[i].name == "BGColour") {
+            bg_colour = strtoul(config->options[i].value.c_str(), (char **)NULL, 0);
+            bg_colour |= 0xFF000000L;  /* force alpha to 0xFF */
         }
     }
 
@@ -265,8 +273,11 @@ int cDriverSerDisp::Init(void)
             sdcd = fp_SDCONN_open(temp);
         }
 
-        if (sdcd == 0)
+        if (sdcd == 0) {
+            syslog(LOG_ERR, "%s: error: unable to open port 0x%x for display %s. (cDriver::Init)\n",
+                config->name.c_str(), config->port, controller.c_str());
             return -1;
+        }
 
         uSleep(10);
     }
@@ -279,8 +290,11 @@ int cDriverSerDisp::Init(void)
             sdcd = fp_SDCONN_open(config->device.c_str());
         }
 
-        if (sdcd == 0)
+        if (sdcd == 0) {
+            syslog(LOG_ERR, "%s: error: unable to open device %s for display %s. (cDriver::Init)\n",
+                config->name.c_str(), config->device.c_str(), controller.c_str());
             return -1;
+        }
     }
 
     if (serdisp_version < SERDISP_VERSION(1,95) )
@@ -343,7 +357,9 @@ int cDriverSerDisp::DeInit(void)
         fp_PP_close(sdcd);
         sdcd = NULL;
     } else {
-        fp_serdisp_quit(dd);
+        //fp_serdisp_quit(dd);
+        /* use serdisp_close instead of serdisp_quit so that showpic and showtext are usable together with serdisplib */
+        fp_serdisp_close(dd);
     }
     (int) dlclose(sdhnd);
     sdhnd = NULL;
@@ -411,19 +427,29 @@ int cDriverSerDisp::CheckSetup()
 
 void cDriverSerDisp::Clear(void)
 {
-    fp_serdisp_clearbuffer(dd);
+    if (bg_colour == -1)
+        fp_serdisp_clearbuffer(dd);
+    else {  /* if bg_colour is set, draw background 'by hand' */
+        int x,y;
+        for (y = 0; y < fp_serdisp_getheight(dd); y++)
+            for (x = 0; x < fp_serdisp_getwidth(dd); x++)
+                fp_serdisp_setpixcol(dd, x, y, bg_colour);   /* >= 1.95: serdisp_setcolour(), < 1.95: serdisp_setpixel() */
+    }
 }
 
 void cDriverSerDisp::Set8Pixels(int x, int y, unsigned char data) {
-    int i, start;
+    int i, start, pixel;
 
     data = ReverseBits(data);
 
     start = (x >> 3) << 3;
 
     for (i = 0; i < 8; i++) {
-        if (data & (1 << i))
+        pixel = data & (1 << i);
+        if (pixel)
             fp_serdisp_setpixcol(dd, start + i, y, fg_colour);   /* >= 1.95: serdisp_setcolour(), < 1.95: serdisp_setpixel() */
+        else if (!pixel && bg_colour != -1)  /* if bg_colour is set: use it if pixel is not set */
+            fp_serdisp_setpixcol(dd, start + i, y, bg_colour);   /* >= 1.95: serdisp_setcolour(), < 1.95: serdisp_setpixel() */
     }
 }
 
