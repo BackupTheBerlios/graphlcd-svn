@@ -35,7 +35,7 @@ private:
     void CmdDispClearScreen(void);
     void CmdDispSwitchScreen(void);
     void CmdDispSetBrightness(unsigned char percent);
-    void CmdDispSetColData(unsigned char column, unsigned char offset, unsigned short length, unsigned char * data);
+    void CmdDispSetColData(uint16_t column, uint16_t offset, uint16_t length, uint8_t * data);
     void CmdDispUpdate(void);
 
     int CheckSetup();

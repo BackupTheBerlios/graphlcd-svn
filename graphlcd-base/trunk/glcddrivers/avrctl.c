@@ -316,7 +316,7 @@ void cDriverAvrCtl::CmdDispSetBrightness(uint8_t percent)
     WaitForAck();
 }
 
-void cDriverAvrCtl::CmdDispSetColData(uint8_t column, uint8_t offset, uint16_t length, uint8_t * data)
+void cDriverAvrCtl::CmdDispSetColData(uint16_t column, uint16_t offset, uint16_t length, uint8_t * data)
 {
     uint8_t cmd[2560];
 
