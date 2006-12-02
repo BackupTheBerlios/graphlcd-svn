@@ -37,6 +37,7 @@ enum eDriver
     kDriverImage         = 11,
     kDriverNoritake800   = 12,
     kDriverAvrCtl        = 13,
+    kDriverNetwork       = 14,
     kDriverSerDisp       = 100,
     kDriverG15daemon     = 200
 };
