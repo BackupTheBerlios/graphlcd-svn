@@ -14,7 +14,7 @@ LIBNAME = $(BASENAME).$(VERMAJOR).$(VERMINOR).$(VERMICRO)
 
 OBJS = common.o config.o driver.o drivers.o port.o simlcd.o framebuffer.o gu140x32f.o gu256x64-372.o gu256x64-3900.o hd61830.o ks0108.o image.o sed1330.o sed1520.o t6963c.o noritake800.o serdisp.o avrctl.o g15daemon.o network.o
 
-HEADERS = config.h driver.h drivers.h port.h simlcd.h framebuffer.h gu140x32f.h gu256x64-372.h gu256x64-3900.h hd61830.h ks0108.h image.h sed1330.h sed1520.h t6963c.h noritake800.h serdisp.h avrctl.h g15daemon.h network.h
+HEADERS = config.h driver.h drivers.h
 
 
 ### Implicit rules:
@@ -36,7 +36,7 @@ $(DEPFILE): Makefile
 all: $(LIBNAME)
 
 $(LIBNAME): $(OBJS)
-	$(CXX) $(CXXFLAGS) -shared $(OBJS) $(LIBS) -ldl -Wl,-soname="$(BASENAME).$(VERMAJOR)" -o $@
+	$(CXX) $(CXXFLAGS) -shared $(OBJS) $(LIBS) -ldl -lpthread -Wl,-soname="$(BASENAME).$(VERMAJOR)" -o $@
 	ln -sf $(LIBNAME) $(BASENAME)
 
 install: all
