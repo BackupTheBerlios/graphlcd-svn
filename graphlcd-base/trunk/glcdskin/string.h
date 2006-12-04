@@ -67,13 +67,14 @@ struct tSkinToken
 {
     int         Id;
     std::string Name;
-    uint        Offset;
+    uint32_t    Offset;
     tSkinAttrib Attrib;
+    int         MaxItems;
     int         Index;
     int         Tab;
 
     tSkinToken(void);
-    tSkinToken(int id, std::string n, uint o, const std::string & a);
+    tSkinToken(int id, std::string n, uint32_t o, const std::string & a);
 
     friend bool operator< (const tSkinToken & A, const tSkinToken & B);
 
@@ -105,16 +106,17 @@ public:
     bool Parse(const std::string & Text, bool Translate = false);
     cType Evaluate(void) const;
 
-    void SetListIndex(uint Index, int Tab);
+    void SetListIndex(int MaxItems, int Index, int Tab);
 
     cSkinObject * Object(void) const { return mObject; }
     cSkin * Skin(void) const { return mSkin; }
 };
 
-inline void cSkinString::SetListIndex(uint Index, int Tab)
+inline void cSkinString::SetListIndex(int MaxItems, int Index, int Tab)
 {
-    for (uint i = 0; i < mTokens.size(); ++i)
+    for (uint32_t i = 0; i < mTokens.size(); ++i)
     {
+        mTokens[i].MaxItems = MaxItems;
         mTokens[i].Index = Index;
         mTokens[i].Tab = Tab;
     }

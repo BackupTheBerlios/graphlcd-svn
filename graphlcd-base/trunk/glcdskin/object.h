@@ -112,10 +112,11 @@ public:
     bool ParseWidth(const std::string &Text);
     bool ParseHeight(const std::string &Text);
 
-    void SetListIndex(uint Index, int Tab);
+    void SetListIndex(int MaxItems, int Index, int Tab);
 
     eType Type(void) const { return mType; }
-    cSkinDisplay * Display(void) const { return mDisplay; }
+    cSkinFunction * Condition(void) const { return mCondition; }
+	cSkinDisplay * Display(void) const { return mDisplay; }
     cSkin * Skin(void) const { return mSkin; }
 
     const std::string & TypeName(void) const;

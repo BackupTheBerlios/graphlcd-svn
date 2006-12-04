@@ -25,11 +25,12 @@ tSkinToken::tSkinToken(void)
 {
 }
 
-tSkinToken::tSkinToken(int id, std::string n, uint o, const std::string & a)
+tSkinToken::tSkinToken(int id, std::string n, uint32_t o, const std::string & a)
 :   Id(id),
     Name(n),
     Offset(o),
     Attrib(a),
+    MaxItems(-1),
     Index(-1),
     Tab(-1)
 {
@@ -211,7 +212,7 @@ cType cSkinString::Evaluate(void) const
     if (mText.length() == 0 && mTokens.size() == 1)
         return mSkin->Config().GetToken(mTokens[0]);
 
-    for (uint i = 0; i < mTokens.size(); ++i) {
+    for (uint32_t i = 0; i < mTokens.size(); ++i) {
         result.append(mText.c_str() + offset, mTokens[i].Offset - offset);
         result.append(mSkin->Config().GetToken(mTokens[i]));
         offset = mTokens[i].Offset;

@@ -181,6 +181,14 @@ bool cSkinObject::ParseFontFace(const std::string & Text)
     return mFont.Parse(Text);
 }
 
+void cSkinObject::SetListIndex(int MaxItems, int Index, int Tab)
+{
+    mText.SetListIndex(MaxItems, Index, Tab);
+    mPath.SetListIndex(MaxItems, Index, Tab);
+    if (mCondition != NULL)
+        mCondition->SetListIndex(MaxItems, Index, Tab);
+}
+
 const std::string & cSkinObject::TypeName(void) const
 {
     return ObjectNames[mType];
@@ -358,119 +366,30 @@ void cSkinObject::Render(GLCD::cBitmap * screen)
 
         case cSkinObject::list:
         {
-#if 0
-            Dprintf("list\n");
-            const cxObject *item = Object->GetObject(0);
-            if (item && item->Type() == cxObject::item)
+            const cSkinObject * item = GetObject(0);
+            if (item && item->Type() == cSkinObject::item)
             {
-                txSize areasize = Object->Size();
-                uint itemheight = item->Size().h;
-                uint maxitems = areasize.h / itemheight;
-                uint yoffset = 0;
+                int itemheight = item->Size().h;
+                int maxitems = Size().h / itemheight;
+                int yoffset = 0;
 
-                SetMaxItems(maxitems); //Dprintf("setmaxitems %d\n", maxitems);
-                for (uint i = 0; i < maxitems; ++i, yoffset += itemheight)
+                for (int i = 0; i < maxitems; i++)
                 {
-                    for (uint j = 1; j < Object->Objects(); ++j)
+                    for (int j = 1; j < (int) NumObjects(); j++)
                     {
-                        const cxObject *o = Object->GetObject(j);
-                        int maxtabs = 1;
-
-                        if (o->Display()->Type() == cxDisplay::menu)
-                            maxtabs = cSkinDisplayMenu::MaxTabs;
-
-                        for (int t = -1; t < maxtabs; ++t)
-                        {
-                            if (!HasTabText(i, t))
-                                continue;
-
-                            int thistab = GetTab(t);
-                            int nexttab = GetTab(t + 1);
-
-                            cxObject obj(*o);
-                            obj.SetListIndex(i, t);
-                            if (obj.Condition() != NULL && !obj.Condition()->Evaluate())
-                                continue;
-
-                            obj.mPos1.x += Object->mPos1.x + (t >= 0 ? thistab : 0);
-                            obj.mPos1.y += Object->mPos1.y + yoffset;
-
-                            // get end position
-                            if (t >= 0 && nexttab > 0)
-                            {
-                                // there is a "next tab".. see if it contains text
-                                int n = t + 1;
-                                while (n < cSkinDisplayMenu::MaxTabs && !HasTabText(i, n))
-                                    ++n;
-                                nexttab = GetTab(n);
-                            }
-
-                            if (t >= 0 && nexttab > 0 && nexttab < obj.mPos1.x + obj.Size().w - 1)
-                                // there is a "next tab" with text
-                                obj.mPos2.x = Object->mPos1.x + o->mPos1.x + nexttab;
-                            else
-                            {
-                                // there is no "next tab", use the rightmost edge
-                                obj.mPos2.x += Object->mPos1.x;
-                                SetEditableWidth(obj.Size().w);
-                            }
-
-                            obj.mPos2.y += Object->mPos1.y + yoffset;
-
-                            std::string text = obj.Text();
-                            bool isprogress = false;
-                            if (text.length() > 5 && text[0] == '[' && text[text.length() - 1] == ']')
-                            {
-                                const char *p = text.c_str() + 1;
-                                isprogress = true;
-                                for (; *p != ']'; ++p)
-                                {
-                                    if (*p != ' ' && *p != '|')
-                                    {
-                                        isprogress = false;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if (isprogress)
-                            {
-                                //Dprintf("detected progress bar tab\n");
-                                if (obj.Condition() == NULL || obj.Condition()->Evaluate())
-                                {
-                                    int total = text.length() - 2;
-                                    int current = 0;
-                                    const char *p = text.c_str() + 1;
-                                    while (*p == '|')
-                                        (++current, ++p);
-
-                                    txPoint pos = obj.Pos();
-                                    txSize size = obj.Size();
-
-                                    DrawRectangle(txPoint(pos.x, pos.y + 4),
-                                                  txSize(size.w, 2), obj.Fg());
-                                    DrawRectangle(txPoint(pos.x, pos.y + 4),
-                                                  txSize(2, size.h - 8), obj.Fg());
-                                    DrawRectangle(txPoint(pos.x, pos.y + size.h - 6),
-                                                  txSize(size.w, 2), obj.Fg());
-                                    DrawRectangle(txPoint(pos.x + size.w - 2, pos.y + 4),
-                                                  txSize(2, size.h - 8), obj.Fg());
-
-                                    pos.x += 4;
-                                    pos.y += 8;
-                                    size.w -= 8;
-                                    size.h -= 16;
-                                    DrawProgressbar(pos, size, current, total, obj.Bg(),
-                                                    obj.Fg(), NULL, NULL, NULL, NULL);
-                                }
-                            }
-                            else
-                                DrawObject(&obj);
-                        }
+                        const cSkinObject * o = GetObject(j);
+                        cSkinObject obj(*o);
+                        obj.SetListIndex(maxitems, i, -1);
+                        if (obj.Condition() != NULL && !obj.Condition()->Evaluate())
+                            continue;
+                        obj.mPos1.x += mPos1.x;
+                        obj.mPos1.y += mPos1.y + yoffset;
+                        obj.mPos2.y += mPos1.y + yoffset;
+                        obj.Render(screen);
                     }
+                    yoffset += itemheight;
                 }
             }
-#endif
             break;
         }
 

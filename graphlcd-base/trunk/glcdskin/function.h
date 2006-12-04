@@ -90,14 +90,14 @@ public:
     bool Parse(const std::string &Text);
     cType Evaluate(void) const;
 
-    void SetListIndex(uint32_t Index, int Tab);
+    void SetListIndex(int MaxItems, int Index, int Tab);
 };
 
-inline void cSkinFunction::SetListIndex(uint32_t Index, int Tab)
+inline void cSkinFunction::SetListIndex(int MaxItems, int Index, int Tab)
 {
-    mString.SetListIndex(Index, Tab);
+    mString.SetListIndex(MaxItems, Index, Tab);
     for (uint32_t i = 0; i < mNumParams; i++)
-        mParams[i]->SetListIndex(Index, Tab);
+        mParams[i]->SetListIndex(MaxItems, Index, Tab);
 }
 
 } // end of namespace

@@ -226,7 +226,7 @@ bool cSkinFunction::Parse(const std::string & Text)
                                 break;
                         }
 
-                        if (params != -1 && mNumParams != (uint)params)
+                        if (params != -1 && mNumParams != (uint32_t) params)
                         {
                             syslog(LOG_ERR, "ERROR: Text2Skin: Wrong number of parameters to %s, "
                                     "expecting %d", Internals[mType - INTERNAL], params);
@@ -301,7 +301,7 @@ cType cSkinFunction::Evaluate(void) const
             return !mParams[0]->Evaluate();
 
         case fun_and:
-            for (uint i = 0; i < mNumParams; ++i)
+            for (uint32_t i = 0; i < mNumParams; ++i)
             {
                 if (!mParams[i]->Evaluate())
                     return false;
@@ -309,7 +309,7 @@ cType cSkinFunction::Evaluate(void) const
             return true;
 
         case fun_or:
-            for (uint i = 0; i < mNumParams; ++i)
+            for (uint32_t i = 0; i < mNumParams; ++i)
             {
                 if (mParams[i]->Evaluate())
                     return true;

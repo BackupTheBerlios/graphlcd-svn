@@ -35,7 +35,7 @@ private:
     eType       mType;
     std::string mString;
     int         mNumber;
-    uint        mUpdateIn;
+    uint32_t    mUpdateIn;
 
 public:
     cType(void): mType(boolean), mNumber(0), mUpdateIn(0) {}
@@ -48,8 +48,8 @@ public:
     std::string String(void) const;
     int Number(void) const { return mType == number ? mNumber : atoi(mString.c_str()); }
 
-    void SetUpdate(uint UpdateIn) { mUpdateIn = UpdateIn; }
-    uint UpdateIn(void) const { return mUpdateIn; }
+    void SetUpdate(uint32_t UpdateIn) { mUpdateIn = UpdateIn; }
+    uint32_t UpdateIn(void) const { return mUpdateIn; }
 
     operator std::string () const { return String(); }
     operator int         () const { return Number(); }
