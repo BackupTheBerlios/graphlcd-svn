@@ -179,6 +179,8 @@ void cGraphLCDDisplay::Action(void)
                     display = mSkin->Get(GLCD::cSkinDisplay::normal);
                 if (mState == StateReplay)
                     display = mSkin->Get(GLCD::cSkinDisplay::replay);
+                if (mState == StateMenu)
+                    display = mSkin->Get(GLCD::cSkinDisplay::menu);
                 if (display)
                     display->Render(mScreen);
                 if (mShowVolume)
@@ -251,4 +253,38 @@ void cGraphLCDDisplay::Replaying(bool Starting)
         }
     }
     Update();
+}
+
+void cGraphLCDDisplay::SetMenuClear()
+{
+    if (mState == StateMenu)
+    {
+        mState = mLastState;
+        // activate delayed Update
+        UpdateIn(100);
+    }
+    else
+    {
+        Update();
+    }
+}
+
+void cGraphLCDDisplay::SetMenuTitle()
+{
+    if (mState != StateMenu)
+    {
+        mLastState = mState;
+        mState = StateMenu;
+    }
+    UpdateIn(100);
+}
+
+void cGraphLCDDisplay::SetMenuCurrent()
+{
+    if (mState != StateMenu)
+    {
+        mLastState = mState;
+        mState = StateMenu;
+    }
+    UpdateIn(100);
 }

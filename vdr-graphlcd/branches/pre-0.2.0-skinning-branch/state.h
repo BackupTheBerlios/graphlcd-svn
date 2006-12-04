@@ -74,7 +74,10 @@ struct tOsdState
     std::string currentItem;
     std::vector <std::string> items;
     std::string title;
-    std::string colorButton[4];
+    std::string redButton;
+    std::string greenButton;
+    std::string yellowButton;
+    std::string blueButton;
     std::string textItem;
     std::string message;
     int currentItemIndex;
@@ -102,7 +105,7 @@ private:
     tEvent mFollowing;
     tReplayState mReplay;
     tCardState mCards[MAXDEVICES];
-    tOsdState osd;
+    tOsdState mOsd;
     tVolumeState mVolume;
 
     void SetChannel(int ChannelNumber);

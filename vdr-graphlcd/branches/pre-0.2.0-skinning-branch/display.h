@@ -48,6 +48,9 @@ public:
     void Tick();
     void Update();
     void Replaying(bool Starting);
+    void SetMenuClear();
+    void SetMenuTitle();
+    void SetMenuCurrent();
 
 protected:
     virtual void Action();

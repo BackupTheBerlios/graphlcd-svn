@@ -99,7 +99,15 @@ typedef enum _eTokenId
 
     tokPrivateOsdStart,
     tokMessage,
-    tokPrivateOsdEnd,
+    tokMenuTitle,
+    tokMenuItem,
+    tokMenuCurrent,
+    tokIsMenuCurrent,
+    tokButtonRed,
+    tokButtonGreen,
+    tokButtonYellow,
+    tokButtonBlue,
+	tokPrivateOsdEnd,
 
     tokDateTime,
     tokConfigPath,
@@ -186,6 +194,14 @@ static const std::string Tokens[tokCountToken] =
 
     "privateOsdStart",
     "Message",
+    "MenuTitle",
+    "MenuItem",
+    "MenuCurrent",
+    "IsMenuCurrent",
+    "ButtonRed",
+    "ButtonGreen",
+    "ButtonYellow",
+    "ButtonBlue",
     "privateOsdEnd",
 
     "DateTime",
@@ -412,6 +428,54 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token) const
         {
             case tokMessage:
                 return osd.message;
+            case tokMenuTitle:
+                return osd.title;
+            case tokMenuItem:
+            case tokMenuCurrent:
+            case tokIsMenuCurrent:
+            {
+                if (osd.items.size() == 0
+                  || osd.currentItemIndex == -1)
+                {
+                    return false;
+                }
+                int maxItems = Token.MaxItems;
+                if (maxItems > (int) osd.items.size())
+                    maxItems = osd.items.size();
+                int currentIndex = maxItems / 2;
+                if (osd.currentItemIndex < currentIndex)
+                    currentIndex = osd.currentItemIndex;
+                int topIndex = osd.currentItemIndex - currentIndex;
+                if ((topIndex + maxItems) > (int) osd.items.size())
+                {
+                    currentIndex += (topIndex + maxItems) - osd.items.size();
+                    topIndex = osd.currentItemIndex - currentIndex;
+                }
+                if (Token.Id == tokMenuItem)
+                {
+                    if (Token.Index < maxItems && Token.Index != currentIndex)
+                        return osd.items[topIndex + Token.Index];
+                }
+                else if (Token.Id == tokMenuCurrent)
+                {
+                    if (Token.Index < maxItems && Token.Index == currentIndex)
+                        return osd.items[topIndex + Token.Index];
+                }
+                else if (Token.Id == tokIsMenuCurrent)
+                {
+                    if (Token.Index < maxItems && Token.Index == currentIndex)
+                        return true;
+                }
+                return false;
+            }
+            case tokButtonRed:
+                return osd.redButton;
+            case tokButtonGreen:
+                return osd.greenButton;
+            case tokButtonYellow:
+                return osd.yellowButton;
+            case tokButtonBlue:
+                return osd.blueButton;
             default:
                 break;
         }

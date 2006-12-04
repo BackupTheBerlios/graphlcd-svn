@@ -56,13 +56,15 @@ cGraphLCDState::cGraphLCDState(cGraphLCDDisplay * Display)
     mReplay.current = 0;
     mReplay.total = 0;
 
-    osd.currentItem = "";
-    osd.title = "";
-    for (int i = 0; i < 4; i++)
-        osd.colorButton[i] = "";
-    osd.message = "";
-    osd.textItem = "";
-    osd.currentItemIndex = 0;
+    mOsd.currentItem = "";
+    mOsd.title = "";
+    mOsd.redButton = "";
+    mOsd.greenButton = "";
+    mOsd.yellowButton = "";
+    mOsd.blueButton = "";
+    mOsd.message = "";
+    mOsd.textItem = "";
+    mOsd.currentItemIndex = -1;
 
     mVolume.value = -1;
     mVolume.lastChange = 0;
@@ -364,50 +366,54 @@ void cGraphLCDState::Tick()
 
 void cGraphLCDState::OsdClear()
 {
-    //printf("graphlcd plugin: cGraphLCDState::OsdClear\n");
+    esyslog("graphlcd plugin: cGraphLCDState::OsdClear\n");
     if (GraphLCDSetup.PluginActive)
     {
         mutex.Lock();
 
-        osd.title = "";
-        osd.items.clear();
-        for (int i = 0; i < 4; i++)
-            osd.colorButton[i] = "";
-        osd.message = "";
-        osd.textItem = "";
+        mOsd.title = "";
+        mOsd.items.clear();
+        mOsd.currentItem = "";
+        mOsd.currentItemIndex = -1;
+        mOsd.redButton = "";
+        mOsd.greenButton = "";
+        mOsd.yellowButton = "";
+        mOsd.blueButton = "";
+        mOsd.message = "";
+        mOsd.textItem = "";
 
         mutex.Unlock();
-        //mDisplay->SetClear();
+        mDisplay->SetMenuClear();
     }
 }
 
 void cGraphLCDState::OsdTitle(const char * Title)
 {
-    //printf("graphlcd plugin: cGraphLCDState::OsdTitle '%s'\n", Title);
+    esyslog("graphlcd plugin: cGraphLCDState::OsdTitle '%s'\n", Title);
     if (GraphLCDSetup.PluginActive)
     {
         mutex.Lock();
 
-        osd.message = "";
-        osd.title = "";
+        mOsd.message = "";
+        mOsd.title = "";
         if (Title)
         {
-            osd.title = Title;
+            mOsd.title = Title;
             // remove the time
-            std::string::size_type pos = osd.title.find('\t');
+            std::string::size_type pos = mOsd.title.find('\t');
             if (pos != std::string::npos)
-                osd.title.resize(pos);
-            osd.title = compactspace(osd.title);
+                mOsd.title.resize(pos);
+            mOsd.title = compactspace(mOsd.title);
         }
 
         mutex.Unlock();
-        //mDisplay->SetOsdTitle();
+        mDisplay->SetMenuTitle();
     }
 }
 
 void cGraphLCDState::OsdStatusMessage(const char * Message)
 {
-    //printf("graphlcd plugin: cGraphLCDState::OsdStatusMessage '%s'\n", Message);
+    esyslog("graphlcd plugin: cGraphLCDState::OsdStatusMessage '%s'\n", Message);
     if (GraphLCDSetup.PluginActive)
     {
         if (GraphLCDSetup.ShowMessages)
@@ -415,9 +421,9 @@ void cGraphLCDState::OsdStatusMessage(const char * Message)
             mutex.Lock();
 
             if (Message)
-                osd.message = compactspace(Message);
+                mOsd.message = compactspace(Message);
             else
-                osd.message = "";
+                mOsd.message = "";
 
             mutex.Unlock();
             mDisplay->Update();
@@ -427,24 +433,26 @@ void cGraphLCDState::OsdStatusMessage(const char * Message)
 
 void cGraphLCDState::OsdHelpKeys(const char * Red, const char * Green, const char * Yellow, const char * Blue)
 {
-    //printf("graphlcd plugin: cGraphLCDState::OsdHelpKeys %s - %s - %s - %s\n", Red, Green, Yellow, Blue);
+    esyslog("graphlcd plugin: cGraphLCDState::OsdHelpKeys %s - %s - %s - %s\n", Red, Green, Yellow, Blue);
     if (GraphLCDSetup.PluginActive)
     {
         if (GraphLCDSetup.ShowColorButtons)
         {
             mutex.Lock();
 
-            for (int i = 0; i < 4; i++)
-                osd.colorButton[i] = "";
+            mOsd.redButton = "";
+            mOsd.greenButton = "";
+            mOsd.yellowButton = "";
+            mOsd.blueButton = "";
 
             if (Red)
-                osd.colorButton[0] = compactspace(Red);
+                mOsd.redButton = compactspace(Red);
             if (Green)
-                osd.colorButton[1] = compactspace(Green);
+                mOsd.greenButton = compactspace(Green);
             if (Yellow)
-                osd.colorButton[2] = compactspace(Yellow);
+                mOsd.yellowButton = compactspace(Yellow);
             if (Blue)
-                osd.colorButton[3] = compactspace(Blue);
+                mOsd.blueButton = compactspace(Blue);
 
             mutex.Unlock();
         }
@@ -453,17 +461,17 @@ void cGraphLCDState::OsdHelpKeys(const char * Red, const char * Green, const cha
 
 void cGraphLCDState::OsdItem(const char * Text, int Index)
 {
-    //printf("graphlcd plugin: cGraphLCDState::OsdItem %s, %d\n", Text, Index);
+    esyslog("graphlcd plugin: cGraphLCDState::OsdItem %s, %d\n", Text, Index);
     if (GraphLCDSetup.PluginActive)
     {
         if (GraphLCDSetup.ShowMenu)
         {
             mutex.Lock();
 
-            osd.message = "";
+            mOsd.message = "";
 
             if (Text)
-                osd.items.push_back(Text);
+                mOsd.items.push_back(Text);
 
             mutex.Unlock();
             //if (Text)
@@ -474,76 +482,44 @@ void cGraphLCDState::OsdItem(const char * Text, int Index)
 
 void cGraphLCDState::OsdCurrentItem(const char * Text)
 {
-    //printf("graphlcd plugin: cGraphLCDState::OsdCurrentItem %s\n", Text);
+    esyslog("graphlcd plugin: cGraphLCDState::OsdCurrentItem %s\n", Text);
     if (GraphLCDSetup.PluginActive)
     {
         if (GraphLCDSetup.ShowMenu)
         {
-            int tabs;
-            std::string::size_type pos;
-
             mutex.Lock();
 
-            osd.message = "";
-            osd.currentItem = "";
+            mOsd.message = "";
+            mOsd.currentItem = "";
             if (Text)
             {
-                osd.currentItem = Text;
-
-                // count nr of tabs in text
-                tabs = 0;
-                for (unsigned int i = 0; i < osd.currentItem.length(); i++)
+                mOsd.currentItem = Text;
+                mOsd.currentItemIndex = -1;
+                for (unsigned int i = 0; i < mOsd.items.size(); i++)
                 {
-                    if (osd.currentItem[i] == '\t')
-                        tabs++;
-                }
-                if (tabs == 1)
-                {
-                    // only one tab => prob. Setup Menu
-                    pos = osd.currentItem.find('\t');
-                    osd.currentItemIndex = 0;
-                    if (pos != std::string::npos)
+                    if (mOsd.items[i].compare(mOsd.currentItem) == 0)
                     {
-                        for (unsigned int i = 0; i < osd.items.size(); i++)
-                        {
-                            if (osd.items[i].find(osd.currentItem.c_str(), 0, pos) == 0)
-                            {
-                                osd.currentItemIndex = i;
-                                osd.items[i] = osd.currentItem;
-                                break;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    osd.currentItemIndex = 0;
-                    for (unsigned int i = 0; i < osd.items.size(); i++)
-                    {
-                        if (osd.items[i].compare(osd.currentItem) == 0)
-                        {
-                            osd.currentItemIndex = i;
-                            break;
-                        }
+                        mOsd.currentItemIndex = i;
+                        break;
                     }
                 }
             }
             mutex.Unlock();
-            //if (Text)
-            //    mDisplay->SetOsdCurrentItem();
+            if (Text)
+                mDisplay->SetMenuCurrent();
         }
     }
 }
 
 void cGraphLCDState::OsdTextItem(const char * Text, bool Scroll)
 {
-    //printf("graphlcd plugin: cGraphLCDState::OsdTextItem %s %d\n", Text, Scroll);
+    esyslog("graphlcd plugin: cGraphLCDState::OsdTextItem %s %d\n", Text, Scroll);
     if (GraphLCDSetup.PluginActive)
     {
         mutex.Lock();
         if (Text)
         {
-            osd.textItem = trim(Text);
+            mOsd.textItem = trim(Text);
         }
         mutex.Unlock();
         //mDisplay->SetOsdTextItem(Text, Scroll);
@@ -766,7 +742,7 @@ tOsdState cGraphLCDState::GetOsdState()
     tOsdState ret;
 
     mutex.Lock();
-    ret = osd;
+    ret = mOsd;
     mutex.Unlock();
 
     return ret;
@@ -788,7 +764,7 @@ bool cGraphLCDState::ShowMessage()
     bool ret;
 
     mutex.Lock();
-    ret = osd.message.length() > 0;
+    ret = mOsd.message.length() > 0;
     mutex.Unlock();
     return ret;
 }
