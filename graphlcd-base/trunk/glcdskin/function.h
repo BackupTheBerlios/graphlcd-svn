@@ -57,6 +57,7 @@ public:
         funAdd,
         funSub,
         funMul,
+        funDiv,
 
         funFontTotalWidth,
         funFontTotalHeight,
