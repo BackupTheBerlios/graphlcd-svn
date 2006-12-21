@@ -14,6 +14,7 @@
 #include <glcdskin/string.h>
 
 #include "common.h"
+#include "display.h"
 #include "state.h"
 #include "skinconfig.h"
 
@@ -112,6 +113,8 @@ typedef enum _eTokenId
     tokDateTime,
     tokConfigPath,
     tokSkinPath,
+    tokScreenWidth,
+    tokScreenHeight,
 
     tokCountToken
 } eTokenId;
@@ -206,13 +209,16 @@ static const std::string Tokens[tokCountToken] =
 
     "DateTime",
     "ConfigPath",
-    "SkinPath"
+    "SkinPath",
+    "ScreenWidth",
+    "ScreenHeight"
 };
 
-cGraphLCDSkinConfig::cGraphLCDSkinConfig(const std::string & CfgPath, const std::string & SkinName, cGraphLCDState * State)
+cGraphLCDSkinConfig::cGraphLCDSkinConfig(const cGraphLCDDisplay * Display, const std::string & CfgPath, const std::string & SkinsPath, const std::string & SkinName, cGraphLCDState * State)
 {
+    mDisplay = Display;
     mConfigPath = CfgPath;
-    mSkinPath = CfgPath + "/skins/" + SkinName;
+    mSkinPath = SkinsPath + "/" + SkinName;
     mState = State;
     mAliasList.Load(CfgPath);
 }
@@ -490,6 +496,16 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token) const
                 return mConfigPath;
             case tokSkinPath:
                 return mSkinPath;
+            case tokScreenWidth:
+            {
+                const GLCD::cBitmap * bitmap = mDisplay->GetScreen();
+                return bitmap->Width();
+            }
+            case tokScreenHeight:
+            {
+                const GLCD::cBitmap * bitmap = mDisplay->GetScreen();
+                return bitmap->Height();
+            }
             default:
                 break;
         }

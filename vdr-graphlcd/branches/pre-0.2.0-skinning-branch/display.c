@@ -40,9 +40,6 @@ cGraphLCDDisplay::cGraphLCDDisplay()
     mUpdateAt = 0;
     mLastTimeMs = 0;
 
-    mCfgPath = "";
-    mSkinName = "";
-
     mState = StateNormal;
     mLastState = StateNormal;
 
@@ -59,15 +56,14 @@ cGraphLCDDisplay::~cGraphLCDDisplay()
     delete mGraphLCDState;
 }
 
-bool cGraphLCDDisplay::Initialise(GLCD::cDriver * Lcd, const std::string & CfgPath, const std::string & SkinName)
+bool cGraphLCDDisplay::Initialise(GLCD::cDriver * Lcd, const std::string & CfgPath, const std::string & SkinsPath, const std::string & SkinName)
 {
     std::string skinFileName;
+    std::string skinsPath;
 
     if (!Lcd)
         return false;
     mLcd = Lcd;
-    mCfgPath = CfgPath;
-    mSkinName = SkinName;
 
     mGraphLCDState = new cGraphLCDState(this);
     if (!mGraphLCDState)
@@ -80,15 +76,18 @@ bool cGraphLCDDisplay::Initialise(GLCD::cDriver * Lcd, const std::string & CfgPa
         return false;
     }
 
-    mSkinConfig = new cGraphLCDSkinConfig(mCfgPath, mSkinName, mGraphLCDState);
+    skinsPath = SkinsPath;
+    if (skinsPath == "")
+        skinsPath = CfgPath + "/skins";
+    mSkinConfig = new cGraphLCDSkinConfig(this, CfgPath, skinsPath, SkinName, mGraphLCDState);
     if (!mSkinConfig)
     {
         esyslog("graphlcd plugin: ERROR creating skin config\n");
         return false;
     }
 
-    skinFileName = mSkinConfig->SkinPath() + "/" + mSkinName + ".skin";
-    mSkin = GLCD::XmlParse(*mSkinConfig, mSkinName, skinFileName);
+    skinFileName = mSkinConfig->SkinPath() + "/" + SkinName + ".skin";
+    mSkin = GLCD::XmlParse(*mSkinConfig, SkinName, skinFileName);
     if (!mSkin)
     {
         esyslog("graphlcd plugin: ERROR loading skin\n");

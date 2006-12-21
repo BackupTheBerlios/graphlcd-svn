@@ -44,13 +44,14 @@ public:
     cGraphLCDDisplay(void);
     ~cGraphLCDDisplay(void);
 
-    bool Initialise(GLCD::cDriver * Lcd, const std::string & CfgPath, const std::string & SkinName);
+    bool Initialise(GLCD::cDriver * Lcd, const std::string & CfgPath, const std::string & SkinsPath, const std::string & SkinName);
     void Tick();
     void Update();
     void Replaying(bool Starting);
     void SetMenuClear();
     void SetMenuTitle();
     void SetMenuCurrent();
+    const GLCD::cBitmap * GetScreen() const { return mScreen; }
 
 protected:
     virtual void Action();
@@ -64,9 +65,6 @@ private:
     bool mUpdate;
     uint64_t mUpdateAt;
     uint64_t mLastTimeMs;
-
-    std::string mCfgPath;
-    std::string mSkinName;
 
     eThreadState mState;
     eThreadState mLastState;

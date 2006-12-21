@@ -17,12 +17,13 @@
 class cGraphLCDSkinConfig : public GLCD::cSkinConfig
 {
 private:
+    const cGraphLCDDisplay * mDisplay;
     std::string mConfigPath;
     std::string mSkinPath;
     cGraphLCDState * mState;
     cChannelAliasList mAliasList;
 public:
-    cGraphLCDSkinConfig(const std::string & CfgPath, const std::string & SkinName, cGraphLCDState * State);
+    cGraphLCDSkinConfig(const cGraphLCDDisplay * Display, const std::string & CfgPath, const std::string & SkinsPath, const std::string & SkinName, cGraphLCDState * State);
     virtual ~cGraphLCDSkinConfig();
 
     virtual std::string SkinPath(void) const;

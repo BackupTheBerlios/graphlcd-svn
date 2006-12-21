@@ -37,6 +37,7 @@ private:
     // Add any member variables or functions you may need here.
     std::string mConfigName;
     std::string mDisplayName;
+    std::string mSkinsPath;
     std::string mSkinName;
     GLCD::cDriver * mLcd;
     cGraphLCDDisplay * mDisplay;
@@ -60,9 +61,12 @@ public:
 
 cPluginGraphLCD::cPluginGraphLCD()
 :   mConfigName(""),
-    mDisplayName("")
+    mDisplayName(""),
+    mSkinsPath(""),
+    mSkinName(""),
+    mLcd(NULL),
+    mDisplay(NULL)
 {
-    mLcd = NULL;
 }
 
 cPluginGraphLCD::~cPluginGraphLCD()
@@ -84,15 +88,16 @@ bool cPluginGraphLCD::ProcessArgs(int argc, char * argv[])
 {
     static struct option long_options[] =
     {
-        {"config",  required_argument, NULL, 'c'},
-        {"display", required_argument, NULL, 'd'},
-        {"skin",    required_argument, NULL, 's'},
+        {"config",    required_argument, NULL, 'c'},
+        {"display",   required_argument, NULL, 'd'},
+        {"skinspath", required_argument, NULL, 'p'},
+        {"skin",      required_argument, NULL, 's'},
         {NULL}
     };
 
     int c;
     int option_index = 0;
-    while ((c = getopt_long(argc, argv, "c:d:s:", long_options, &option_index)) != -1)
+    while ((c = getopt_long(argc, argv, "c:d:p:s:", long_options, &option_index)) != -1)
     {
         switch (c)
         {
@@ -102,6 +107,10 @@ bool cPluginGraphLCD::ProcessArgs(int argc, char * argv[])
 
             case 'd':
                 mDisplayName = optarg;
+                break;
+
+            case 'p':
+                mSkinsPath = optarg;
                 break;
 
             case 's':
@@ -179,7 +188,7 @@ bool cPluginGraphLCD::Initialize()
     mDisplay = new cGraphLCDDisplay();
     if (!mDisplay)
         return false;
-    if (!mDisplay->Initialise(mLcd, cfgDir, mSkinName))
+    if (!mDisplay->Initialise(mLcd, cfgDir, mSkinsPath, mSkinName))
         return false;
 
     return true;
