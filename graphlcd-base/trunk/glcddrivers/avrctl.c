@@ -202,7 +202,7 @@ void cDriverAvrCtl::Refresh(bool refreshAll)
     int x;
     int y;
     int i;
-    int num = 128;
+    int num = width / 2;
     unsigned char data[16*num];
 
     if (CheckSetup() == 1)
