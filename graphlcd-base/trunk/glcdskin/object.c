@@ -181,12 +181,12 @@ bool cSkinObject::ParseFontFace(const std::string & Text)
     return mFont.Parse(Text);
 }
 
-void cSkinObject::SetListIndex(int MaxItems, int Index, int Tab)
+void cSkinObject::SetListIndex(int MaxItems, int Index)
 {
-    mText.SetListIndex(MaxItems, Index, Tab);
-    mPath.SetListIndex(MaxItems, Index, Tab);
+    mText.SetListIndex(MaxItems, Index);
+    mPath.SetListIndex(MaxItems, Index);
     if (mCondition != NULL)
-        mCondition->SetListIndex(MaxItems, Index, Tab);
+        mCondition->SetListIndex(MaxItems, Index);
 }
 
 const std::string & cSkinObject::TypeName(void) const
@@ -331,20 +331,51 @@ void cSkinObject::Render(GLCD::cBitmap * screen)
                 }
                 else
                 {
-                    int w = font->Width(text);
-                    int x = Pos().x;
-                    if (w < Size().w)
+                    if (text.find('\t') != std::string::npos
+                        && mSkin->Config().GetTabPosition(0, Size().w, *font) > 0)
                     {
-                        if (mAlign == taRight)
+                        std::string::size_type pos1;
+                        std::string::size_type pos2;
+                        std::string str;
+                        int x = Pos().x;
+                        int w = Size().w;
+                        int tab = 0;
+                        int tabWidth;
+
+                        pos1 = 0;
+                        pos2 = text.find('\t');
+                        while (pos1 != std::string::npos && pos2 != std::string::npos)
                         {
-                            x += Size().w - w;
+                            str = text.substr(pos1, pos2 - pos1);
+                            tabWidth = mSkin->Config().GetTabPosition(tab, Size().w, *font);
+                            screen->DrawText(x, Pos().y, x + tabWidth - 1, str, font, mColor);
+                            pos1 = pos2 + 1;
+                            pos2 = text.find('\t', pos1);
+                            tabWidth += font->Width(' ');
+                            x += tabWidth;
+                            w -= tabWidth;
+                            tab++;
                         }
-                        else if (mAlign == taCenter)
-                        {
-                            x += (Size().w - w) / 2;
-                        }
+                        str = text.substr(pos1);
+                        screen->DrawText(x, Pos().y, x + w - 1, str, font, mColor);
                     }
-                    screen->DrawText(x, Pos().y, x + Size().w - 1, text, font, mColor);
+                    else
+                    {
+                        int w = font->Width(text);
+                        int x = Pos().x;
+                        if (w < Size().w)
+                        {
+                            if (mAlign == taRight)
+                            {
+                                x += Size().w - w;
+                            }
+                            else if (mAlign == taCenter)
+                            {
+                                x += (Size().w - w) / 2;
+                            }
+                        }
+                        screen->DrawText(x, Pos().y, x + Size().w - 1, text, font, mColor);
+                    }
                 }
             }
             break;
@@ -379,7 +410,7 @@ void cSkinObject::Render(GLCD::cBitmap * screen)
                     {
                         const cSkinObject * o = GetObject(j);
                         cSkinObject obj(*o);
-                        obj.SetListIndex(maxitems, i, -1);
+                        obj.SetListIndex(maxitems, i);
                         if (obj.Condition() != NULL && !obj.Condition()->Evaluate())
                             continue;
                         obj.mPos1.x += mPos1.x;
