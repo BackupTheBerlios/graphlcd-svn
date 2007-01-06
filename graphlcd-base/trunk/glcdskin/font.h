@@ -18,6 +18,7 @@
 
 #include <glcdgraphics/font.h>
 
+#include "display.h"
 #include "object.h"
 
 namespace GLCD
@@ -38,21 +39,26 @@ public:
     };
 
 private:
-    cSkin * skin;
-    std::string id;
-    eType type;
-    std::string file;
-    int size;
-    cFont font;
+    cSkin * mSkin;
+    std::string mId;
+    eType mType;
+    std::string mFile;
+    int mSize;
+    cFont mFont;
+    cSkinFunction * mCondition;
+    cSkinDisplay mDummyDisplay;
+    cSkinObject mDummyObject;
 
 public:
     cSkinFont(cSkin * Parent);
 
     bool ParseUrl(const std::string & Text);
+    bool ParseCondition(const std::string & Text);
 
-    cSkin * Skin(void) const { return skin; }
-    const std::string & Id(void) const { return id; }
-    const cFont * Font(void) const { return &font; }
+    cSkin * Skin(void) const { return mSkin; }
+    const std::string & Id(void) const { return mId; }
+    const cFont * Font(void) const { return &mFont; }
+    cSkinFunction * Condition(void) const { return mCondition; }
 };
 
 class cSkinFonts: public std::vector<cSkinFont *>

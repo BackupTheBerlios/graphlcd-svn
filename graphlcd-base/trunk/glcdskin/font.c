@@ -2,12 +2,16 @@
 
 #include "font.h"
 #include "skin.h"
+#include "function.h"
 
 namespace GLCD
 {
 
-cSkinFont::cSkinFont(cSkin * parent)
-:   skin(parent)
+cSkinFont::cSkinFont(cSkin * Parent)
+:   mSkin(Parent),
+    mCondition(NULL),
+    mDummyDisplay(mSkin),
+    mDummyObject(&mDummyDisplay)
 {
 }
 
@@ -15,26 +19,26 @@ bool cSkinFont::ParseUrl(const std::string & url)
 {
     if (url.find("fnt:") == 0)
     {
-        type = ftFNT;
+        mType = ftFNT;
         if (url[4] == '/' || url.find("./") == 4 || url.find("../") == 4)
-            file = url.substr(4);
+            mFile = url.substr(4);
         else
         {
-            file = skin->Config().SkinPath();
-            if (file.length() > 0)
+            mFile = mSkin->Config().SkinPath();
+            if (mFile.length() > 0)
             {
-                if (file[file.length() - 1] != '/')
-                    file += '/';
+                if (mFile[mFile.length() - 1] != '/')
+                    mFile += '/';
             }
-            file += "fonts/";
-            file += url.substr(4);
+            mFile += "fonts/";
+            mFile += url.substr(4);
         }
-        size = 0;
-        return font.LoadFNT(file);
+        mSize = 0;
+        return mFont.LoadFNT(mFile);
     }
     else if (url.find("ft2:") == 0)
     {
-        type = ftFT2;
+        mType = ftFT2;
         std::string::size_type pos = url.find(":", 4);
         if (pos == std::string::npos)
         {
@@ -42,27 +46,39 @@ bool cSkinFont::ParseUrl(const std::string & url)
             return false;
         }
         std::string tmp = url.substr(pos + 1);
-        size = atoi(tmp.c_str());
+        mSize = atoi(tmp.c_str());
         if (url[4] == '/' || url.find("./") == 4 || url.find("../") == 4)
-            file = url.substr(4, pos - 4);
+            mFile = url.substr(4, pos - 4);
         else
         {
-            file = skin->Config().SkinPath();
-            if (file.length() > 0)
+            mFile = mSkin->Config().SkinPath();
+            if (mFile.length() > 0)
             {
-                if (file[file.length() - 1] != '/')
-                    file += '/';
+                if (mFile[mFile.length() - 1] != '/')
+                    mFile += '/';
             }
-            file += "fonts/";
-            file += url.substr(4, pos - 4);
+            mFile += "fonts/";
+            mFile += url.substr(4, pos - 4);
         }
-        return font.LoadFT2(file, skin->Config().CharSet(), size);
+        return mFont.LoadFT2(mFile, mSkin->Config().CharSet(), mSize);
     }
     else
     {
         syslog(LOG_ERR, "cSkinFont::ParseUrl(): Unknown font type in %s\n", url.c_str());
         return false;
     }
+}
+
+bool cSkinFont::ParseCondition(const std::string & Text)
+{
+    cSkinFunction *result = new cSkinFunction(&mDummyObject);
+    if (result->Parse(Text))
+    {
+        delete mCondition;
+        mCondition = result;
+        return true;
+    }
+    return false;
 }
 
 cSkinFonts::cSkinFonts(void)

@@ -11,6 +11,7 @@
  */
 
 #include "skin.h"
+#include "function.h"
 
 namespace GLCD
 {
@@ -31,6 +32,28 @@ void cSkin::SetBaseSize(int width, int height)
 {
     baseSize.w = width;
     baseSize.h = height;
+}
+
+cSkinFont * cSkin::GetFont(const std::string & id)
+{
+    cSkinFonts::iterator it = fonts.begin();
+    while (it != fonts.end())
+    {
+        if ((*it)->Id() == id)
+        {
+            if ((*it)->Condition() == NULL || (*it)->Condition()->Evaluate())
+                return (*it);
+        }
+        it++;
+    }
+    return NULL;
+}
+
+cSkinDisplay * cSkin::Get(cSkinDisplay::eType Type)
+{
+    if (displays.find(Type) != displays.end())
+        return displays[Type];
+    return NULL;
 }
 
 } // end of namespace

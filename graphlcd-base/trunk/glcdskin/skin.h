@@ -61,25 +61,6 @@ public:
     cImageCache * ImageCache(void) { return mImageCache; }
 };
 
-inline cSkinFont * cSkin::GetFont(const std::string & id)
-{
-    cSkinFonts::iterator it = fonts.begin();
-    while (it != fonts.end())
-    {
-        if ((*it)->Id() == id)
-            return (*it);
-        it++;
-    }
-    return NULL;
-}
-
-inline cSkinDisplay * cSkin::Get(cSkinDisplay::eType Type)
-{
-    if (displays.find(Type) != displays.end())
-        return displays[Type];
-    return NULL;
-}
-
 } // end of namespace
 
 #endif

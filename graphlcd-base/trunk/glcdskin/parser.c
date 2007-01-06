@@ -156,8 +156,9 @@ bool StartElem(const std::string & name, std::map<std::string,std::string> & att
         if (name == "font")
         {
             font = new cSkinFont(skin);
-            ATTRIB_MAN_STRING("id", font->id);
+            ATTRIB_MAN_STRING("id", font->mId);
             ATTRIB_MAN_FUNC("url", font->ParseUrl);
+            ATTRIB_OPT_FUNC("condition", font->ParseCondition);
         }
         else if (name == "display")
         {
