@@ -232,6 +232,11 @@ std::string cGraphLCDSkinConfig::SkinPath(void)
     return mSkinPath;
 }
 
+std::string cGraphLCDSkinConfig::FontPath(void)
+{
+    return mConfigPath + "/fonts";
+}
+
 std::string cGraphLCDSkinConfig::CharSet(void)
 {
     return "iso-8859-15";
