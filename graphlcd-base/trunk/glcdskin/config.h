@@ -20,16 +20,18 @@ namespace GLCD
 {
 
 class cType;
+class cFont;
 struct tSkinToken;
 
 class cSkinConfig
 {
 public:
-    virtual std::string SkinPath(void) const;
-    virtual std::string CharSet(void) const;
-    virtual std::string Translate(const std::string & Text) const;
-    virtual cType GetToken(const tSkinToken & Token) const;
-    virtual int GetTokenId(const std::string & Name) const;
+    virtual std::string SkinPath(void);
+    virtual std::string CharSet(void);
+    virtual std::string Translate(const std::string & Text);
+    virtual cType GetToken(const tSkinToken & Token);
+    virtual int GetTokenId(const std::string & Name);
+    virtual int GetTabPosition(int Index, int MaxWidth, const cFont & Font);
 };
 
 } // end of namespace
