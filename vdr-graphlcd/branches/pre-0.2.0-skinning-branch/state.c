@@ -366,7 +366,7 @@ void cGraphLCDState::Tick()
 
 void cGraphLCDState::OsdClear()
 {
-    esyslog("graphlcd plugin: cGraphLCDState::OsdClear\n");
+    //esyslog("graphlcd plugin: cGraphLCDState::OsdClear\n");
     if (GraphLCDSetup.PluginActive)
     {
         mutex.Lock();
@@ -389,7 +389,7 @@ void cGraphLCDState::OsdClear()
 
 void cGraphLCDState::OsdTitle(const char * Title)
 {
-    esyslog("graphlcd plugin: cGraphLCDState::OsdTitle '%s'\n", Title);
+    //esyslog("graphlcd plugin: cGraphLCDState::OsdTitle '%s'\n", Title);
     if (GraphLCDSetup.PluginActive)
     {
         mutex.Lock();
@@ -413,7 +413,7 @@ void cGraphLCDState::OsdTitle(const char * Title)
 
 void cGraphLCDState::OsdStatusMessage(const char * Message)
 {
-    esyslog("graphlcd plugin: cGraphLCDState::OsdStatusMessage '%s'\n", Message);
+    //esyslog("graphlcd plugin: cGraphLCDState::OsdStatusMessage '%s'\n", Message);
     if (GraphLCDSetup.PluginActive)
     {
         if (GraphLCDSetup.ShowMessages)
@@ -433,7 +433,7 @@ void cGraphLCDState::OsdStatusMessage(const char * Message)
 
 void cGraphLCDState::OsdHelpKeys(const char * Red, const char * Green, const char * Yellow, const char * Blue)
 {
-    esyslog("graphlcd plugin: cGraphLCDState::OsdHelpKeys %s - %s - %s - %s\n", Red, Green, Yellow, Blue);
+    //esyslog("graphlcd plugin: cGraphLCDState::OsdHelpKeys %s - %s - %s - %s\n", Red, Green, Yellow, Blue);
     if (GraphLCDSetup.PluginActive)
     {
         if (GraphLCDSetup.ShowColorButtons)
@@ -461,7 +461,7 @@ void cGraphLCDState::OsdHelpKeys(const char * Red, const char * Green, const cha
 
 void cGraphLCDState::OsdItem(const char * Text, int Index)
 {
-    esyslog("graphlcd plugin: cGraphLCDState::OsdItem %s, %d\n", Text, Index);
+    //esyslog("graphlcd plugin: cGraphLCDState::OsdItem %s, %d\n", Text, Index);
     if (GraphLCDSetup.PluginActive)
     {
         if (GraphLCDSetup.ShowMenu)
@@ -482,7 +482,7 @@ void cGraphLCDState::OsdItem(const char * Text, int Index)
 
 void cGraphLCDState::OsdCurrentItem(const char * Text)
 {
-    esyslog("graphlcd plugin: cGraphLCDState::OsdCurrentItem %s\n", Text);
+    //esyslog("graphlcd plugin: cGraphLCDState::OsdCurrentItem %s\n", Text);
     if (GraphLCDSetup.PluginActive)
     {
         if (GraphLCDSetup.ShowMenu)
@@ -513,7 +513,7 @@ void cGraphLCDState::OsdCurrentItem(const char * Text)
 
 void cGraphLCDState::OsdTextItem(const char * Text, bool Scroll)
 {
-    esyslog("graphlcd plugin: cGraphLCDState::OsdTextItem %s %d\n", Text, Scroll);
+    //esyslog("graphlcd plugin: cGraphLCDState::OsdTextItem %s %d\n", Text, Scroll);
     if (GraphLCDSetup.PluginActive)
     {
         mutex.Lock();
