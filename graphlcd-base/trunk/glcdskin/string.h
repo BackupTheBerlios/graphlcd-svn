@@ -71,7 +71,6 @@ struct tSkinToken
     tSkinAttrib Attrib;
     int         MaxItems;
     int         Index;
-    int         Tab;
 
     tSkinToken(void);
     tSkinToken(int id, std::string n, uint32_t o, const std::string & a);
@@ -106,19 +105,18 @@ public:
     bool Parse(const std::string & Text, bool Translate = false);
     cType Evaluate(void) const;
 
-    void SetListIndex(int MaxItems, int Index, int Tab);
+    void SetListIndex(int MaxItems, int Index);
 
     cSkinObject * Object(void) const { return mObject; }
     cSkin * Skin(void) const { return mSkin; }
 };
 
-inline void cSkinString::SetListIndex(int MaxItems, int Index, int Tab)
+inline void cSkinString::SetListIndex(int MaxItems, int Index)
 {
     for (uint32_t i = 0; i < mTokens.size(); ++i)
     {
         mTokens[i].MaxItems = MaxItems;
         mTokens[i].Index = Index;
-        mTokens[i].Tab = Tab;
     }
 }
 

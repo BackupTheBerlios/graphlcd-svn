@@ -112,7 +112,7 @@ public:
     bool ParseWidth(const std::string &Text);
     bool ParseHeight(const std::string &Text);
 
-    void SetListIndex(int MaxItems, int Index, int Tab);
+    void SetListIndex(int MaxItems, int Index);
 
     eType Type(void) const { return mType; }
     cSkinFunction * Condition(void) const { return mCondition; }

@@ -20,8 +20,7 @@ namespace GLCD
 {
 
 tSkinToken::tSkinToken(void)
-:   Index(-1),
-    Tab(-1)
+:   Index(-1)
 {
 }
 
@@ -31,8 +30,7 @@ tSkinToken::tSkinToken(int id, std::string n, uint32_t o, const std::string & a)
     Offset(o),
     Attrib(a),
     MaxItems(-1),
-    Index(-1),
-    Tab(-1)
+    Index(-1)
 {
 }
 
@@ -41,9 +39,7 @@ bool operator< (const tSkinToken & A, const tSkinToken & B)
     return A.Id == B.Id
         ? A.Name == B.Name
             ? A.Attrib == B.Attrib
-                ? A.Index == B.Index
-                    ? A.Tab < B.Tab
-                    : A.Index < B.Index
+                ? A.Index < B.Index
                 : A.Attrib < B.Attrib
             : A.Name < B.Name
         : A.Id < B.Id;
