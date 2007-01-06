@@ -256,6 +256,7 @@ void cGraphLCDDisplay::Replaying(bool Starting)
 
 void cGraphLCDDisplay::SetMenuClear()
 {
+    mSkinConfig->SetMenuClear();
     if (mState == StateMenu)
     {
         mState = mLastState;
