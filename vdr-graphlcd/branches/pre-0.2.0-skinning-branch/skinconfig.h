@@ -22,15 +22,19 @@ private:
     std::string mSkinPath;
     cGraphLCDState * mState;
     cChannelAliasList mAliasList;
+    std::vector <int> mTabs;
+
 public:
     cGraphLCDSkinConfig(const cGraphLCDDisplay * Display, const std::string & CfgPath, const std::string & SkinsPath, const std::string & SkinName, cGraphLCDState * State);
     virtual ~cGraphLCDSkinConfig();
+    void SetMenuClear();
 
-    virtual std::string SkinPath(void) const;
-    virtual std::string CharSet(void) const;
-    virtual std::string Translate(const std::string & Text) const;
-    virtual GLCD::cType GetToken(const GLCD::tSkinToken & Token) const;
-    virtual int GetTokenId(const std::string & Name) const;
+    virtual std::string SkinPath(void);
+    virtual std::string CharSet(void);
+    virtual std::string Translate(const std::string & Text);
+    virtual GLCD::cType GetToken(const GLCD::tSkinToken & Token);
+    virtual int GetTokenId(const std::string & Name);
+    virtual int GetTabPosition(int Index, int MaxWidth, const GLCD::cFont & Font);
 };
 
 #endif

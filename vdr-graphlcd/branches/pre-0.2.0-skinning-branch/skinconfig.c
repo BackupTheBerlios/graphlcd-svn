@@ -227,22 +227,22 @@ cGraphLCDSkinConfig::~cGraphLCDSkinConfig()
 {
 }
 
-std::string cGraphLCDSkinConfig::SkinPath(void) const
+std::string cGraphLCDSkinConfig::SkinPath(void)
 {
     return mSkinPath;
 }
 
-std::string cGraphLCDSkinConfig::CharSet(void) const
+std::string cGraphLCDSkinConfig::CharSet(void)
 {
     return "iso-8859-15";
 }
 
-std::string cGraphLCDSkinConfig::Translate(const std::string & Text) const
+std::string cGraphLCDSkinConfig::Translate(const std::string & Text)
 {
     return Text;
 }
 
-GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token) const
+GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token)
 {
     if (Token.Id > tokPrivateChannelStart && Token.Id < tokPrivateChannelEnd)
     {
@@ -513,7 +513,7 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token) const
     return "";
 }
 
-int cGraphLCDSkinConfig::GetTokenId(const std::string & Name) const
+int cGraphLCDSkinConfig::GetTokenId(const std::string & Name)
 {
     int i;
 
@@ -524,4 +524,56 @@ int cGraphLCDSkinConfig::GetTokenId(const std::string & Name) const
     }
     esyslog("graphlcd: unknown token %s", Name.c_str());
     return tokCountToken;
+}
+
+int cGraphLCDSkinConfig::GetTabPosition(int Index, int MaxWidth, const GLCD::cFont & Font)
+{
+    if (mTabs.size() == 0)
+    {
+        int i;
+        tOsdState osd = mState->GetOsdState();
+
+        for (i = 0; i < (int) osd.items.size(); i++)
+        {
+            int iTab, t;
+            std::string str;
+            std::string::size_type pos1, pos2;
+
+            str = osd.items[i];
+            pos1 = 0;
+            pos2 = str.find('\t');
+            iTab = 0;
+            while (pos1 < str.length() && pos2 != std::string::npos)
+            {
+                t = Font.Width(str.substr(pos1), pos2 - pos1);
+                if (iTab == 0 && t > (MaxWidth * 66) / 100)
+                    t = (MaxWidth * 66) / 100;
+                if (iTab < (int) mTabs.size())
+                {
+                    if (mTabs[iTab] < t)
+                        mTabs[iTab] = t;
+                }
+                else
+                {
+                    mTabs.push_back(t);
+                }
+                pos1 = pos2 + 1;
+                pos2 = str.find('\t', pos1);
+                iTab++;
+            }
+        }
+        for (i = 0; i < (int) mTabs.size(); i++)
+        {
+            esyslog("tab %d: %d", i, mTabs[0]);
+        }
+    }
+
+    if (Index < (int) mTabs.size())
+        return mTabs[Index];
+    return 0;
+}
+
+void cGraphLCDSkinConfig::SetMenuClear()
+{
+    mTabs.clear();
 }
