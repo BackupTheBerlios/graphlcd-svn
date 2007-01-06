@@ -27,6 +27,7 @@ class cSkinConfig
 {
 public:
     virtual std::string SkinPath(void);
+    virtual std::string FontPath(void);
     virtual std::string CharSet(void);
     virtual std::string Translate(const std::string & Text);
     virtual cType GetToken(const tSkinToken & Token);

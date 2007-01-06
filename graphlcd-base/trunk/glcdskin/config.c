@@ -9,6 +9,11 @@ std::string cSkinConfig::SkinPath(void)
     return ".";
 }
 
+std::string cSkinConfig::FontPath(void)
+{
+    return ".";
+}
+
 std::string cSkinConfig::CharSet(void)
 {
     return "iso-8859-15";
