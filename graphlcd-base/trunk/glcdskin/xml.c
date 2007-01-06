@@ -10,6 +10,7 @@
  */
 
 #include <ctype.h>
+#include <syslog.h>
 
 #include <iostream>
 #include <fstream>
@@ -71,6 +72,10 @@ cXML::cXML(const std::string & file)
 #else
     std::ifstream f(file.c_str(), std::ios_base::in | std::ios_base::binary | std::ios_base::ate);
 #endif
+    if (!f.is_open())
+    {
+        syslog(LOG_ERR, "ERROR: skin file %s not found\n", file.c_str());
+    }
     size = f.tellg();
 #if (__GNUC__ < 3)
     f.seekg(0, std::ios::beg);
