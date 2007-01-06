@@ -22,7 +22,7 @@ namespace GLCD
 class cSkin;
 class cSkinConfig;
 
-cSkin * XmlParse(const cSkinConfig & Config, const std::string & name, const std::string & fileName);
+cSkin * XmlParse(cSkinConfig & Config, const std::string & name, const std::string & fileName);
 
 } // end of namespace
 

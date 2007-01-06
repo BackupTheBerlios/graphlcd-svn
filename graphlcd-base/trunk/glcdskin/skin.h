@@ -33,7 +33,7 @@ class cSkin
     friend bool EndElem(const std::string & name);
 
 private:
-    const cSkinConfig & config;
+    cSkinConfig & config;
     std::string name;
     std::string title;
     std::string version;
@@ -44,7 +44,7 @@ private:
     cImageCache * mImageCache;
 
 public:
-    cSkin(const cSkinConfig & Config, const std::string & Name);
+    cSkin(cSkinConfig & Config, const std::string & Name);
     ~cSkin(void);
 
     void SetBaseSize(int width, int height);
@@ -52,7 +52,7 @@ public:
     cSkinFont * GetFont(const std::string & id);
     cSkinDisplay * Get(cSkinDisplay::eType Type);
 
-    const cSkinConfig & Config(void) const { return config; }
+    cSkinConfig & Config(void) { return config; }
     const std::string & Name(void) const { return name; }
     const std::string & Title(void) const { return title; }
     const std::string & Version(void) const { return version; }

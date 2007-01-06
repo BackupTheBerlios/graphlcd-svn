@@ -346,7 +346,7 @@ bool EndElem(const std::string & name)
     return true;
 }
 
-cSkin * XmlParse(const cSkinConfig & Config, const std::string & Name, const std::string & fileName)
+cSkin * XmlParse(cSkinConfig & Config, const std::string & Name, const std::string & fileName)
 {
     skin = new cSkin(Config, Name);
     context.clear();

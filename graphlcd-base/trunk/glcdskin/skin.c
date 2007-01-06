@@ -15,7 +15,7 @@
 namespace GLCD
 {
 
-cSkin::cSkin(const cSkinConfig & Config, const std::string & Name)
+cSkin::cSkin(cSkinConfig & Config, const std::string & Name)
 :   config(Config),
     name(Name)
 {
