@@ -44,6 +44,9 @@ const unsigned char CMD_DISP_SET_COL_DATA   = 0x13;
 const unsigned char CMD_DISP_SET_ROW_DATA   = 0x14;
 const unsigned char CMD_DISP_UPDATE         = 0x15;
 
+const int kBufferWidth  = 256;
+const int kBufferHeight = 128;
+
 
 cDriverAvrCtl::cDriverAvrCtl(cDriverConfig * config)
 :   config(config)
@@ -82,23 +85,23 @@ int cDriverAvrCtl::Init()
     }
 
     // setup lcd array (wanted state)
-    newLCD = new unsigned char*[width];
+    newLCD = new unsigned char*[kBufferWidth];
     if (newLCD)
     {
-        for (x = 0; x < width; x++)
+        for (x = 0; x < kBufferWidth; x++)
         {
-            newLCD[x] = new unsigned char[(height + 7) / 8];
-            memset(newLCD[x], 0, (height + 7) / 8);
+            newLCD[x] = new unsigned char[(kBufferHeight + 7) / 8];
+            memset(newLCD[x], 0, (kBufferHeight + 7) / 8);
         }
     }
     // setup lcd array (current state)
-    oldLCD = new unsigned char*[width];
+    oldLCD = new unsigned char*[kBufferWidth];
     if (oldLCD)
     {
-        for (x = 0; x < width; x++)
+        for (x = 0; x < kBufferWidth; x++)
         {
-            oldLCD[x] = new unsigned char[(height + 7) / 8];
-            memset(oldLCD[x], 0, (height + 7) / 8);
+            oldLCD[x] = new unsigned char[(kBufferHeight + 7) / 8];
+            memset(oldLCD[x], 0, (kBufferHeight + 7) / 8);
         }
     }
 
@@ -124,7 +127,7 @@ int cDriverAvrCtl::DeInit()
     // free lcd array (wanted state)
     if (newLCD)
     {
-        for (x = 0; x < width; x++)
+        for (x = 0; x < kBufferWidth; x++)
         {
             delete[] newLCD[x];
         }
@@ -133,7 +136,7 @@ int cDriverAvrCtl::DeInit()
     // free lcd array (current state)
     if (oldLCD)
     {
-        for (x = 0; x < width; x++)
+        for (x = 0; x < kBufferWidth; x++)
         {
             delete[] oldLCD[x];
         }
@@ -168,8 +171,8 @@ int cDriverAvrCtl::CheckSetup()
 
 void cDriverAvrCtl::Clear()
 {
-    for (int x = 0; x < width; x++)
-        memset(newLCD[x], 0, (height + 7) / 8);
+    for (int x = 0; x < kBufferWidth; x++)
+        memset(newLCD[x], 0, (kBufferHeight + 7) / 8);
 }
 
 void cDriverAvrCtl::Set8Pixels(int x, int y, unsigned char data)
@@ -202,7 +205,7 @@ void cDriverAvrCtl::Refresh(bool refreshAll)
     int x;
     int y;
     int i;
-    int num = width / 2;
+    int num = kBufferWidth / 2;
     unsigned char data[16*num];
 
     if (CheckSetup() == 1)
@@ -218,15 +221,15 @@ void cDriverAvrCtl::Refresh(bool refreshAll)
     refreshAll = true;
     if (refreshAll)
     {
-        for (x = 0; x < width; x += num)
+        for (x = 0; x < kBufferWidth; x += num)
         {
             for (i = 0; i < num; i++)
             {
-                for (y = 0; y < (height + 7) / 8; y++)
+                for (y = 0; y < (kBufferHeight + 7) / 8; y++)
                 {
-                    data[i * ((height + 7) / 8) + y] = (newLCD[x + i][y]) ^ (config->invert ? 0xff : 0x00);
+                    data[i * ((kBufferHeight + 7) / 8) + y] = (newLCD[x + i][y]) ^ (config->invert ? 0xff : 0x00);
                 }
-                memcpy(oldLCD[x + i], newLCD[x + i], (height + 7) / 8);
+                memcpy(oldLCD[x + i], newLCD[x + i], (kBufferHeight + 7) / 8);
             }
             CmdDispSetColData(x, 0, 16 * num, data);
         }
