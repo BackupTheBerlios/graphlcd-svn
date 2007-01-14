@@ -15,6 +15,7 @@ ifdef HAVE_FREETYPE2
 endif
 	@$(MAKE) -C showpic all
 	@$(MAKE) -C showtext all
+	@$(MAKE) -C lcdtestpattern all
 
 install:
 	@$(MAKE) -C convpic install
@@ -24,6 +25,7 @@ ifdef HAVE_FREETYPE2
 endif
 	@$(MAKE) -C showpic install
 	@$(MAKE) -C showtext install
+	@$(MAKE) -C lcdtestpattern install
 
 uninstall:
 	@$(MAKE) -C convpic uninstall
@@ -33,6 +35,7 @@ ifdef HAVE_FREETYPE2
 endif
 	@$(MAKE) -C showpic uninstall
 	@$(MAKE) -C showtext uninstall
+	@$(MAKE) -C lcdtestpattern uninstall
  
 clean:
 	@$(MAKE) -C convpic clean
@@ -40,4 +43,5 @@ clean:
 	@$(MAKE) -C genfont clean
 	@$(MAKE) -C showpic clean
 	@$(MAKE) -C showtext clean
+	@$(MAKE) -C lcdtestpattern clean
 
