@@ -175,22 +175,22 @@ void cGraphLCDDisplay::Action(void)
                 mScreen->Clear();
                 GLCD::cSkinDisplay * display;
                 if (mState == StateNormal)
-                    display = mSkin->Get(GLCD::cSkinDisplay::normal);
-                if (mState == StateReplay)
-                    display = mSkin->Get(GLCD::cSkinDisplay::replay);
-                if (mState == StateMenu)
-                    display = mSkin->Get(GLCD::cSkinDisplay::menu);
+                    display = mSkin->GetDisplay("normal");
+                else if (mState == StateReplay)
+                    display = mSkin->GetDisplay("replay");
+                else if (mState == StateMenu)
+                    display = mSkin->GetDisplay("menu");
                 if (display)
                     display->Render(mScreen);
                 if (mShowVolume)
                 {
-                    display = mSkin->Get(GLCD::cSkinDisplay::volume);
+                    display = mSkin->GetDisplay("volume");
                     if (display)
                         display->Render(mScreen);
                 }
                 if (GraphLCDSetup.ShowMessages && mGraphLCDState->ShowMessage())
                 {
-                    display = mSkin->Get(GLCD::cSkinDisplay::message);
+                    display = mSkin->GetDisplay("message");
                     if (display)
                         display->Render(mScreen);
                 }
