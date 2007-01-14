@@ -64,9 +64,11 @@ struct tReplayState
     int speed;
 };
 
-struct tCardState
+struct tRecording
 {
-    std::map<std::string, std::string> recordings;
+    int deviceNumber;
+    std::string name;
+    std::string fileName;
 };
 
 struct tOsdState
@@ -104,7 +106,7 @@ private:
     tEvent mPresent;
     tEvent mFollowing;
     tReplayState mReplay;
-    tCardState mCards[MAXDEVICES];
+    std::vector <tRecording> mRecordings;
     tOsdState mOsd;
     tVolumeState mVolume;
 
@@ -137,7 +139,8 @@ public:
     tEvent GetPresentEvent();
     tEvent GetFollowingEvent();
     tReplayState GetReplayState();
-    tCardState GetCardState(int number);
+    bool IsRecording(int CardNumber);
+    std::string Recordings(int CardNumber);
     tOsdState GetOsdState();
     tVolumeState GetVolumeState();
     bool ShowMessage();

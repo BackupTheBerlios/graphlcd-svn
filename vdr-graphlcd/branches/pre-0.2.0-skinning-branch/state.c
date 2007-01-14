@@ -96,25 +96,36 @@ void cGraphLCDState::Recording(const cDevice * Device, const char * Name, const 
     //printf("graphlcd plugin: cGraphLCDState::Recording %d %s\n", Device->CardIndex(), Name);
     if (GraphLCDSetup.PluginActive)
     {
-        tCardState * card;
-        std::map <std::string, std::string>::iterator rec;
-
-        if (Device->DeviceNumber() >= MAXDEVICES)
-            return;
-        card = &mCards[Device->DeviceNumber()];
+        std::vector <tRecording>::iterator it;
 
         mutex.Lock();
+        it = mRecordings.begin();
+        while (it != mRecordings.end())
+        {
+            if (it->deviceNumber == Device->DeviceNumber()
+                && it->fileName == FileName)
+            {
+                break;
+            }
+            it++;
+        }
+
         if (On)
         {
-            rec = card->recordings.find(FileName);
-            if (rec == card->recordings.end())
-                card->recordings.insert(std::make_pair(FileName, Name));
+            if (it == mRecordings.end())
+            {
+                tRecording rec;
+
+                rec.deviceNumber = Device->DeviceNumber();
+                rec.name = Name;
+                rec.fileName = FileName;
+                mRecordings.push_back(rec);
+            }
         }
         else
         {
-            rec = card->recordings.find(FileName);
-            if (rec != card->recordings.end())
-                card->recordings.erase(rec);
+            if (it != mRecordings.end())
+                mRecordings.erase(it);
         }
         mutex.Unlock();
 
@@ -726,12 +737,51 @@ tReplayState cGraphLCDState::GetReplayState()
     return ret;
 }
 
-tCardState cGraphLCDState::GetCardState(int number)
+bool cGraphLCDState::IsRecording(int CardNumber)
 {
-    tCardState ret;
+    bool ret = false;
+    std::vector <tRecording>::iterator it;
 
     mutex.Lock();
-    ret = mCards[number];
+    if (CardNumber == -1 && mRecordings.size() > 0)
+    {
+        ret = true;
+    }
+    else
+    {
+        it = mRecordings.begin();
+        while (it != mRecordings.end())
+        {
+            if (it->deviceNumber == CardNumber)
+            {
+                ret = true;
+                break;
+            }
+            it++;
+        }
+    }
+    mutex.Unlock();
+
+    return ret;
+}
+
+std::string cGraphLCDState::Recordings(int CardNumber)
+{
+    std::string ret = "";
+    std::vector <tRecording>::iterator it;
+
+    mutex.Lock();
+    it = mRecordings.begin();
+    while (it != mRecordings.end())
+    {
+        if (CardNumber == -1 || it->deviceNumber == CardNumber)
+        {
+            if (ret.length() > 0)
+                ret += "\n";
+            ret += it->name;
+        }
+        it++;
+    }
     mutex.Unlock();
 
     return ret;
