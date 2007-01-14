@@ -42,6 +42,11 @@ typedef enum _eTokenId
     tokChannelAlias,
     tokPrivateChannelEnd,
 
+	tokPrivateRecordingStart,
+	tokIsRecording,
+	tokRecordings,
+	tokPrivateRecordingEnd,
+
     // present event
     tokPrivatePresentStart,
     tokPresentStartDateTime,
@@ -141,6 +146,11 @@ static const std::string Tokens[tokCountToken] =
     "ChannelIsRadio",
     "ChannelAlias",
     "privateChannelEnd",
+
+	"privateRecordingStart",
+	"IsRecording",
+	"Recordings",
+	"privateRecordingEnd",
 
     "privatePresentStart",
     "PresentStartDateTime",
@@ -291,6 +301,26 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token)
                 sprintf(tmp, "%d-%d-%d", channel.id.Nid(), channel.id.Tid(), channel.id.Sid());
                 alias = mAliasList.GetAlias(tmp);
                 return alias;
+            }
+            default:
+                break;
+        }
+    }
+    else if (Token.Id > tokPrivateRecordingStart && Token.Id < tokPrivateRecordingEnd)
+    {
+        switch (Token.Id)
+        {
+            case tokIsRecording:
+            {
+                if (Token.Attrib.Type == GLCD::aNumber)
+                    return mState->IsRecording(Token.Attrib.Number);
+                return mState->IsRecording(-1);
+            }
+            case tokRecordings:
+            {
+                if (Token.Attrib.Type == GLCD::aNumber)
+                    return mState->Recordings(Token.Attrib.Number);
+                return mState->Recordings(-1);
             }
             default:
                 break;
