@@ -14,7 +14,7 @@
 #define _GLCDSKIN_DISPLAY_H_
 
 #include <string>
-#include <map>
+#include <vector>
 
 #include "object.h"
 
@@ -28,38 +28,24 @@ class cSkinDisplay
     friend bool StartElem(const std::string &name, std::map<std::string,std::string> &attrs);
     friend bool EndElem(const std::string &name);
 
-public:
-    enum eType
-    {
-        normal,
-        volume,
-        message,
-        replay,
-        menu,
-#define __COUNT_DISPLAY__ (menu + 1)
-    };
-
 private:
-    cSkin * skin;
-    eType type;
-    cSkinObjects objects;
+    cSkin * mSkin;
+    std::string mId;
+    cSkinObjects mObjects;
 
 public:
     cSkinDisplay(cSkin * Parent);
 
-    static const std::string &GetType(eType Type);
-    bool ParseType(const std::string &Text);
+    cSkin * Skin(void) const { return mSkin; }
+    const std::string & Id(void) const { return mId; }
 
-    cSkin * Skin(void) const { return skin; }
-    eType Type(void) const { return type; }
-
-    uint32_t NumObjects(void) const { return objects.size(); }
-    cSkinObject * GetObject(uint32_t n) const { return objects[n]; }
+    uint32_t NumObjects(void) const { return mObjects.size(); }
+    cSkinObject * GetObject(uint32_t n) const { return mObjects[n]; }
 
     void Render(cBitmap * screen);
 };
 
-class cSkinDisplays: public std::map<cSkinDisplay::eType, cSkinDisplay *>
+class cSkinDisplays: public std::vector<cSkinDisplay *>
 {
 public:
     cSkinDisplays(void);

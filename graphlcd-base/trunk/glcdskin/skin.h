@@ -49,8 +49,8 @@ public:
 
     void SetBaseSize(int width, int height);
 
-    cSkinFont * GetFont(const std::string & id);
-    cSkinDisplay * Get(cSkinDisplay::eType Type);
+    cSkinFont * GetFont(const std::string & Id);
+    cSkinDisplay * GetDisplay(const std::string & Id);
 
     cSkinConfig & Config(void) { return config; }
     const std::string & Name(void) const { return name; }

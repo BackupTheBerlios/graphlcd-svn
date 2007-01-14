@@ -15,37 +15,10 @@
 namespace GLCD
 {
 
-static const std::string DisplayNames[] =
-{
-    "normal",
-    "volume",
-    "message",
-    "replay",
-    "menu"
-};
-
 cSkinDisplay::cSkinDisplay(cSkin * parent)
-:   skin(parent),
-    type((eType)__COUNT_DISPLAY__)
+:   mSkin(parent),
+    mId("")
 {
-}
-
-bool cSkinDisplay::ParseType(const std::string & Text)
-{
-    for (int i = 0; i < (int) __COUNT_DISPLAY__; ++i)
-    {
-        if (DisplayNames[i].length() > 0 && DisplayNames[i] == Text)
-        {
-            type = (eType) i;
-            return true;
-        }
-    }
-    return false;
-}
-
-const std::string & cSkinDisplay::GetType(eType Type)
-{
-    return DisplayNames[Type];
 }
 
 void cSkinDisplay::Render(cBitmap * screen)
@@ -64,7 +37,7 @@ cSkinDisplays::~cSkinDisplays()
     iterator it = begin();
     while (it != end())
     {
-        delete (*it).second;
+        delete (*it);
         it++;
     }
 }

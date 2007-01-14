@@ -34,12 +34,12 @@ void cSkin::SetBaseSize(int width, int height)
     baseSize.h = height;
 }
 
-cSkinFont * cSkin::GetFont(const std::string & id)
+cSkinFont * cSkin::GetFont(const std::string & Id)
 {
     cSkinFonts::iterator it = fonts.begin();
     while (it != fonts.end())
     {
-        if ((*it)->Id() == id)
+        if ((*it)->Id() == Id)
         {
             if ((*it)->Condition() == NULL || (*it)->Condition()->Evaluate())
                 return (*it);
@@ -49,10 +49,17 @@ cSkinFont * cSkin::GetFont(const std::string & id)
     return NULL;
 }
 
-cSkinDisplay * cSkin::Get(cSkinDisplay::eType Type)
+cSkinDisplay * cSkin::GetDisplay(const std::string & Id)
 {
-    if (displays.find(Type) != displays.end())
-        return displays[Type];
+    cSkinDisplays::iterator it = displays.begin();
+    while (it != displays.end())
+    {
+        if ((*it)->Id() == Id)
+        {
+            return (*it);
+        }
+        it++;
+    }
     return NULL;
 }
 

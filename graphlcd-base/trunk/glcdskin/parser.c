@@ -163,7 +163,7 @@ bool StartElem(const std::string & name, std::map<std::string,std::string> & att
         else if (name == "display")
         {
             display = new cSkinDisplay(skin);
-            ATTRIB_MAN_FUNC("id", display->ParseType);
+            ATTRIB_MAN_STRING("id", display->mId);
         }
         else
             TAG_ERR_REMAIN("skin");
@@ -299,7 +299,7 @@ bool EndElem(const std::string & name)
         else if (name == "display")
         {
             //display->mNumMarquees = mindex;
-            skin->displays[display->Type()] = display;
+            skin->displays.push_back(display);
             display = NULL;
             oindex = 0;
         }
@@ -337,7 +337,7 @@ bool EndElem(const std::string & name)
                 parent->mObjects->push_back(object);
             }
             else
-                display->objects.push_back(object);
+                display->mObjects.push_back(object);
             object = NULL;
         }
         context.pop_back();
