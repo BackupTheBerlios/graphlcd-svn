@@ -511,7 +511,7 @@ void cFont::WrapText(int Width, int Height, std::string & Text,
             textWidth = 0;
             lineCount++;
         }
-        else if (textWidth > Width)
+        else if (textWidth > Width && (lineCount + 1) < maxLines)
         {
             if (posLast > start)
             {
@@ -543,6 +543,24 @@ void cFont::WrapText(int Width, int Height, std::string & Text,
 
     if (Height == 0 || lineCount < maxLines)
     {
+        if (textWidth > Width && (lineCount + 1) < maxLines)
+        {
+            if (posLast > start)
+            {
+                Lines.push_back(trim(Text.substr(start, posLast - start)));
+                start = posLast + 1;
+                posLast = start;
+                textWidth = this->Width(Text.substr(start, pos - start + 1)) + spaceBetween;
+            }
+            else
+            {
+                Lines.push_back(trim(Text.substr(start, pos - start)));
+                start = pos + 1;
+                posLast = start;
+                textWidth = this->Width(Text[pos]) + spaceBetween;
+            }
+            lineCount++;
+        }
         if (pos > start)
         {
             Lines.push_back(trim(Text.substr(start)));
