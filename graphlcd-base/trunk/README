@@ -12,6 +12,7 @@ based on the graphlcd plugin for the Video Disc Recorder
     gu140x32f driver by        Andreas Brachold (vdr04 AT deltab.de)
     gu256x64-372 driver by     Andreas Weinberger (vdr AT smue.org)
     gu256x64-3xx0 driver by    Ralf Mueller (ralf AT bj-ig.de)
+    gu126x64D-K610A4 driver by Alexander Rieger (Alexander.Rieger AT inka.de)
     image driver by            Andreas Regel (andreas.regel AT powarman.de)
     ks0108 driver by           Andreas Weinberger (vdr AT smue.org)
     sed1330 driver by          Roland Praml (praml.roland AT t-online.de)
@@ -45,6 +46,7 @@ controllers/modules:
  - Noritake GU140X32F-7806
  - Noritake GU256X64-372
  - Noritake GU256X64-3XX0 (serial or parallel)
+ - Noritake GU126x64D-K610A4 displays (parallel)
  - Noritake 800 series displays
  - all controllers supported by serdisplib (http://serdisplib.sourceforge.net)
 

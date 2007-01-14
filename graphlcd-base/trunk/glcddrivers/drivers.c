@@ -26,6 +26,7 @@
 #include "noritake800.h"
 #include "avrctl.h"
 #include "network.h"
+#include "gu126x64D-K610A4.h"
 #include "serdisp.h"
 #include "g15daemon.h"
 
@@ -48,6 +49,7 @@ tDriver drivers[] =
     {"noritake800",   kDriverNoritake800},
     {"avrctl",        kDriverAvrCtl},
     {"network",       kDriverNetwork},
+    {"gu126x64D-K610A4", kDriverGU126X64D_K610A4},
     {"serdisp",       kDriverSerDisp},
     {"g15daemon",     kDriverG15daemon},
     {"",              kDriverUnknown}
@@ -100,6 +102,8 @@ cDriver * CreateDriver(int driverID, cDriverConfig * config)
             return new cDriverAvrCtl(config);
         case kDriverNetwork:
             return new cDriverNetwork(config);
+        case kDriverGU126X64D_K610A4:
+            return new cDriverGU126X64D_K610A4(config);
         case kDriverSerDisp:
             return new cDriverSerDisp(config);
         case kDriverG15daemon:
