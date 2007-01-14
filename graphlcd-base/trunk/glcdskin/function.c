@@ -104,6 +104,18 @@ bool cSkinFunction::Parse(const std::string & Text)
 
         mType = string;
     }
+    if (*ptr == '#')
+    {
+        // must be a variable id
+        if (strlen(ptr) < 2)
+        {
+            syslog(LOG_ERR, "ERROR: No variable id given\n");
+            return false;
+        }
+
+        mVariableId.assign(ptr + 1);
+        mType = variable;
+    }
     else if ((*ptr >= '0' && *ptr <= '9') || *ptr == '-' || *ptr == '+')
     {
         // must be number
@@ -297,6 +309,14 @@ cType cSkinFunction::Evaluate(void) const
 
         case number:
             return mNumber;
+
+        case variable:
+        {
+            cSkinVariable * variable = mSkin->GetVariable(mVariableId);
+            if (variable)
+                return variable->Value();
+            return false;
+        }
 
         case fun_not:
             return !mParams[0]->Evaluate();

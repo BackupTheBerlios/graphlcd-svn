@@ -26,6 +26,7 @@ namespace GLCD
 #define STRING    0x01000000
 #define NUMBER    0x02000000
 #define INTERNAL  0x04000000
+#define VARIABLE  0x08000000
 
 #define MAXPARAMETERS 512
 
@@ -41,6 +42,7 @@ public:
 
         string = STRING,
         number = NUMBER,
+        variable = VARIABLE,
 
         fun_not = INTERNAL,
         fun_and,
@@ -74,6 +76,7 @@ private:
     eType           mType;
     cSkinString     mString;
     int             mNumber;
+    std::string     mVariableId;
     cSkinFunction * mParams[MAXPARAMETERS];
     uint32_t        mNumParams;
 

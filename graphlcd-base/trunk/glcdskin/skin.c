@@ -63,4 +63,20 @@ cSkinDisplay * cSkin::GetDisplay(const std::string & Id)
     return NULL;
 }
 
+cSkinVariable * cSkin::GetVariable(const std::string & Id)
+{
+    cSkinVariables::iterator it = mVariables.begin();
+    while (it != mVariables.end())
+    {
+        if ((*it)->Id() == Id)
+        {
+            if ((*it)->Condition() == NULL || (*it)->Condition()->Evaluate())
+                return (*it);
+        }
+        it++;
+    }
+    return NULL;
+}
+
+
 } // end of namespace

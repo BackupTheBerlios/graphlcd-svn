@@ -13,7 +13,6 @@
 #ifndef _GLCDSKIN_SKIN_H_
 #define _GLCDSKIN_SKIN_H_
 
-#include <map>
 #include <string>
 
 #include "display.h"
@@ -22,6 +21,7 @@
 #include "string.h"
 #include "cache.h"
 #include "config.h"
+#include "variable.h"
 
 
 namespace GLCD
@@ -41,6 +41,7 @@ private:
 
     cSkinFonts fonts;
     cSkinDisplays displays;
+    cSkinVariables mVariables;
     cImageCache * mImageCache;
 
 public:
@@ -51,6 +52,7 @@ public:
 
     cSkinFont * GetFont(const std::string & Id);
     cSkinDisplay * GetDisplay(const std::string & Id);
+    cSkinVariable * GetVariable(const std::string & Id);
 
     cSkinConfig & Config(void) { return config; }
     const std::string & Name(void) const { return name; }

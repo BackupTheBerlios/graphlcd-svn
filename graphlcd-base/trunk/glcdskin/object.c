@@ -128,7 +128,7 @@ bool cSkinObject::ParseAlignment(const std::string & Text)
 
 bool cSkinObject::ParseIntParam(const std::string &Text, int & Param)
 {
-    if (isalpha(Text[0]))
+    if (isalpha(Text[0]) || Text[0] == '#')
     {
         cSkinFunction * func = new cSkinFunction(this);
         if (func->Parse(Text))
