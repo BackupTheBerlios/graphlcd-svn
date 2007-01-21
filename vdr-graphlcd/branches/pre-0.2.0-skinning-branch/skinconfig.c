@@ -456,6 +456,21 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token)
                 }
                 return false;
             case tokReplayMode:
+                switch (replay.mode)
+                {
+                    case eReplayAudioCD:
+                        return "cd";
+                    case eReplayDVD:
+                        return "dvd";
+                    case eReplayFile:
+                        return "file";
+                    case eReplayImage:
+                        return "image";
+                    case eReplayMusic:
+                        return "music";
+                    default:
+                        return "vdr";
+                }
             case tokReplayIsShuffle:
             case tokReplayIsLoop:
             default:
@@ -596,10 +611,6 @@ int cGraphLCDSkinConfig::GetTabPosition(int Index, int MaxWidth, const GLCD::cFo
                 pos2 = str.find('\t', pos1);
                 iTab++;
             }
-        }
-        for (i = 0; i < (int) mTabs.size(); i++)
-        {
-            esyslog("tab %d: %d", i, mTabs[0]);
         }
     }
 
