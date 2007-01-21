@@ -152,6 +152,13 @@ bool StartElem(const std::string & name, std::map<std::string,std::string> & att
         else
             TAG_ERR_REMAIN("document");
     }
+    else if (name == "variable")
+    {
+        variable = new cSkinVariable(skin);
+        ATTRIB_MAN_STRING("id", variable->mId);
+        ATTRIB_MAN_FUNC("value", variable->ParseValue);
+        ATTRIB_OPT_FUNC("condition", variable->ParseCondition);
+    }
     else if (context[context.size() - 1] == "skin")
     {
         if (name == "font")
@@ -159,13 +166,6 @@ bool StartElem(const std::string & name, std::map<std::string,std::string> & att
             font = new cSkinFont(skin);
             ATTRIB_MAN_STRING("id", font->mId);
             ATTRIB_MAN_FUNC("url", font->ParseUrl);
-            ATTRIB_OPT_FUNC("condition", font->ParseCondition);
-        }
-        else if (name == "variable")
-        {
-            variable = new cSkinVariable(skin);
-            ATTRIB_MAN_STRING("id", variable->mId);
-            ATTRIB_MAN_FUNC("value", variable->ParseValue);
             ATTRIB_OPT_FUNC("condition", font->ParseCondition);
         }
         else if (name == "display")
