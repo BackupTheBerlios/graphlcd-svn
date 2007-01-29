@@ -88,16 +88,28 @@ void cSkinString::Reparse(void)
 bool cSkinString::Parse(const std::string & Text, bool Translate)
 {
     std::string trans = Translate ? mSkin->Config().Translate(Text) : Text;
-    const char * ptr = trans.c_str(), * last = trans.c_str();
+    const char * ptr, * last;
     bool inToken = false;
     bool inAttrib = false;
     int offset = 0;
+
+    if (trans[0] == '#')
+    {
+        cSkinVariable * variable = mSkin->GetVariable(trans.substr(1));
+        if (variable)
+        {
+            trans = (std::string) variable->Value();
+            syslog(LOG_ERR, "string variable %s", trans.c_str());
+        }
+    }
 
     //Dprintf("parsing: %s\n", Text.c_str());
     mOriginal = Text;
     mText = "";
     mTokens.clear();
 
+    ptr = trans.c_str();
+    last = trans.c_str();
     for (; *ptr; ++ptr) {
         if (inToken && *ptr == '\\') {
             if (*(ptr + 1) == '\0') {
