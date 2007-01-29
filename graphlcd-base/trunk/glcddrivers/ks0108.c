@@ -48,7 +48,7 @@ cDriverKS0108::cDriverKS0108(cDriverConfig * config)
 
     refreshCounter = 0;
     timeForLCDInNs = 50;
-    control = 0;
+    control = 1;
 }
 
 cDriverKS0108::~cDriverKS0108()

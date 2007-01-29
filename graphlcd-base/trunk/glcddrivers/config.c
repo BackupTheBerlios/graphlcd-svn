@@ -30,11 +30,11 @@ cDriverConfig::cDriverConfig()
     height(0),
     upsideDown(false),
     invert(false),
-    brightness(0),
+    brightness(100),
     contrast(5),
     backlight(true),
     adjustTiming(0),
-    refreshDisplay(0)
+    refreshDisplay(5)
 {
 }
 
