@@ -29,6 +29,8 @@ static const char * Internals[] =
     "FontLineHeight",
     "FontTextWidth",
     "FontTextHeight",
+    "ImageWidth",
+    "ImageHeight",
     NULL
 };
 
@@ -235,6 +237,11 @@ bool cSkinFunction::Parse(const std::string & Text)
                                 params = 2;
                                 break;
 
+                            case funImageWidth:
+                            case funImageHeight:
+                                params = 1;
+                                break;
+
                             default:
                                 break;
                         }
@@ -294,6 +301,26 @@ cType cSkinFunction::FunFont(eType Function, const cType &Param1, const cType &P
             return font->Width((const std::string) Param2);
         case funFontTextHeight:
             return font->Height((const std::string) Param2);
+        default:
+            break;
+    }
+    return false;
+}
+
+cType cSkinFunction::FunImage(eType Function, const cType &Param) const
+{
+    cImageCache * cache = mSkin->ImageCache();
+    GLCD::cImage * image = cache->Get(Param);
+
+    if (!image)
+        return false;
+
+    switch (Function)
+    {
+        case funImageWidth:
+            return (int) image->Width();
+        case funImageHeight:
+            return (int) image->Height();
         default:
             break;
     }
@@ -383,6 +410,10 @@ cType cSkinFunction::Evaluate(void) const
         case funFontTextWidth:
         case funFontTextHeight:
             return FunFont(mType, mParams[0]->Evaluate(), mParams[1]->Evaluate());
+
+        case funImageWidth:
+        case funImageHeight:
+            return FunImage(mType, mParams[0]->Evaluate());
 
         default:
             //Dprintf("unknown function code\n");

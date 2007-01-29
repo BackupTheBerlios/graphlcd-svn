@@ -67,7 +67,10 @@ public:
         funFontSpaceBetween,
         funFontLineHeight,
         funFontTextWidth,
-        funFontTextHeight
+        funFontTextHeight,
+
+        funImageWidth,
+        funImageHeight
     };
 
 private:
@@ -84,7 +87,7 @@ protected:
     cType FunFile  (const cType &Param) const;
     cType FunPlugin(const cType &Param) const;
     cType FunFont  (eType Function, const cType &Param1, const cType &Param2) const;
-
+    cType FunImage (eType Function, const cType &Param) const;
 public:
     cSkinFunction(cSkinObject *Parent);
     cSkinFunction(const cSkinString &String);
