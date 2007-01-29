@@ -177,7 +177,7 @@ bool cDriverConfig::GetBool(const std::string & value)
 
 
 cConfig::cConfig()
-:   waitMethod(kWaitNanosleepRR),
+:   waitMethod(kWaitGettimeofday),
     waitPriority(0)
 {
 }
