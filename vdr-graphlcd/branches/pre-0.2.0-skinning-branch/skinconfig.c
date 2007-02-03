@@ -121,6 +121,11 @@ typedef enum _eTokenId
     tokScreenWidth,
     tokScreenHeight,
 
+    tokPrivateSettingStart,
+    tokSettingChannelLogo,
+    tokSettingReplayLogo,
+    tokPrivateSettingEnd,
+
     tokCountToken
 } eTokenId;
 
@@ -221,7 +226,12 @@ static const std::string Tokens[tokCountToken] =
     "ConfigPath",
     "SkinPath",
     "ScreenWidth",
-    "ScreenHeight"
+    "ScreenHeight",
+
+    "privateSettingStart",
+    "SettingChannelLogo",
+    "SettingReplayLogo",
+    "privateSettingEnd"
 };
 
 cGraphLCDSkinConfig::cGraphLCDSkinConfig(const cGraphLCDDisplay * Display, const std::string & CfgPath, const std::string & SkinsPath, const std::string & SkinName, cGraphLCDState * State)
@@ -532,6 +542,28 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token)
                 return osd.yellowButton;
             case tokButtonBlue:
                 return osd.blueButton;
+            default:
+                break;
+        }
+    }
+    else if (Token.Id > tokPrivateSettingStart && Token.Id < tokPrivateSettingEnd)
+    {
+        switch (Token.Id)
+        {
+            case tokSettingChannelLogo:
+                if (GraphLCDSetup.ShowLogo == 1)
+                    return "m";
+                if (GraphLCDSetup.ShowLogo == 2)
+                    return "l";
+                else
+                    return "";
+            case tokSettingReplayLogo:
+                if (GraphLCDSetup.ReplayLogo == 1)
+                    return "m";
+                if (GraphLCDSetup.ReplayLogo == 2)
+                    return "l";
+                else
+                    return "";
             default:
                 break;
         }
