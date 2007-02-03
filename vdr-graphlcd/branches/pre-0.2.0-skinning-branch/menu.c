@@ -1,5 +1,5 @@
 /**
- *  GraphLCD plugin for the Video Disk Recorder 
+ *  GraphLCD plugin for the Video Disk Recorder
  *
  *  menu.c  -  setup menu class
  *
@@ -40,9 +40,8 @@ cGraphLCDMenuSetup::cGraphLCDMenuSetup()
 	showSymbolsValues[2] = tr("compressed");
 	static const char * showLogoValues[4];
 	showLogoValues[0] = tr("no");
-	showLogoValues[1] = tr("auto");
-	showLogoValues[2] = tr("medium");
-	showLogoValues[3] = tr("large");
+	showLogoValues[1] = tr("medium");
+	showLogoValues[2] = tr("large");
 	static const char * scrollModeValues[3];
 	scrollModeValues[0] = tr("never");
 	scrollModeValues[1] = tr("once");
@@ -53,7 +52,7 @@ cGraphLCDMenuSetup::cGraphLCDMenuSetup()
 	Add(new cMenuEditBoolItem(tr("Plugin active"), &newGraphLCDSetup.PluginActive));
 	Add(new cMenuEditStraItem(tr("Show Date/Time"), &newGraphLCDSetup.ShowDateTime, 3, showDateTimeValues));
 	Add(new cMenuEditBoolItem(tr("Show Channel"), &newGraphLCDSetup.ShowChannel));
-	Add(new cMenuEditStraItem(tr("Show Logo"), &newGraphLCDSetup.ShowLogo, 4, showLogoValues));
+	Add(new cMenuEditStraItem(tr("Show Logo"), &newGraphLCDSetup.ShowLogo, 3, showLogoValues));
 	Add(new cMenuEditStraItem(tr("Show Symbols"), &newGraphLCDSetup.ShowSymbols, 3, showSymbolsValues));
 	Add(new cMenuEditBoolItem(tr("Show ET Symbols"), &newGraphLCDSetup.ShowETSymbols));
 	Add(new cMenuEditBoolItem(tr("Show Program"), &newGraphLCDSetup.ShowProgram));
@@ -67,7 +66,7 @@ cGraphLCDMenuSetup::cGraphLCDMenuSetup()
 	if (newGraphLCDSetup.IdentifyReplayType)
 	{
 		Add(new cMenuEditBoolItem(tr("Modify replay string"), &newGraphLCDSetup.ModifyReplayString));
-		Add(new cMenuEditStraItem(tr("Show Logo on Replay"), &newGraphLCDSetup.ReplayLogo, 4, showLogoValues));
+		Add(new cMenuEditStraItem(tr("Show Logo on Replay"), &newGraphLCDSetup.ReplayLogo, 3, showLogoValues));
 	}
 	Add(new cMenuEditStraItem(tr("Scroll text lines"), &newGraphLCDSetup.ScrollMode, 3, scrollModeValues));
 	Add(new cMenuEditIntItem(tr("Scroll speed"), &newGraphLCDSetup.ScrollSpeed, 1, 10));
