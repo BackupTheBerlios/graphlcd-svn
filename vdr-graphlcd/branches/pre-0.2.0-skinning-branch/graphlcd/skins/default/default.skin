@@ -1,93 +1,212 @@
 <?xml version="1.0"?>
 <skin version="1.0" name="default">
-  <font id="medium" url="ft2:verdanab.ttf:12"/>
-  <font id="large" url="ft2:verdana.ttf:18"/>
-  <font id="ChannelFont" url="ft2:verdana.ttf:15" condition="le('{ScreenHeight}','64')"/>
-  <font id="ChannelFont" url="ft2:verdana.ttf:25"/>
-  <font id="FontMenuTitle" url="ft2:verdana.ttf:15"/>
-  <font id="FontMenuItem" url="ft2:verdana.ttf:12"/>
+  <font id="FontInfo" url="fnt:f12bn.fnt" condition="le({ScreenHeight},64)"/>
+  <font id="FontChannel" url="fnt:f12bn.fnt" condition="le({ScreenHeight},64)"/>
+  <font id="FontMenuTitle" url="fnt:f8n.fnt" condition="le({ScreenHeight},64)"/>
+  <font id="FontMenuItem" url="fnt:f8n.fnt" condition="le({ScreenHeight},64)"/>
+  <font id="FontMenuButton" url="fnt:f5n.fnt" condition="le({ScreenHeight},64)"/>
+  <font id="FontTimes" url="fnt:f8n.fnt" condition="le({ScreenHeight},64)"/>
+
+  <font id="FontTimes" url="fnt:verdana-014.fnt"/>
+  <font id="FontInfo" url="fnt:verdana-018.fnt"/>
+  <font id="FontChannel" url="fnt:verdana-022.fnt"/>
+  <font id="FontMenuTitle" url="fnt:verdana-015.fnt"/>
+  <font id="FontMenuItem" url="fnt:verdana-012.fnt"/>
   <font id="FontMenuButton" url="fnt:verdanab-009.fnt"/>
 
+  <variable id="LineThickness" value="1" condition="le({ScreenHeight},64)"/>
+  <variable id="LineThickness" value="2"/>
+
+  <variable id="LogoW" value="40" condition="le({ScreenHeight},64)"/>
+  <variable id="LogoW" value="64"/>
+  <variable id="LogoH" value="29" condition="le({ScreenHeight},64)"/>
+  <variable id="LogoH" value="48"/>
+  <variable id="LogoX" value="mul(-1,#LogoW)"/>
+  <variable id="ChannelLogo" value="'{ConfigPath}/logos/channels/{ChannelAlias}_m.glcd'" condition="le({ScreenHeight},64)"/>
+  <variable id="ChannelLogo" value="'{ConfigPath}/logos/channels/{ChannelAlias}_l.glcd'"/>
+
+  <variable id="SymbolW" value="ImageWidth('symbols/empty_small.pbm')" condition="le({ScreenHeight},64)"/>
+  <variable id="SymbolW" value="ImageWidth('symbols/empty.pbm')"/>
+  <variable id="SymbolH" value="ImageHeight('symbols/empty_small.pbm')" condition="le({ScreenHeight},64)"/>
+  <variable id="SymbolH" value="ImageHeight('symbols/empty.pbm')"/>
+  <variable id="SymbolPitch" value="add(#SymbolW,1)"/>
+  <variable id="SymbolTeletext" value="'symbols/teletext_small.pbm'" condition="le({ScreenHeight},64)"/>
+  <variable id="SymbolTeletext" value="'symbols/teletext.pbm'"/>
+  <variable id="SymbolDolby" value="'symbols/dolby_small.pbm'" condition="le({ScreenHeight},64)"/>
+  <variable id="SymbolDolby" value="'symbols/dolby.pbm'"/>
+  <variable id="SymbolScrambled" value="'symbols/scrambled_small.pbm'" condition="le({ScreenHeight},64)"/>
+  <variable id="SymbolScrambled" value="'symbols/scrambled.pbm'"/>
+  <variable id="SymbolMute" value="'symbols/mute_small.pbm'" condition="le({ScreenHeight},64)"/>
+  <variable id="SymbolMute" value="'symbols/mute.pbm'"/>
+  <variable id="SymbolRecording" value="'symbols/recording_small.pbm'" condition="le({ScreenHeight},64)"/>
+  <variable id="SymbolRecording" value="'symbols/recording.pbm'"/>
+
   <display id="normal">
-    <text x1="0" x2="-1" y1="0" y2="-1" color="black" align="left" font="ChannelFont">
+    <variable id="TimeBarW" value="FontTextWidth('FontTimes','00:00 - 00:00')"/>
+    <variable id="TimeBarY" value="add(#LogoH,#LineThickness,FontLineHeight('FontTimes'),1)"/>
+    <text x1="0" x2="-1" y1="0" y2="-1" color="black" align="left" font="FontChannel">
     {ChannelNumber} {ChannelName}
     </text>
-    <text x1="0" x2="80" y1="40" y2="-1" color="black" align="left" font="large">
-    {PresentStartDateTime:%H\:%M}
-    </text>
-    <text x1="80" x2="-1" y1="40" y2="-1" color="black" align="left" font="large">
+    <block condition="{SettingShowChannelLogo}">
+      <rectangle x1="#LogoX" y1="0" width="#LogoW" height="#LogoH" color="white" filled="yes"/>
+      <image x="#LogoX" y="0" color="black" path="#ChannelLogo"/>
+      <rectangle x1="sub(#LogoX,#LineThickness)" width="#LineThickness" y1="0" height="#LogoH" color="black" filled="yes"/>
+      <text x1="0" x2="sub(#LogoX,#LineThickness,2)" y1="sub(#LogoH,FontLineHeight('FontInfo'))" y2="-1" color="black" align="left" font="FontInfo">
+      {DateTime:%a %d.%m.}
+      </text>
+      <text x1="0" x2="sub(#LogoX,#LineThickness,2)" y1="sub(#LogoH,FontLineHeight('FontInfo'))" y2="-1" color="black" align="right" font="FontInfo">
+      {DateTime:%H\:%M}
+      </text>
+    </block>
+    <block condition="not({SettingShowChannelLogo})">
+      <text x1="0" x2="-1" y1="sub(#LogoH,FontLineHeight('FontInfo'))" y2="-1" color="black" align="left" font="FontInfo">
+      {DateTime:%a %d.%m.}
+      </text>
+      <text x1="0" x2="-1" y1="sub(#LogoH,FontLineHeight('FontInfo'))" y2="-1" color="black" align="right" font="FontInfo">
+      {DateTime:%H\:%M}
+      </text>
+    </block>
+    <rectangle x1="0" x2="-1" y1="#LogoH" height="#LineThickness" color="black" filled="yes"/>
+    <block condition="{SettingShowSymbols}">
+      <image x="mul(-4,#SymbolPitch)" y="add(#LogoH,#LineThickness,1)" color="black" path="#SymbolTeletext" condition="{ChannelHasTeletext}"/>
+      <image x="mul(-3,#SymbolPitch)" y="add(#LogoH,#LineThickness,1)" color="black" path="#SymbolDolby" condition="{ChannelHasDolby}"/>
+      <image x="mul(-2,#SymbolPitch)" y="add(#LogoH,#LineThickness,1)" color="black" path="#SymbolScrambled" condition="{ChannelIsEncrypted}"/>
+      <image x="mul(-1,#SymbolPitch)" y="add(#LogoH,#LineThickness,1)" color="black" path="#SymbolMute" condition="{VolumeIsMute}"/>
+    </block>
+    <block condition="{SettingShowTimebar}">
+      <text x1="0" x2="-1" y1="add(#LogoH,#LineThickness)" y2="-1" color="black" align="left" font="FontTimes">
+      {PresentStartDateTime:%H\:%M} - {FollowingStartDateTime:%H\:%M}
+      </text>
+      <rectangle x1="0" width="#TimeBarW" y1="#TimeBarY" height="6" color="black"/>
+      <progress x1="2" width="sub(#TimeBarW,4)" y1="add(#TimeBarY,2)" height="2" color="black" direction="0" current="{PresentProgress}" total="{PresentDuration}"/>
+    </block>
+
+    <variable id="RecordingsTextY" value="mul(-1,FontLineHeight('FontTimes'))"/>
+    <variable id="RecordingsLineY" value="sub(sub(#RecordingsTextY,#LineThickness),1)"/>
+    <variable id="RecordingsSymbolY" value="add(#RecordingsTextY,div(sub(FontLineHeight('FontTimes'),#SymbolH),2))"/>
+    <variable id="PresentTextY" value="sub(sub(#RecordingsLineY,FontLineHeight('FontInfo')),2)"/>
+
+    <text x1="0" x2="-1" y1="#PresentTextY" height="FontLineHeight('FontInfo')" color="black" align="left" font="FontInfo">
     {PresentTitle}
     </text>
-    <rectangle x1="0" width="FontTextWidth('large','00:00')" y1="70" height="10" color="black"/>
-    <progress x1="2" width="sub(FontTextWidth('large','00:00'),'4')" y1="72" height="6" color="black" direction="0" current="{PresentProgress}" total="{PresentDuration}"/>
-    <text x1="add(FontTextWidth('large','00:00'),'20')" x2="-1" y1="65" height="32" color="black" align="left" multiline="yes" font="medium">
-    {PresentShortText}
+    <rectangle x1="0" x2="-1" y1="#RecordingsLineY" height="#LineThickness" color="black" filled="yes"/>
+    <image x="0" y="#RecordingsSymbolY" color="black" path="#SymbolRecording" condition="{IsRecording}"/>
+    <text x1="add(#SymbolW,2)" x2="-1" y1="#RecordingsTextY" height="FontLineHeight('FontTimes')" color="black" align="left" font="FontTimes">
+    {Recordings}
     </text>
-    <text x1="0" x2="80" y1="100" y2="-1" color="black" align="left" font="large">
-    {FollowingStartDateTime:%H\:%M}
-    </text>
-    <text x1="80" x2="-1" y1="100" y2="-1" color="black" align="left" font="large">
-    {FollowingTitle}
-    </text>
-    <image x="-64" y="0" color="black" path="{ConfigPath}/logos/{ChannelAlias}_l.glcd"/>
   </display>
   <display id="volume">
-    <block condition="not('{VolumeIsMute}')">
-      <rectangle x1="20" x2="-21" y1="40" height="30" color="white" filled="yes" radius="3"/>
-      <rectangle x1="22" x2="-23" y1="42" height="26" color="black" radius="2"/>
-      <progress x1="24" x2="-25" y1="44" height="22" color="black" direction="0" current="{VolumeCurrent}" total="{VolumeTotal}"/>
+    <variable id="VolumeBarX" value="20"/>
+    <variable id="VolumeBarW" value="sub({ScreenWidth},mul(2,#VolumeBarX))"/>
+    <variable id="VolumeBarH" value="30"/>
+    <variable id="VolumeBarY" value="div(sub({ScreenHeight},#VolumeBarH),2)"/>
+    <variable id="MuteImage" value="'images/mute.pbm'"/>
+    <variable id="MuteImageW" value="ImageWidth(#MuteImage)"/>
+    <variable id="MuteImageH" value="ImageHeight(#MuteImage)"/>
+    <rectangle x1="#VolumeBarX" y1="#VolumeBarY" width="#VolumeBarW" height="#VolumeBarH" color="white" filled="yes" radius="3"/>
+    <rectangle x1="add(#VolumeBarX,2)" y1="add(#VolumeBarY,2)" width="sub(#VolumeBarW,4)" height="sub(#VolumeBarH,4)" color="black" radius="2"/>
+    <block condition="not({VolumeIsMute})">
+      <progress x1="add(#VolumeBarX,4)" y1="add(#VolumeBarY,4)" width="sub(#VolumeBarW,8)" height="sub(#VolumeBarH,8)" color="black" direction="0" current="{VolumeCurrent}" total="{VolumeTotal}"/>
     </block>
     <block condition="{VolumeIsMute}">
-      <rectangle x1="20" width="31" y1="40" height="30" color="white" filled="yes" radius="3"/>
-      <rectangle x1="22" width="27" y1="42" height="26" color="black" radius="2"/>
-      <image x="24" y="44" color="black" path="images/mute.pbm"/>
+      <image x="div(sub({ScreenWidth},#MuteImageW),2)" y="div(sub({ScreenHeight},#MuteImageH),2)" color="black" path="#MuteImage"/>
     </block>
   </display>
   <display id="message">
-    <rectangle x1="10" x2="-11" y1="20" height="60" color="white" filled="yes" radius="3"/>
-    <rectangle x1="12" x2="-13" y1="22" height="56" color="black" radius="2"/>
-    <image x1="18" y1="29" color="black" path="images/message.pbm"/>
-    <text x1="38" x2="-16" y1="24" height="52" color="black" align="left" multiline="yes" font="large">
-    {Message}
-    </text>
+    <variable id="MessageX" value="10"/>
+    <variable id="MessageW" value="sub({ScreenWidth},mul(2,#MessageX))"/>
+    <variable id="MessageTextH" value="mul(4,FontLineHeight('FontInfo'))"/>
+    <variable id="MessageH" value="add(#MessageTextH,8)"/>
+    <variable id="MessageY" value="div(sub({ScreenHeight},#MessageH),2)"/>
+    <variable id="MessageBitmap" value="'images/message.pbm'"/>
+    <variable id="MessageBitmapW" value="ImageWidth(#MessageBitmap)"/>
+    <variable id="MessageBitmapH" value="ImageHeight(#MessageBitmap)"/>
+    <rectangle x1="#MessageX" y1="#MessageY" width="#MessageW" height="#MessageH" color="white" filled="yes" radius="3"/>
+    <rectangle x1="add(#MessageX,2)" y1="add(#MessageY,2)" width="sub(#MessageW,4)" height="sub(#MessageH,4)" color="black" radius="2"/>
+    <block condition="lt(#MessageBitmapH,sub(#MessageH,12))">
+      <image x1="add(#MessageX,6)" y1="add(#MessageY,6)" color="black" path="#MessageBitmap"/>
+      <text x1="add(add(#MessageX,10),#MessageBitmapW)" y1="add(#MessageY,4)" width="sub(sub(#MessageW,14),#MessageBitmapW)" height="#MessageTextH" color="black" align="left" multiline="yes" font="FontInfo">
+      {Message}
+      </text>
+    </block>
+    <block condition="ge(#MessageBitmapH,sub(#MessageH,12))">
+      <text x1="add(#MessageX,4)" y1="add(#MessageY,4)" width="sub(#MessageW,8)" height="#MessageTextH" color="black" align="left" multiline="yes" font="FontInfo">
+      {Message}
+      </text>
+    </block>
   </display>
   <display id="replay">
-    <text x1="0" x2="-1" y1="0" height="mul(FontLineHeight('large'),'2')" color="black" align="left" multiline="yes" font="large">
-    {ReplayTitle}
-    </text>
-    <rectangle x1="0" x2="-1" y1="70" height="16" color="black"/>
-    <progress x1="2" x2="-1" y1="72" height="12" color="black" direction="0" current="{ReplayPosition}" total="{ReplayDuration}"/>
-    <text x1="0" x2="100" y1="100" y2="-1" color="black" align="left" font="large">
+    <variable id="ReplayProgressH" value="14"/>
+    <variable id="ReplayProgressGap" value="1"/>
+    <variable id="ReplayTimeY" value="mul(FontLineHeight('FontInfo'),-1)"/>
+    <variable id="ReplayProgressY" value="sub(#ReplayTimeY,#ReplayProgressH,#ReplayProgressGap)"/>
+    <variable id="ReplayLogo" value="'{ConfigPath}/logos/replay/replay-{ReplayMode}_m.glcd'" condition="le({ScreenHeight},64)"/>
+    <variable id="ReplayLogo" value="'{ConfigPath}/logos/replay/replay-{ReplayMode}_l.glcd'"/>
+    <block condition="{SettingShowReplayLogo}">
+      <image x="#LogoX" y="0" color="black" path="#ReplayLogo"/>
+      <rectangle x1="sub(#LogoX,#LineThickness)" width="#LineThickness" y1="0" height="#LogoH" color="black" filled="yes"/>
+      <rectangle x1="sub(#LogoX,#LineThickness)" x2="-1" y1="#LogoH" height="#LineThickness" color="black" filled="yes"/>
+      <text x1="0" x2="sub(#LogoX,#LineThickness,2)" y1="0" y2="#ReplayProgressY" color="black" align="left" multiline="yes" font="FontInfo">
+      {ReplayTitle}
+      </text>
+    </block>
+    <block condition="not({SettingShowReplayLogo})">
+      <text x1="0" x2="-1" y1="0" y2="#ReplayProgressY" color="black" align="left" multiline="yes" font="FontInfo">
+      {ReplayTitle}
+      </text>
+    </block>
+    <rectangle x1="0" y1="#ReplayProgressY" width="15" height="14" color="black"/>
+    <image x="1" y="add(#ReplayProgressY,1)" color="black" path="symbols/replay-play.pbm" condition="{ReplayIsPlaying}"/>
+    <image x="1" y="add(#ReplayProgressY,1)" color="black" path="symbols/replay-pause.pbm" condition="{ReplayIsPausing}"/>
+    <image x="1" y="add(#ReplayProgressY,1)" color="black" path="symbols/replay-fast-fwd.pbm" condition="{ReplayIsFastForward}"/>
+    <image x="1" y="add(#ReplayProgressY,1)" color="black" path="symbols/replay-fast-rwd.pbm" condition="{ReplayIsFastRewind}"/>
+    <image x="1" y="add(#ReplayProgressY,1)" color="black" path="symbols/replay-slow-fwd.pbm" condition="{ReplayIsSlowForward}"/>
+    <image x="1" y="add(#ReplayProgressY,1)" color="black" path="symbols/replay-slow-rwd.pbm" condition="{ReplayIsSlowRewind}"/>
+    <rectangle x1="14" x2="-1" y1="#ReplayProgressY" height="#ReplayProgressH" color="black"/>
+    <progress x1="16" x2="-3" y1="add(#ReplayProgressY,2)" height="sub(#ReplayProgressH,4)" color="black" direction="0" current="{ReplayPosition}" total="{ReplayDuration}"/>
+    <text x1="0" x2="-1" y1="#ReplayTimeY" y2="-1" color="black" align="left" font="FontInfo">
     {ReplayPositionIndex:%H\:%M\:%S}
     </text>
-    <text x1="-100" x2="-1" y1="100" y2="-1" color="black" align="right" font="large">
+    <text x1="0" x2="-1" y1="#ReplayTimeY" y2="-1" color="black" align="right" font="FontInfo">
     {ReplayDurationIndex:%H\:%M\:%S}
     </text>
   </display>
   <display id="menu">
-    <text x1="0" x2="-1" y1="0" y2="25" color="black" font="FontMenuTitle">{MenuTitle}</text>
-    <rectangle x1="0" y1="20" x2="-1" height="2" color="black" filled="yes"/>
-    <list x1="0" y1="22" x2="-1" y2="-14">
-      <item height="18"/>
-      <text x1="10" x2="-1" y1="0" height="18" color="black" font="FontMenuItem">{MenuItem}</text>
-      <image x="0" y="4" width="10" height="10" color="black" path="images/arrow.pbm" condition="{IsMenuCurrent}"/>
-      <text x1="10" x2="-1" y1="0" height="18" color="black" font="FontMenuItem">{MenuCurrent}</text>
+    <variable id="ButtonPitch" value="div({ScreenWidth},4)"/>
+    <variable id="ButtonWidth" value="sub(#ButtonPitch,2)"/>
+    <variable id="ButtonHeight" value="add(FontLineHeight('FontMenuButton'),2)"/>
+    <variable id="ButtonY" value="mul(#ButtonHeight,-1)"/>
+    <variable id="ItemHeight" value="FontLineHeight('FontMenuItem')"/>
+    <variable id="ArrowBitmap" value="'images/arrow_small.pbm'" condition="le({ScreenHeight},64)"/>
+    <variable id="ArrowBitmap" value="'images/arrow.pbm'"/>
+    <variable id="ArrowWidth" value="ImageWidth(#ArrowBitmap)"/>
+    <variable id="ArrowHeight" value="ImageHeight(#ArrowBitmap)"/>
+    <variable id="ArrowY" value="div(sub(#ItemHeight,#ArrowHeight),2)" condition="le({ScreenHeight},64)"/>
+    <variable id="ArrowY" value="add(div(sub(#ItemHeight,#ArrowHeight),2),2)"/>
+
+    <text x1="0" x2="-1" height="FontLineHeight('FontMenuTitle')" color="black" font="FontMenuTitle">{MenuTitle}</text>
+    <rectangle x1="0" y1="add(FontLineHeight('FontMenuTitle'),2)" x2="-1" height="#LineThickness" color="black" filled="yes"/>
+    <list x1="0" y1="add(FontLineHeight('FontMenuTitle'),4)" x2="-1" y2="#ButtonY">
+      <item height="#ItemHeight"/>
+      <text x1="#ArrowWidth" x2="-1" y1="0" height="#ItemHeight" color="black" font="FontMenuItem">{MenuItem}</text>
+      <image x="0" y="#ArrowY" width="#ArrowWidth" height="#ArrowHeight" color="black" path="#ArrowBitmap" condition="{IsMenuCurrent}"/>
+      <text x1="#ArrowWidth" x2="-1" y1="0" height="#ItemHeight" color="black" font="FontMenuItem">{MenuCurrent}</text>
     </list>
     <block condition="{ButtonRed}">
-      <rectangle x1="add(mul(div('{ScreenWidth}','4'),'0'),'1')" y1="-14" width="sub(div('{ScreenWidth}','4'),'2')" height="14" color="black" filled="yes" radius="2"/>
-      <text x1="add(mul(div('{ScreenWidth}','4'),'0'),'2')" y1="-14" width="sub(div('{ScreenWidth}','4'),'4')" height="14" color="white" align="center" font="FontMenuButton">{ButtonRed}</text>
+      <rectangle x1="add(mul(#ButtonPitch,0),1)" y1="#ButtonY" width="#ButtonWidth" height="#ButtonHeight" color="black" filled="yes" radius="2"/>
+      <text x1="add(mul(#ButtonPitch,0),2)" y1="#ButtonY" width="sub(#ButtonPitch,4)" height="#ButtonHeight" color="white" align="center" font="FontMenuButton">{ButtonRed}</text>
     </block>
     <block condition="{ButtonGreen}">
-      <rectangle x1="add(mul(div('{ScreenWidth}','4'),'1'),'1')" y1="-14" width="sub(div('{ScreenWidth}','4'),'2')" height="14" color="black" filled="yes" radius="2"/>
-      <text x1="add(mul(div('{ScreenWidth}','4'),'1'),'2')" y1="-14" width="sub(div('{ScreenWidth}','4'),'4')" height="14" color="white" align="center" font="FontMenuButton">{ButtonGreen}</text>
+      <rectangle x1="add(mul(#ButtonPitch,1),1)" y1="#ButtonY" width="#ButtonWidth" height="#ButtonHeight" color="black" filled="yes" radius="2"/>
+      <text x1="add(mul(#ButtonPitch,1),2)" y1="#ButtonY" width="sub(#ButtonPitch,4)" height="#ButtonHeight" color="white" align="center" font="FontMenuButton">{ButtonGreen}</text>
     </block>
     <block condition="{ButtonYellow}">
-      <rectangle x1="add(mul(div('{ScreenWidth}','4'),'2'),'1')" y1="-14" width="sub(div('{ScreenWidth}','4'),'2')" height="14" color="black" filled="yes" radius="2"/>
-      <text x1="add(mul(div('{ScreenWidth}','4'),'2'),'2')" y1="-14" width="sub(div('{ScreenWidth}','4'),'4')" height="14" color="white" align="center" font="FontMenuButton">{ButtonYellow}</text>
+      <rectangle x1="add(mul(#ButtonPitch,2),1)" y1="#ButtonY" width="#ButtonWidth" height="#ButtonHeight" color="black" filled="yes" radius="2"/>
+      <text x1="add(mul(#ButtonPitch,2),2)" y1="#ButtonY" width="sub(#ButtonPitch,4)" height="#ButtonHeight" color="white" align="center" font="FontMenuButton">{ButtonYellow}</text>
     </block>
     <block condition="{ButtonBlue}">
-      <rectangle x1="add(mul(div('{ScreenWidth}','4'),'3'),'1')" y1="-14" width="sub(div('{ScreenWidth}','4'),'2')" height="14" color="black" filled="yes" radius="2"/>
-      <text x1="add(mul(div('{ScreenWidth}','4'),'3'),'2')" y1="-14" width="sub(div('{ScreenWidth}','4'),'4')" height="14" color="white" align="center" font="FontMenuButton">{ButtonBlue}</text>
+      <rectangle x1="add(mul(#ButtonPitch,3),1)" y1="#ButtonY" width="#ButtonWidth" height="#ButtonHeight" color="black" filled="yes" radius="2"/>
+      <text x1="add(mul(#ButtonPitch,3),2)" y1="#ButtonY" width="sub(#ButtonPitch,4)" height="#ButtonHeight" color="white" align="center" font="FontMenuButton">{ButtonBlue}</text>
     </block>
   </display>
 </skin>
