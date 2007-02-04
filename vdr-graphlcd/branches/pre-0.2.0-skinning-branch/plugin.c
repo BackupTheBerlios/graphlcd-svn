@@ -237,9 +237,8 @@ bool cPluginGraphLCD::SetupParse(const char * Name, const char * Value)
     if      (!strcasecmp(Name, "PluginActive")) GraphLCDSetup.PluginActive = atoi(Value);
     else if (!strcasecmp(Name, "ShowDateTime")) GraphLCDSetup.ShowDateTime = atoi(Value);
     else if (!strcasecmp(Name, "ShowChannel")) GraphLCDSetup.ShowChannel = atoi(Value);
-    else if (!strcasecmp(Name, "ShowLogo")) GraphLCDSetup.ShowLogo = atoi(Value);
+    else if (!strcasecmp(Name, "ShowChannelLogo")) GraphLCDSetup.ShowChannelLogo = atoi(Value);
     else if (!strcasecmp(Name, "ShowSymbols")) GraphLCDSetup.ShowSymbols = atoi(Value);
-    else if (!strcasecmp(Name, "ShowETSymbols")) GraphLCDSetup.ShowETSymbols = atoi(Value);
     else if (!strcasecmp(Name, "ShowProgram")) GraphLCDSetup.ShowProgram = atoi(Value);
     else if (!strcasecmp(Name, "ShowTimebar")) GraphLCDSetup.ShowTimebar = atoi(Value);
     else if (!strcasecmp(Name, "ShowMenu")) GraphLCDSetup.ShowMenu = atoi(Value);
@@ -249,7 +248,7 @@ bool cPluginGraphLCD::SetupParse(const char * Name, const char * Value)
     else if (!strcasecmp(Name, "ShowNotRecording")) GraphLCDSetup.ShowNotRecording = atoi(Value);
     else if (!strcasecmp(Name, "IdentifyReplayType")) GraphLCDSetup.IdentifyReplayType = atoi(Value);
     else if (!strcasecmp(Name, "ModifyReplayString")) GraphLCDSetup.ModifyReplayString = atoi(Value);
-    else if (!strcasecmp(Name, "ReplayLogo")) GraphLCDSetup.ReplayLogo = atoi(Value);
+    else if (!strcasecmp(Name, "ShowReplayLogo")) GraphLCDSetup.ShowReplayLogo = atoi(Value);
     else if (!strcasecmp(Name, "ScrollMode")) GraphLCDSetup.ScrollMode = atoi(Value);
     else if (!strcasecmp(Name, "ScrollSpeed")) GraphLCDSetup.ScrollSpeed = atoi(Value);
     else if (!strcasecmp(Name, "ScrollTime")) GraphLCDSetup.ScrollTime = atoi(Value);

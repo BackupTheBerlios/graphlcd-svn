@@ -34,14 +34,6 @@ cGraphLCDMenuSetup::cGraphLCDMenuSetup()
 	showDateTimeValues[0] = tr("no");
 	showDateTimeValues[1] = tr("yes");
 	showDateTimeValues[2] = tr("not in menu");
-	static const char * showSymbolsValues[3];
-	showSymbolsValues[0] = tr("no");
-	showSymbolsValues[1] = tr("yes");
-	showSymbolsValues[2] = tr("compressed");
-	static const char * showLogoValues[4];
-	showLogoValues[0] = tr("no");
-	showLogoValues[1] = tr("medium");
-	showLogoValues[2] = tr("large");
 	static const char * scrollModeValues[3];
 	scrollModeValues[0] = tr("never");
 	scrollModeValues[1] = tr("once");
@@ -52,9 +44,8 @@ cGraphLCDMenuSetup::cGraphLCDMenuSetup()
 	Add(new cMenuEditBoolItem(tr("Plugin active"), &newGraphLCDSetup.PluginActive));
 	Add(new cMenuEditStraItem(tr("Show Date/Time"), &newGraphLCDSetup.ShowDateTime, 3, showDateTimeValues));
 	Add(new cMenuEditBoolItem(tr("Show Channel"), &newGraphLCDSetup.ShowChannel));
-	Add(new cMenuEditStraItem(tr("Show Logo"), &newGraphLCDSetup.ShowLogo, 3, showLogoValues));
-	Add(new cMenuEditStraItem(tr("Show Symbols"), &newGraphLCDSetup.ShowSymbols, 3, showSymbolsValues));
-	Add(new cMenuEditBoolItem(tr("Show ET Symbols"), &newGraphLCDSetup.ShowETSymbols));
+	Add(new cMenuEditBoolItem(tr("Show Channel Logo"), &newGraphLCDSetup.ShowChannelLogo));
+	Add(new cMenuEditBoolItem(tr("Show Symbols"), &newGraphLCDSetup.ShowSymbols));
 	Add(new cMenuEditBoolItem(tr("Show Program"), &newGraphLCDSetup.ShowProgram));
 	Add(new cMenuEditBoolItem(tr("Show Timebar"), &newGraphLCDSetup.ShowTimebar));
 	Add(new cMenuEditBoolItem(tr("Show Menu"), &newGraphLCDSetup.ShowMenu));
@@ -66,7 +57,7 @@ cGraphLCDMenuSetup::cGraphLCDMenuSetup()
 	if (newGraphLCDSetup.IdentifyReplayType)
 	{
 		Add(new cMenuEditBoolItem(tr("Modify replay string"), &newGraphLCDSetup.ModifyReplayString));
-		Add(new cMenuEditStraItem(tr("Show Logo on Replay"), &newGraphLCDSetup.ReplayLogo, 3, showLogoValues));
+		Add(new cMenuEditBoolItem(tr("Show Logo on Replay"), &newGraphLCDSetup.ShowReplayLogo));
 	}
 	Add(new cMenuEditStraItem(tr("Scroll text lines"), &newGraphLCDSetup.ScrollMode, 3, scrollModeValues));
 	Add(new cMenuEditIntItem(tr("Scroll speed"), &newGraphLCDSetup.ScrollSpeed, 1, 10));
@@ -81,9 +72,8 @@ void cGraphLCDMenuSetup::Store()
 	SetupStore("PluginActive", GraphLCDSetup.PluginActive  = newGraphLCDSetup.PluginActive);
 	SetupStore("ShowDateTime",GraphLCDSetup.ShowDateTime = newGraphLCDSetup.ShowDateTime);
 	SetupStore("ShowChannel", GraphLCDSetup.ShowChannel = newGraphLCDSetup.ShowChannel);
-	SetupStore("ShowLogo",    GraphLCDSetup.ShowLogo = newGraphLCDSetup.ShowLogo);
+	SetupStore("ShowChannelLogo", GraphLCDSetup.ShowChannelLogo = newGraphLCDSetup.ShowChannelLogo);
 	SetupStore("ShowSymbols", GraphLCDSetup.ShowSymbols = newGraphLCDSetup.ShowSymbols);
-	SetupStore("ShowETSymbols",GraphLCDSetup.ShowETSymbols = newGraphLCDSetup.ShowETSymbols);
 	SetupStore("ShowProgram", GraphLCDSetup.ShowProgram = newGraphLCDSetup.ShowProgram);
 	SetupStore("ShowTimebar", GraphLCDSetup.ShowTimebar = newGraphLCDSetup.ShowTimebar);
 	SetupStore("ShowMenu",    GraphLCDSetup.ShowMenu = newGraphLCDSetup.ShowMenu);
@@ -92,7 +82,7 @@ void cGraphLCDMenuSetup::Store()
 	SetupStore("ShowVolume",  GraphLCDSetup.ShowVolume = newGraphLCDSetup.ShowVolume);
 	SetupStore("ShowNotRecording", GraphLCDSetup.ShowNotRecording = newGraphLCDSetup.ShowNotRecording);
 	SetupStore("IdentifyReplayType", GraphLCDSetup.IdentifyReplayType = newGraphLCDSetup.IdentifyReplayType);
-	SetupStore("ReplayLogo", GraphLCDSetup.ReplayLogo = newGraphLCDSetup.ReplayLogo);
+	SetupStore("ReplayLogo", GraphLCDSetup.ShowReplayLogo = newGraphLCDSetup.ShowReplayLogo);
 	SetupStore("ModifyReplayString", GraphLCDSetup.ModifyReplayString = newGraphLCDSetup.ModifyReplayString);
 	SetupStore("ScrollMode", GraphLCDSetup.ScrollMode = newGraphLCDSetup.ScrollMode);
 	SetupStore("ScrollSpeed", GraphLCDSetup.ScrollSpeed = newGraphLCDSetup.ScrollSpeed);

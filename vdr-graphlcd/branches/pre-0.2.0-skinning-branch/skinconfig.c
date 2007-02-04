@@ -122,8 +122,10 @@ typedef enum _eTokenId
     tokScreenHeight,
 
     tokPrivateSettingStart,
-    tokSettingChannelLogo,
-    tokSettingReplayLogo,
+    tokSettingShowChannelLogo,
+    tokSettingShowReplayLogo,
+    tokSettingShowSymbols,
+    tokSettingShowTimebar,
     tokPrivateSettingEnd,
 
     tokCountToken
@@ -229,8 +231,10 @@ static const std::string Tokens[tokCountToken] =
     "ScreenHeight",
 
     "privateSettingStart",
-    "SettingChannelLogo",
-    "SettingReplayLogo",
+    "SettingShowChannelLogo",
+    "SettingShowReplayLogo",
+    "SettingShowSymbols",
+    "SettingShowTimebar",
     "privateSettingEnd"
 };
 
@@ -550,20 +554,22 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token)
     {
         switch (Token.Id)
         {
-            case tokSettingChannelLogo:
-                if (GraphLCDSetup.ShowLogo == 1)
-                    return "m";
-                if (GraphLCDSetup.ShowLogo == 2)
-                    return "l";
-                else
-                    return "";
-            case tokSettingReplayLogo:
-                if (GraphLCDSetup.ReplayLogo == 1)
-                    return "m";
-                if (GraphLCDSetup.ReplayLogo == 2)
-                    return "l";
-                else
-                    return "";
+            case tokSettingShowChannelLogo:
+                if (GraphLCDSetup.ShowChannelLogo)
+                    return true;
+                return false;
+            case tokSettingShowReplayLogo:
+                if (GraphLCDSetup.ShowReplayLogo)
+                    return true;
+                return false;
+            case tokSettingShowSymbols:
+                if (GraphLCDSetup.ShowSymbols)
+                    return true;
+                return false;
+            case tokSettingShowTimebar:
+                if (GraphLCDSetup.ShowTimebar)
+                    return true;
+                return false;
             default:
                 break;
         }

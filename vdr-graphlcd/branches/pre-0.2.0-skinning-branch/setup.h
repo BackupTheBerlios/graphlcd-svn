@@ -1,5 +1,5 @@
 /**
- *  GraphLCD plugin for the Video Disk Recorder 
+ *  GraphLCD plugin for the Video Disk Recorder
  *
  *  setup.h  -  Setup
  *
@@ -35,9 +35,8 @@ public:
 	int PluginActive;
 	int ShowDateTime;
 	int ShowChannel;
-	int ShowLogo;
+	int ShowChannelLogo;
 	int ShowSymbols;
-	int ShowETSymbols;
 	int ShowProgram;
 	int ShowTimebar;
 	int ShowMenu;
@@ -47,7 +46,7 @@ public:
 	int ShowNotRecording; // Empty frame around not recording card's empty icons?
 	int IdentifyReplayType;
 	int ModifyReplayString;
-	int ReplayLogo;
+	int ShowReplayLogo;
 	int ScrollMode;
 	int ScrollSpeed;
 	int ScrollTime;
