@@ -3,6 +3,7 @@ GraphLCD base package Revision History
 
 2007-02-04: Version 0.1.4
 - added missing include of stdint.h in several files
+- added -fPIC compiler option to library Makefiles
 - graphlcd.conf: added missing "Driver=serdisp" in serdisp section (thanks to Jörn Hermann)
 - graphlcd.conf: changed default value for sleep method to gettimeofday
 - glcdgraphics library changes:
