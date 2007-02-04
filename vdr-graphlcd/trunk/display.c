@@ -1600,7 +1600,7 @@ void cGraphLCDDisplay::DisplayMenu(void)
     if (!(textItemLines.size() > 0))
     {
         // draw Menu Entries
-        if (normalFont->TotalHeight() == normalFont->LineHeight())
+        if (normalFont->TotalHeight() <= normalFont->LineHeight())
             extra = 1;
         iEntryHeight = normalFont->TotalHeight() + 2 * extra;
         yPos = yPos + normalFont->TotalHeight() + 2 * TEXT_OFFSET_Y_TIME + FRAME_SPACE_YB;
