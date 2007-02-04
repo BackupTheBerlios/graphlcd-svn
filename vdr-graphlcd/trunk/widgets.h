@@ -1,5 +1,5 @@
 /**
- *  GraphLCD plugin for the Video Disk Recorder 
+ *  GraphLCD plugin for the Video Disk Recorder
  *
  *  widgets.h  -  display widgets
  *
@@ -36,23 +36,23 @@
 class cScroller
 {
 private:
-	int x;
-	int y;
-	int xmax;
-	const GLCD::cFont * font;
-	std::string text;
-	bool active;
-	bool update;
-	int position;
-	int increment;
-	unsigned long long int lastUpdate;
+    int x;
+    int y;
+    int xmax;
+    const GLCD::cFont * font;
+    std::string text;
+    bool active;
+    bool update;
+    int position;
+    int increment;
+    unsigned long long int lastUpdate;
 public:
-	cScroller();
-	const std::string & Text() const { return text; }
-	bool NeedsUpdate();
-	void Reset();
-	void Init(int x, int y, int xmax, const GLCD::cFont * font, const std::string & text);
-	void Draw(GLCD::cBitmap * bitmap);
+    cScroller();
+    const std::string & Text() const { return text; }
+    bool NeedsUpdate();
+    void Reset();
+    void Init(int x, int y, int xmax, const GLCD::cFont * font, const std::string & text);
+    void Draw(GLCD::cBitmap * bitmap);
 };
 
 #endif

@@ -35,9 +35,9 @@ static const int kMaxTabCount = 10;
 
 enum ThreadState
 {
-	Normal,
-	Replay,
-	Menu
+    Normal,
+    Replay,
+    Menu
 };
 
 // Display update Thread
@@ -48,103 +48,103 @@ public:
     ~cGraphLCDDisplay(void);
 
     int Init(GLCD::cDriver * Lcd, const char * CfgDir);
-  void Tick(void);
+    void Tick(void);
 
-	void SetChannel(int ChannelNumber);
-	void SetClear();
-	void SetOsdTitle();
-	void SetOsdItem(const char * Text);
-	void SetOsdCurrentItem();
-	void Recording(const cDevice * Device , const char * Name);
-	void Replaying(bool starting, eReplayMode replayMode);
-	//void SetStatusMessage(const char * Msg);
-	void SetOsdTextItem(const char * Text, bool Scroll);
-	//void SetColorButtons(const char * Red, const char * Green, const char * Yellow, const char * Blue);
-	void SetVolume(int Volume, bool Absolute);
+    void SetChannel(int ChannelNumber);
+    void SetClear();
+    void SetOsdTitle();
+    void SetOsdItem(const char * Text);
+    void SetOsdCurrentItem();
+    void Recording(const cDevice * Device , const char * Name);
+    void Replaying(bool starting, eReplayMode replayMode);
+    //void SetStatusMessage(const char * Msg);
+    void SetOsdTextItem(const char * Text, bool Scroll);
+    //void SetColorButtons(const char * Red, const char * Green, const char * Yellow, const char * Blue);
+    void SetVolume(int Volume, bool Absolute);
 
-	void Update();
+    void Update();
 
 protected:
-	virtual void Action();
+    virtual void Action();
 
 private:
-	bool update;
-	bool active;
+    bool update;
+    bool active;
     GLCD::cDriver * mLcd;
 
-	cFontList fontList;
-	GLCD::cBitmap * bitmap;
-	const GLCD::cFont * largeFont;
-	const GLCD::cFont * normalFont;
-	const GLCD::cFont * smallFont;
-	const GLCD::cFont * symbols;
-	std::string cfgDir;
-	std::string fontDir;
-	std::string logoDir;
+    cFontList fontList;
+    GLCD::cBitmap * bitmap;
+    const GLCD::cFont * largeFont;
+    const GLCD::cFont * normalFont;
+    const GLCD::cFont * smallFont;
+    const GLCD::cFont * symbols;
+    std::string cfgDir;
+    std::string fontDir;
+    std::string logoDir;
 
-	ThreadState State;
-	ThreadState LastState;
+    ThreadState State;
+    ThreadState LastState;
 
-	cMutex mutex;
-	cGraphLCDState * GraphLCDState;
+    cMutex mutex;
+    cGraphLCDState * GraphLCDState;
 
-	int menuTop;
-	int menuCount;
-	int tabCount;
-	int tab[kMaxTabCount];
-	int tabMax[kMaxTabCount];
+    int menuTop;
+    int menuCount;
+    int tabCount;
+    int tab[kMaxTabCount];
+    int tabMax[kMaxTabCount];
 
-	std::vector <std::string> textItemLines;
-	int textItemTop;
-	int textItemVisibleLines;
+    std::vector <std::string> textItemLines;
+    int textItemTop;
+    int textItemVisibleLines;
 
-	bool showVolume;
+    bool showVolume;
 
-	time_t CurrTime;
-	time_t LastTime;
-	time_t LastTimeCheckSym;
-	time_t LastTimeModSym;
-	struct timeval CurrTimeval;
-	struct timeval UpdateAt;
+    time_t CurrTime;
+    time_t LastTime;
+    time_t LastTimeCheckSym;
+    time_t LastTimeModSym;
+    struct timeval CurrTimeval;
+    struct timeval UpdateAt;
 
-	std::vector<cScroller> scroller;
+    std::vector<cScroller> scroller;
 
-	cGraphLCDLogoList * logoList;
-	cGraphLCDLogo * logo;
+    cGraphLCDLogoList * logoList;
+    cGraphLCDLogo * logo;
 
-	char szETSymbols[32];
+    char szETSymbols[32];
 
-	void DisplayChannel();
-	void DisplayTime();
-	void DisplayLogo();
-	void DisplaySymbols();
-	void DisplayProgramme();
-	void DisplayReplay(tReplayState & replay);
-	void DisplayMenu();
-	void DisplayMessage();
-	void DisplayTextItem();
-	void DisplayColorButtons();
-	void DisplayVolume();
+    void DisplayChannel();
+    void DisplayTime();
+    void DisplayLogo();
+    void DisplaySymbols();
+    void DisplayProgramme();
+    void DisplayReplay(tReplayState & replay);
+    void DisplayMenu();
+    void DisplayMessage();
+    void DisplayTextItem();
+    void DisplayColorButtons();
+    void DisplayVolume();
 
-	void UpdateIn(long usec);
-	bool CheckAndUpdateSymbols();
+    void UpdateIn(long usec);
+    bool CheckAndUpdateSymbols();
 
-	/** Check if replay index bigger as one hour */
-	bool IndexIsGreaterAsOneHour(int Index) const;  
-	/** Translate replay index to string with minute and second MM:SS */
-	const char *IndexToMS(int Index) const;
-	/** Compare Scroller with new Textbuffer*/
-	bool IsScrollerTextChanged(const std::vector<cScroller> & scroller, const std::vector <std::string> & lines) const;
-	/** Returns true if Logo loaded and active*/
-	bool IsLogoActive() const;
-	/** Returns true if Symbols loaded and active*/
-	bool IsSymbolsActive() const;
+    /** Check if replay index bigger as one hour */
+    bool IndexIsGreaterAsOneHour(int Index) const;
+    /** Translate replay index to string with minute and second MM:SS */
+    const char *IndexToMS(int Index) const;
+    /** Compare Scroller with new Textbuffer*/
+    bool IsScrollerTextChanged(const std::vector<cScroller> & scroller, const std::vector <std::string> & lines) const;
+    /** Returns true if Logo loaded and active*/
+    bool IsLogoActive() const;
+    /** Returns true if Symbols loaded and active*/
+    bool IsSymbolsActive() const;
 
-	/** Set Brightness depends user activity */
-	void SetBrightness();
-	uint64 LastTimeBrightness;
-	int nCurrentBrightness;
-	bool bBrightnessActive;
+    /** Set Brightness depends user activity */
+    void SetBrightness();
+    uint64 LastTimeBrightness;
+    int nCurrentBrightness;
+    bool bBrightnessActive;
 };
 
 #endif

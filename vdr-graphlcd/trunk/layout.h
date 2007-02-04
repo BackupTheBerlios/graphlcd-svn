@@ -16,39 +16,39 @@
 
 typedef enum
 {
-	ftFNT,
-	ftFT2
+    ftFNT,
+    ftFT2
 } eFontTypes;
 
 class cFontElement
 {
 private:
-	std::string name;
-	int type;
-	std::string file;
-	int size;
-	GLCD::cFont font;
+    std::string name;
+    int type;
+    std::string file;
+    int size;
+    GLCD::cFont font;
 public:
-	cFontElement(const std::string & fontName);
-	bool Load(const std::string & url);
+    cFontElement(const std::string & fontName);
+    bool Load(const std::string & url);
 
-	const std::string & Name() const { return name; }
-	int Type() const { return type; }
-	const std::string & File() const { return file; }
-	int Size() const { return size; }
-	const GLCD::cFont * Font() const { return &font; }
+    const std::string & Name() const { return name; }
+    int Type() const { return type; }
+    const std::string & File() const { return file; }
+    int Size() const { return size; }
+    const GLCD::cFont * Font() const { return &font; }
 };
 
 
 class cFontList
 {
 private:
-	std::list <cFontElement *> fonts;
+    std::list <cFontElement *> fonts;
 public:
-	cFontList();
-	~cFontList();
-	bool Load(const std::string & fileName);
-	bool Parse(const std::string & line);
+    cFontList();
+    ~cFontList();
+    bool Load(const std::string & fileName);
+    bool Parse(const std::string & line);
 
-	const GLCD::cFont * GetFont(const std::string & name) const;
+    const GLCD::cFont * GetFont(const std::string & name) const;
 };

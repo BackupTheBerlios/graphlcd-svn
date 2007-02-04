@@ -1,5 +1,5 @@
 /**
- *  GraphLCD plugin for the Video Disk Recorder 
+ *  GraphLCD plugin for the Video Disk Recorder
  *
  *  logo.h  -  logo class
  *
@@ -35,10 +35,10 @@
 class cGraphLCDLogo : public GLCD::cImage
 {
 private:
-	std::string id;
+    std::string id;
 public:
-	cGraphLCDLogo(const std::string & id);
-	const std::string & ID() const { return id; }
+    cGraphLCDLogo(const std::string & id);
+    const std::string & ID() const { return id; }
 };
 
 #endif

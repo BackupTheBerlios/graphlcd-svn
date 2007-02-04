@@ -1,5 +1,5 @@
 /**
- *  GraphLCD plugin for the Video Disk Recorder 
+ *  GraphLCD plugin for the Video Disk Recorder
  *
  *  logolist.h  -  logo list class
  *
@@ -34,32 +34,32 @@
 
 enum ePicType
 {
-	ptPictureFixed,
-	ptLogoSmall,
-	ptLogoMedium,
-	ptLogoLarge
+    ptPictureFixed,
+    ptLogoSmall,
+    ptLogoMedium,
+    ptLogoLarge
 };
 
 class cGraphLCDLogoList
 {
 private:
-	struct tAliasListElement
-	{
-		std::string channelID;
-		std::string fileName;
-	};
+    struct tAliasListElement
+    {
+        std::string channelID;
+        std::string fileName;
+    };
 
-	std::string logoDir;
-	std::list <cGraphLCDLogo *> logoList;
-	std::list <tAliasListElement *> aliasList;
+    std::string logoDir;
+    std::list <cGraphLCDLogo *> logoList;
+    std::list <tAliasListElement *> aliasList;
 
-	std::string CreateFullFileName(const std::string & baseName, ePicType type);
+    std::string CreateFullFileName(const std::string & baseName, ePicType type);
 
 public:
-	cGraphLCDLogoList(const std::string & logodir, const std::string & cfgdir);
-	~cGraphLCDLogoList();
+    cGraphLCDLogoList(const std::string & logodir, const std::string & cfgdir);
+    ~cGraphLCDLogoList();
 
-	cGraphLCDLogo * GetLogo(const std::string & chID, ePicType type);
+    cGraphLCDLogo * GetLogo(const std::string & chID, ePicType type);
 };
 
 #endif
