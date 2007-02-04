@@ -504,14 +504,34 @@ void cGraphLCDState::OsdCurrentItem(const char * Text)
             mOsd.currentItem = "";
             if (Text)
             {
+                uint32_t i;
+
                 mOsd.currentItem = Text;
                 mOsd.currentItemIndex = -1;
-                for (unsigned int i = 0; i < mOsd.items.size(); i++)
+                for (i = 0; i < mOsd.items.size(); i++)
                 {
                     if (mOsd.items[i].compare(mOsd.currentItem) == 0)
                     {
                         mOsd.currentItemIndex = i;
                         break;
+                    }
+                }
+                if (i == mOsd.items.size())
+                {
+                    // maybe this is a settings menu with edit items, so
+                    // just one tab
+                    std::string::size_type pos = mOsd.currentItem.find('\t');
+                    if (pos != std::string::npos && pos == mOsd.currentItem.rfind('\t'))
+                    {
+                        for (i = 0; i < mOsd.items.size(); i++)
+                        {
+                            if (mOsd.items[i].compare(0, pos, mOsd.currentItem, 0, pos) == 0)
+                            {
+                                mOsd.items[i] = mOsd.currentItem;
+                                mOsd.currentItemIndex = i;
+                                break;
+                            }
+                        }
                     }
                 }
             }
