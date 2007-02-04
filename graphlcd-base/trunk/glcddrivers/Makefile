@@ -4,6 +4,8 @@
 
 -include ../Make.config
 
+CXXFLAGS += -fPIC
+
 VERMAJOR = 1
 VERMINOR = 0
 VERMICRO = 0
