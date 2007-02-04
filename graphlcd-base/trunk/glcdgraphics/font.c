@@ -488,7 +488,7 @@ void cFont::WrapText(int Width, int Height, std::string & Text,
     std::string::size_type posLast;
 
     Lines.clear();
-    maxLines = 1;
+    maxLines = 2000;
     if (Height > 0)
     {
         maxLines = Height / LineHeight();
