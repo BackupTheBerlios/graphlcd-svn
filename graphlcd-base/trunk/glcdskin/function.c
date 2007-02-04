@@ -220,6 +220,9 @@ bool cSkinFunction::Parse(const std::string & Text)
                             case funAdd:
                             case funSub:
                             case funMul:
+                                params = -1;
+                                break;
+
                             case funDiv:
                                 params = 2;
                                 break;
@@ -389,13 +392,36 @@ cType cSkinFunction::Evaluate(void) const
             return mSkin->Config().Translate(mParams[0]->Evaluate());
 
         case funAdd:
-            return ((int) mParams[0]->Evaluate() + (int) mParams[1]->Evaluate());
+        {
+            int result = 0;
+            for (uint32_t i = 0; i < mNumParams; ++i)
+            {
+                result += (int) mParams[i]->Evaluate();
+            }
+            return result;
+        }
 
         case funSub:
-            return ((int) mParams[0]->Evaluate() - (int) mParams[1]->Evaluate());
+            if (mNumParams > 0)
+            {
+                int result = (int) mParams[0]->Evaluate();
+                for (uint32_t i = 1; i < mNumParams; ++i)
+                {
+                    result -= (int) mParams[i]->Evaluate();
+                }
+                return result;
+            }
+            return 0;
 
         case funMul:
-            return ((int) mParams[0]->Evaluate() * (int) mParams[1]->Evaluate());
+        {
+            int result = 1;
+            for (uint32_t i = 0; i < mNumParams; ++i)
+            {
+                result *= (int) mParams[i]->Evaluate();
+            }
+            return result;
+        }
 
         case funDiv:
             return ((int) mParams[0]->Evaluate() / (int) mParams[1]->Evaluate());
