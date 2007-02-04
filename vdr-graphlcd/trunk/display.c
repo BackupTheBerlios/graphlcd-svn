@@ -879,7 +879,7 @@ void cGraphLCDDisplay::DisplayLogo()
     {
         if (logo->Count() > 1)
         {
-            unsigned long long t = TimeMs();
+            uint64_t t = TimeMs();
             if (t - logo->LastChange() >= logo->Delay())
             {
                 if (!logo->Next(t))
@@ -1936,7 +1936,7 @@ void cGraphLCDDisplay::SetBrightness()
         else
         {
             if (GraphLCDSetup.BrightnessDelay < 1
-                || ((TimeMs() - LastTimeBrightness) > (uint64) (GraphLCDSetup.BrightnessDelay*1000)))
+                || ((TimeMs() - LastTimeBrightness) > (uint64_t) (GraphLCDSetup.BrightnessDelay*1000)))
             {
                 mLcd->SetBrightness(GraphLCDSetup.BrightnessIdle);
                 nCurrentBrightness = GraphLCDSetup.BrightnessIdle;

@@ -142,7 +142,7 @@ private:
 
     /** Set Brightness depends user activity */
     void SetBrightness();
-    uint64 LastTimeBrightness;
+    uint64_t LastTimeBrightness;
     int nCurrentBrightness;
     bool bBrightnessActive;
 };

@@ -29,7 +29,7 @@ void cScroller::Reset()
 bool cScroller::NeedsUpdate()
 {
     if (active &&
-        TimeMs() - lastUpdate > (unsigned long long) GraphLCDSetup.ScrollTime)
+        TimeMs() - lastUpdate > (uint64_t) GraphLCDSetup.ScrollTime)
     {
         update = true;
         return true;

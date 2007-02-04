@@ -74,7 +74,7 @@ struct tOsdState
 struct tVolumeState
 {
     int value;
-    unsigned long long lastChange;
+    uint64_t lastChange;
 };
 
 class cGraphLCDDisplay;

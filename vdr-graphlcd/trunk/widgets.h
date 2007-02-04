@@ -45,7 +45,7 @@ private:
     bool update;
     int position;
     int increment;
-    unsigned long long int lastUpdate;
+    uint64_t lastUpdate;
 public:
     cScroller();
     const std::string & Text() const { return text; }
