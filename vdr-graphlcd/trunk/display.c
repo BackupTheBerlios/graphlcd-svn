@@ -164,7 +164,7 @@ void cGraphLCDDisplay::Action(void)
 {
     if (mLcd->Init() != 0)
     {
-        esyslog("graphlcd plugin: ERROR: Failed initializing display %s\n", mDisplayName.c_str());
+        esyslog("graphlcd plugin: ERROR: Failed initializing display\n");
         return;
     }
 
