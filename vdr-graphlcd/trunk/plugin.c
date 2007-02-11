@@ -118,11 +118,11 @@ bool cPluginGraphLCD::Initialize()
     if (mConfigName.length() == 0)
     {
         mConfigName = kDefaultConfigFile;
-        isyslog("graphlcd: No config file specified, using default (%s).\n", mConfigName.c_str());
+        isyslog("graphlcd plugin: No config file specified, using default (%s).\n", mConfigName.c_str());
     }
     if (GLCD::Config.Load(mConfigName) == false)
     {
-        esyslog("graphlcd: Error loading config file!\n");
+        esyslog("graphlcd plugin: Error loading config file!\n");
         return false;
     }
     if (GLCD::Config.driverConfigs.size() > 0)
@@ -136,34 +136,30 @@ bool cPluginGraphLCD::Initialize()
             }
             if (displayNumber == GLCD::Config.driverConfigs.size())
             {
-                esyslog("graphlcd: ERROR: Specified display %s not found in config file!\n", mDisplayName.c_str());
+                esyslog("graphlcd plugin: ERROR: Specified display %s not found in config file!\n", mDisplayName.c_str());
                 return false;
             }
         }
         else
         {
-            isyslog("graphlcd: WARNING: No display specified, using first one (%s).\n", GLCD::Config.driverConfigs[0].name.c_str());
+            isyslog("graphlcd plugin: WARNING: No display specified, using first one (%s).\n", GLCD::Config.driverConfigs[0].name.c_str());
             displayNumber = 0;
             mDisplayName = GLCD::Config.driverConfigs[0].name;
         }
     }
     else
     {
-        esyslog("graphlcd: ERROR: No displays specified in config file!\n");
+        esyslog("graphlcd plugin: ERROR: No displays specified in config file!\n");
         return false;
     }
 
     mLcd = GLCD::CreateDriver(GLCD::Config.driverConfigs[displayNumber].id, &GLCD::Config.driverConfigs[displayNumber]);
     if (!mLcd)
     {
-        esyslog("graphlcd: ERROR: Failed creating display object %s\n", mDisplayName.c_str());
+        esyslog("graphlcd plugin: ERROR: Failed creating display object %s\n", mDisplayName.c_str());
         return false;
     }
-    if (mLcd->Init() != 0)
-    {
-        esyslog("graphlcd: ERROR: Failed initializing display %s\n", mDisplayName.c_str());
-        return false;
-    }
+
     cfgDir = ConfigDirectory(PLUGIN_NAME);
     if (!cfgDir)
         return false;
@@ -181,12 +177,12 @@ bool cPluginGraphLCD::Start()
 {
     int count;
 
-    dsyslog("graphlcd: waiting for display thread to get ready");
+    dsyslog("graphlcd plugin: waiting for display thread to get ready");
     for (count = 0; count < 1200; count++)
     {
         if (mDisplay->Active())
         {
-            dsyslog ("graphlcd: display thread ready");
+            dsyslog ("graphlcd plugin: display thread ready");
             return true;
         }
 #if VDRVERSNUM < 10314
@@ -195,7 +191,7 @@ bool cPluginGraphLCD::Start()
         cCondWait::SleepMs(100);
 #endif
     }
-    dsyslog ("graphlcd: timeout while waiting for display thread");
+    dsyslog ("graphlcd plugin: timeout while waiting for display thread");
     return false;
 }
 

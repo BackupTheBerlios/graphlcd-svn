@@ -162,6 +162,12 @@ void cGraphLCDDisplay::Tick(void)
 
 void cGraphLCDDisplay::Action(void)
 {
+    if (mLcd->Init() != 0)
+    {
+        esyslog("graphlcd plugin: ERROR: Failed initializing display %s\n", mDisplayName.c_str());
+        return;
+    }
+
     bitmap = new GLCD::cBitmap(mLcd->Width(), mLcd->Height());
     if (!bitmap)
     {
