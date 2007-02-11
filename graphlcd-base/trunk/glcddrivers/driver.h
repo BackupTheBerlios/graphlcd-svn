@@ -15,6 +15,8 @@
 #ifndef _GLCDDRIVERS_DRIVER_H_
 #define _GLCDDRIVERS_DRIVER_H_
 
+#include <stdint.h>
+
 namespace GLCD
 {
 

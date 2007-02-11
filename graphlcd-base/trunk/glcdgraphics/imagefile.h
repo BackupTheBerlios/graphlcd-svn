@@ -12,6 +12,7 @@
 #ifndef _GLCDGRAPHICS_IMAGEFILE_H_
 #define _GLCDGRAPHICS_IMAGEFILE_H_
 
+#include <string>
 
 namespace GLCD
 {

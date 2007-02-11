@@ -15,6 +15,8 @@
 #ifndef _GLCDGRAPHICS_IMAGE_H_
 #define _GLCDGRAPHICS_IMAGE_H_
 
+#include <stdint.h>
+
 #include <vector>
 
 namespace GLCD
@@ -29,7 +31,7 @@ private:
     unsigned int height;
     unsigned int delay;
     unsigned int curBitmap;
-    unsigned long long lastChange;
+    uint64_t lastChange;
     std::vector <cBitmap *> bitmaps;
 public:
     cImage();
@@ -39,9 +41,9 @@ public:
     unsigned int Height() const { return height; }
     unsigned int Count() const { return bitmaps.size(); }
     unsigned int Delay() const { return delay; }
-    unsigned long long LastChange() const { return lastChange; }
-    void First(unsigned long long t) { lastChange = t; curBitmap = 0; }
-    bool Next(unsigned long long t) { lastChange = t; curBitmap++; return curBitmap < bitmaps.size(); }
+    uint64_t LastChange() const { return lastChange; }
+    void First(uint64_t t) { lastChange = t; curBitmap = 0; }
+    bool Next(uint64_t t) { lastChange = t; curBitmap++; return curBitmap < bitmaps.size(); }
     void SetWidth(unsigned int Width) { width = Width; }
     void SetHeight(unsigned int Height) { height = Height; }
     void SetDelay(unsigned int d) { delay = d; }
