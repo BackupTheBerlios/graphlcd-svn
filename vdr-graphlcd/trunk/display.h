@@ -13,6 +13,8 @@
 #ifndef GRAPHLCD_DISPLAY_H
 #define GRAPHLCD_DISPLAY_H
 
+#include <stdint.h>
+
 #include <string>
 #include <vector>
 

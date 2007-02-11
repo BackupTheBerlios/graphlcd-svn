@@ -28,6 +28,8 @@
 #ifndef _GRAPHLCD_WIDGETS_H_
 #define _GRAPHLCD_WIDGETS_H_
 
+#include <stdint.h>
+
 #include <string>
 
 #include <glcdgraphics/bitmap.h>

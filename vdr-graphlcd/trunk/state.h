@@ -9,6 +9,7 @@
 #ifndef _GRAPHLCD_STATE_H_
 #define _GRAPHLCD_STATE_H_
 
+#include <stdint.h>
 #include <string.h>
 
 #include <vdr/status.h>
