@@ -18,6 +18,8 @@ OBJS = cache.o config.o display.o font.o function.o object.o parser.o skin.o str
 
 HEADERS = cache.h config.h display.h font.h function.h object.h parser.h skin.h string.h type.h variable.h xml.h
 
+INCLUDES += -I../
+
 ### Implicit rules:
 
 %.o: %.c
