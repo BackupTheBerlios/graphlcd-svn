@@ -189,7 +189,7 @@
     <list x1="0" y1="add(FontLineHeight('FontMenuTitle'),4)" x2="-1" y2="#ButtonY">
       <item height="#ItemHeight"/>
       <text x1="#ArrowWidth" x2="-1" y1="0" height="#ItemHeight" color="black" font="FontMenuItem">{MenuItem}</text>
-      <image x="0" y="#ArrowY" width="#ArrowWidth" height="#ArrowHeight" color="black" path="#ArrowBitmap" condition="{IsMenuCurrent}"/>
+      <image x="0" y="#ArrowY" color="black" path="#ArrowBitmap" condition="{IsMenuCurrent}"/>
       <text x1="#ArrowWidth" x2="-1" y1="0" height="#ItemHeight" color="black" font="FontMenuItem">{MenuCurrent}</text>
     </list>
     <block condition="{ButtonRed}">
