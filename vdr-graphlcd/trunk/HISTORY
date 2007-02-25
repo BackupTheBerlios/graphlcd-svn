@@ -1,6 +1,11 @@
 VDR Plugin 'graphlcd' Revision History
 -------------------------------------
 
+2007-02-25: Version 0.1.5
+- added some missing includes
+- do LCD initialisation in display thread instead of during plugin initialisation to fix some issues with direct port accesses (thanks to TomJoad from vdr-portal.de)
+
+
 2007-02-04: Version 0.1.4
 - support APIVERSION introduced with vdr 1.3.47
 - test if ChannelNumber is 0 in cGraphLCDState::SetChannel
