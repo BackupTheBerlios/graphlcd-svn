@@ -33,7 +33,7 @@ private:
     struct fb_var_screeninfo vinfo;
     struct fb_fix_screeninfo finfo;
     long int screensize;
-    char *fbp;
+    void *fbp;
     int zoom;
 
     int CheckSetup();
