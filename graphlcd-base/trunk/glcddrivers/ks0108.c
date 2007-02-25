@@ -581,6 +581,7 @@ void cDriverKS0108::Refresh(bool refreshAll)
                 }
             }
         }
+        port->WriteData(0);
         port->Release();
     }
     else
