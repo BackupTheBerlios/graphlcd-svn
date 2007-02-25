@@ -16,6 +16,7 @@
 #include <stdint.h>
 #include <syslog.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 #include <algorithm>
 
