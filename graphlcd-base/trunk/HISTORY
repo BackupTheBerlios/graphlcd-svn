@@ -1,13 +1,13 @@
 GraphLCD base package Revision History
 --------------------------------------
 
-2007-02-XX: Version 0.1.5
+2007-02-25: Version 0.1.5
 - added missing include path definition (thanks to Wolfgang Astleitner)
 - replaced unsigned long long with uint64_t
 - added missing includes
 - increased VER_MAJOR for glcdgraphics library as interface changed in an incompatible way (thanks to Tobias Grimm)
 - changed type of fbp (framebuffer pointer) to void*. Compare fbp against MAP_FAILED to test for success of mmap. This should fix a x86_64 compile error.
-
+- ks0108: clear data lines after display refresh to fix problems with display contrast that occur under some conditions.
 
 
 2007-02-04: Version 0.1.4
