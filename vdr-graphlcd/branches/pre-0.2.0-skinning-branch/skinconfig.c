@@ -243,6 +243,7 @@ cGraphLCDSkinConfig::cGraphLCDSkinConfig(const cGraphLCDDisplay * Display, const
     mDisplay = Display;
     mConfigPath = CfgPath;
     mSkinPath = SkinsPath + "/" + SkinName;
+    mSkinName = SkinName;
     mState = State;
     mAliasList.Load(CfgPath);
 }

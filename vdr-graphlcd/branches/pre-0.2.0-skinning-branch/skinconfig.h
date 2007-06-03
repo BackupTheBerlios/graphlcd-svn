@@ -20,6 +20,7 @@ private:
     const cGraphLCDDisplay * mDisplay;
     std::string mConfigPath;
     std::string mSkinPath;
+    std::string mSkinName;
     cGraphLCDState * mState;
     cChannelAliasList mAliasList;
     std::vector <int> mTabs;
@@ -36,6 +37,8 @@ public:
     virtual GLCD::cType GetToken(const GLCD::tSkinToken & Token);
     virtual int GetTokenId(const std::string & Name);
     virtual int GetTabPosition(int Index, int MaxWidth, const GLCD::cFont & Font);
+
+    const std::string & SkinName(void) const { return mSkinName; }
 };
 
 #endif
