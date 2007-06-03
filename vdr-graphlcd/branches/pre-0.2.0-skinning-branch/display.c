@@ -58,7 +58,6 @@ cGraphLCDDisplay::~cGraphLCDDisplay()
 
 bool cGraphLCDDisplay::Initialise(GLCD::cDriver * Lcd, const std::string & CfgPath, const std::string & SkinsPath, const std::string & SkinName)
 {
-    std::string skinFileName;
     std::string skinsPath;
 
     if (!Lcd)
@@ -69,35 +68,16 @@ bool cGraphLCDDisplay::Initialise(GLCD::cDriver * Lcd, const std::string & CfgPa
     if (!mGraphLCDState)
         return false;
 
-    mScreen = new GLCD::cBitmap(mLcd->Width(), mLcd->Height());
-    if (!mScreen)
-    {
-        esyslog("graphlcd plugin: ERROR creating drawing bitmap\n");
-        return false;
-    }
-
     skinsPath = SkinsPath;
     if (skinsPath == "")
         skinsPath = CfgPath + "/skins";
+
     mSkinConfig = new cGraphLCDSkinConfig(this, CfgPath, skinsPath, SkinName, mGraphLCDState);
     if (!mSkinConfig)
     {
         esyslog("graphlcd plugin: ERROR creating skin config\n");
         return false;
     }
-
-    skinFileName = mSkinConfig->SkinPath() + "/" + SkinName + ".skin";
-    mSkin = GLCD::XmlParse(*mSkinConfig, SkinName, skinFileName);
-    if (!mSkin)
-    {
-        esyslog("graphlcd plugin: ERROR loading skin\n");
-        return false;
-    }
-    mSkin->SetBaseSize(mScreen->Width(), mScreen->Height());
-
-    mLcd->Clear();
-    mLcd->Refresh(true);
-    mUpdate = true;
 
     Start();
     return true;
@@ -111,6 +91,34 @@ void cGraphLCDDisplay::Tick(void)
 
 void cGraphLCDDisplay::Action(void)
 {
+    std::string skinFileName;
+
+    if (mLcd->Init() != 0)
+    {
+        esyslog("graphlcd plugin: ERROR: Failed initializing display\n");
+        return;
+    }
+
+    mScreen = new GLCD::cBitmap(mLcd->Width(), mLcd->Height());
+    if (!mScreen)
+    {
+        esyslog("graphlcd plugin: ERROR creating drawing bitmap\n");
+        return;
+    }
+
+    skinFileName = mSkinConfig->SkinPath() + "/" + mSkinConfig->SkinName() + ".skin";
+    mSkin = GLCD::XmlParse(*mSkinConfig, mSkinConfig->SkinName(), skinFileName);
+    if (!mSkin)
+    {
+        esyslog("graphlcd plugin: ERROR loading skin\n");
+        return;
+    }
+    mSkin->SetBaseSize(mScreen->Width(), mScreen->Height());
+
+    mLcd->Clear();
+    mLcd->Refresh(true);
+    mUpdate = true;
+
     while (Running())
     {
         if (GraphLCDSetup.PluginActive)
