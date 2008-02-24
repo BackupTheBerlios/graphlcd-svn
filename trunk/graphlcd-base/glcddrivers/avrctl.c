@@ -44,6 +44,10 @@ const unsigned char CMD_DISP_SET_COL_DATA   = 0x13;
 const unsigned char CMD_DISP_SET_ROW_DATA   = 0x14;
 const unsigned char CMD_DISP_UPDATE         = 0x15;
 
+const unsigned char CMD_CTRL_SET_MASTER     = 0x20;
+const unsigned char CMD_CTRL_SET_SLAVE      = 0x21;
+const unsigned char CMD_CTRL_SET_TIME       = 0x22;
+
 const int kBufferWidth  = 256;
 const int kBufferHeight = 128;
 
@@ -114,6 +118,7 @@ int cDriverAvrCtl::Init()
 
     *oldConfig = *config;
 
+    CmdCtrlSetSlave();
     // clear display
     Clear();
 
@@ -345,6 +350,19 @@ void cDriverAvrCtl::CmdDispUpdate(void)
 
     cmd[CMD_HDR_SYNC] = CMD_SYNC_SEND;
     cmd[CMD_HDR_COMMAND] = CMD_DISP_UPDATE;
+    cmd[CMD_HDR_LENGTH] = 0;
+    cmd[CMD_HDR_LENGTH+1] = 0;
+
+    port->WriteData(cmd, 4);
+    WaitForAck();
+}
+
+void cDriverAvrCtl::CmdCtrlSetSlave(void)
+{
+    uint8_t cmd[4];
+
+    cmd[CMD_HDR_SYNC] = CMD_SYNC_SEND;
+    cmd[CMD_HDR_COMMAND] = CMD_CTRL_SET_SLAVE;
     cmd[CMD_HDR_LENGTH] = 0;
     cmd[CMD_HDR_LENGTH+1] = 0;
 
