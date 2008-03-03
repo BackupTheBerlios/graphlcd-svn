@@ -4,6 +4,10 @@
 namespace GLCD
 {
 
+cSkinConfig::~cSkinConfig(void)
+{
+}
+
 std::string cSkinConfig::SkinPath(void)
 {
     return ".";

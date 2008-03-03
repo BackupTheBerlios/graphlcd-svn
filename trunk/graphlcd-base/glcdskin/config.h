@@ -26,6 +26,7 @@ struct tSkinToken;
 class cSkinConfig
 {
 public:
+    virtual ~cSkinConfig(void);
     virtual std::string SkinPath(void);
     virtual std::string FontPath(void);
     virtual std::string CharSet(void);
