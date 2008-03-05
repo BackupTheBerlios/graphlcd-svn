@@ -36,12 +36,15 @@ cGraphLCDState::cGraphLCDState(cGraphLCDDisplay * Display)
     mChannel.isEncrypted = false;
     mChannel.isRadio = false;
 
+    mPresent.valid = false;
     mPresent.startTime = 0;
     mPresent.vpsTime = 0;
     mPresent.duration = 0;
     mPresent.title = "";
     mPresent.shortText = "";
     mPresent.description = "";
+
+    mFollowing.valid = false;
     mFollowing.startTime = 0;
     mFollowing.vpsTime = 0;
     mFollowing.duration = 0;
@@ -642,7 +645,8 @@ void cGraphLCDState::UpdateEventInfo(void)
     const cEvent * present = NULL, * following = NULL;
     cSchedulesLock schedulesLock;
 
-    // preset event data to empty values
+    // reset event data to empty values
+    mPresent.valid = false;
     mPresent.startTime = 0;
     mPresent.vpsTime = 0;
     mPresent.duration = 0;
@@ -650,6 +654,7 @@ void cGraphLCDState::UpdateEventInfo(void)
     mPresent.shortText = "";
     mPresent.description = "";
 
+    mFollowing.valid = false;
     mFollowing.startTime = 0;
     mFollowing.vpsTime = 0;
     mFollowing.duration = 0;
@@ -667,6 +672,7 @@ void cGraphLCDState::UpdateEventInfo(void)
             {
                 if ((present = schedule->GetPresentEvent()) != NULL)
                 {
+                    mPresent.valid = true;
                     mPresent.startTime = present->StartTime();
                     mPresent.vpsTime = present->Vps();
                     mPresent.duration = present->Duration();
@@ -682,6 +688,7 @@ void cGraphLCDState::UpdateEventInfo(void)
                 }
                 if ((following = schedule->GetFollowingEvent()) != NULL)
                 {
+                    mFollowing.valid = true;
                     mFollowing.startTime = following->StartTime();
                     mFollowing.vpsTime = following->Vps();
                     mFollowing.duration = following->Duration();

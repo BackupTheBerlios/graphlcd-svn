@@ -33,6 +33,7 @@ struct tChannel
 
 struct tEvent
 {
+    bool valid;
     time_t startTime;
     time_t vpsTime;
     int duration;

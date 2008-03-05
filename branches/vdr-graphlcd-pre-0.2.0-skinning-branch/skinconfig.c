@@ -49,6 +49,7 @@ typedef enum _eTokenId
 
     // present event
     tokPrivatePresentStart,
+    tokPresentValid,
     tokPresentStartDateTime,
     tokPresentVpsDateTime,
     tokPresentEndDateTime,
@@ -62,6 +63,7 @@ typedef enum _eTokenId
 
     // following event
     tokPrivateFollowingStart,
+    tokFollowingValid,
     tokFollowingStartDateTime,
     tokFollowingVpsDateTime,
     tokFollowingEndDateTime,
@@ -160,6 +162,7 @@ static const std::string Tokens[tokCountToken] =
 	"privateRecordingEnd",
 
     "privatePresentStart",
+    "PresentValid",
     "PresentStartDateTime",
     "PresentVpsDateTime",
     "PresentEndDateTime",
@@ -172,6 +175,7 @@ static const std::string Tokens[tokCountToken] =
     "privatePresentEnd",
 
     "privateFollowingStart",
+    "FollowingValid",
     "FollowingStartDateTime",
     "FollowingVpsDateTime",
     "FollowingEndDateTime",
@@ -346,6 +350,8 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token)
         tEvent event = mState->GetPresentEvent();
         switch (Token.Id)
         {
+            case tokPresentValid:
+                return event.valid;
             case tokPresentStartDateTime:
                 return TimeType(event.startTime, Token.Attrib.Text);
             case tokPresentVpsDateTime:
@@ -377,6 +383,8 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token)
         tEvent event = mState->GetFollowingEvent();
         switch (Token.Id)
         {
+            case tokFollowingValid:
+                return event.valid;
             case tokFollowingStartDateTime:
                 return TimeType(event.startTime, Token.Attrib.Text);
             case tokFollowingVpsDateTime:
