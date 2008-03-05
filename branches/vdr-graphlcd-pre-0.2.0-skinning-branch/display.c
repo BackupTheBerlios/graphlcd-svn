@@ -181,7 +181,8 @@ void cGraphLCDDisplay::Action(void)
                 mGraphLCDState->Update();
 
                 mScreen->Clear();
-                GLCD::cSkinDisplay * display;
+                GLCD::cSkinDisplay * display = NULL;
+
                 if (mState == StateNormal)
                     display = mSkin->GetDisplay("normal");
                 else if (mState == StateReplay)
