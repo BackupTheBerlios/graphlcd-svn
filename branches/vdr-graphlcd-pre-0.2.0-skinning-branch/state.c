@@ -641,6 +641,22 @@ void cGraphLCDState::UpdateEventInfo(void)
     mutex.Lock();
     const cEvent * present = NULL, * following = NULL;
     cSchedulesLock schedulesLock;
+
+    // preset event data to empty values
+    mPresent.startTime = 0;
+    mPresent.vpsTime = 0;
+    mPresent.duration = 0;
+    mPresent.title = "";
+    mPresent.shortText = "";
+    mPresent.description = "";
+
+    mFollowing.startTime = 0;
+    mFollowing.vpsTime = 0;
+    mFollowing.duration = 0;
+    mFollowing.title = "";
+    mFollowing.shortText = "";
+    mFollowing.description = "";
+
     const cSchedules * schedules = cSchedules::Schedules(schedulesLock);
     if (mChannel.id.Valid())
     {
