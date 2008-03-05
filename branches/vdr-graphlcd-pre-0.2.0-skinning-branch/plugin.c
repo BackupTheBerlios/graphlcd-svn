@@ -81,7 +81,7 @@ const char * cPluginGraphLCD::CommandLineHelp()
 {
     return "  -c CFG,   --config=CFG   use CFG as driver config file\n"
            "  -d DISP,  --display=DISP use display DISP for output\n"
-           "  -s SKIN,  --skin=SKIN    use skin SKIN\n";
+           "  -s SKIN,  --skin=SKIN    use skin SKIN (default is \"default\")\n";
 }
 
 bool cPluginGraphLCD::ProcessArgs(int argc, char * argv[])
@@ -184,6 +184,8 @@ bool cPluginGraphLCD::Initialize()
     mDisplay = new cGraphLCDDisplay();
     if (!mDisplay)
         return false;
+    if (mSkinName == "")
+        mSkinName = "default";
     if (!mDisplay->Initialise(mLcd, cfgDir, mSkinsPath, mSkinName))
         return false;
 
