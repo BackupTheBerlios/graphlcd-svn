@@ -16,7 +16,7 @@ VERSION = $(shell grep 'static const char \*VERSION *=' plugin.c | awk '{ print 
 ### The C++ compiler and options:
 
 CXX      ?= g++
-CXXFLAGS ?= -g -Wall -Woverloaded-virtual
+CXXFLAGS ?= -g -Wall -Woverloaded-virtual -fPIC
 
 ### The directory environment:
 
