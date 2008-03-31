@@ -296,7 +296,7 @@ GLCD::cType cGraphLCDSkinConfig::GetToken(const GLCD::tSkinToken & Token)
             case tokChannelSource:
                 return channel.source;
             case tokChannelID:
-                return (GLCD::cType) channel.id.ToString();
+                return (GLCD::cType) (const char *) channel.id.ToString();
             case tokHasTeletext:
             case tokChannelHasTeletext:
                 return channel.hasTeletext;
