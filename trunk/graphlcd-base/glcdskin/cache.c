@@ -8,6 +8,8 @@
  *
  */
 
+#include <string.h>
+
 #include <glcdgraphics/bitmap.h>
 #include <glcdgraphics/image.h>
 #include <glcdgraphics/glcd.h>
