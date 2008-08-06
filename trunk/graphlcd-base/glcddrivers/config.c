@@ -9,6 +9,7 @@
  * (c) 2004 Andreas Regel <andreas.regel AT powarman.de>
  */
 
+#include <stdlib.h>
 #include <syslog.h>
 #include <fstream>
 

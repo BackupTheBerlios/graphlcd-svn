@@ -31,6 +31,7 @@
  */
 
 #include <errno.h>
+#include <string.h>
 #include <syslog.h>
 #include <unistd.h>
 #include <sys/time.h>

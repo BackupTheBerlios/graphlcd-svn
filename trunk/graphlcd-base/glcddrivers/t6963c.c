@@ -11,6 +11,8 @@
  * (c) 2003, 2004 Andreas Regel <andreas.regel AT powarman.de>
  */
 
+#include <stdlib.h>
+#include <string.h>
 #include <syslog.h>
 
 #include "common.h"

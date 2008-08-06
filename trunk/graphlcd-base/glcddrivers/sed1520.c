@@ -9,6 +9,7 @@
  * (c) 2003 Andreas 'randy' Weinberger <vdr AT smue.org>
  */
 
+#include <string.h>
 #include <syslog.h>
 #include <sys/time.h>
 

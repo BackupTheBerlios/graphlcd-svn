@@ -9,6 +9,7 @@
  * (c) 2001-2004 Carsten Siebholz <c.siebholz AT t-online.de>
  */
 
+#include <string.h>
 #include <syslog.h>
 #include <sys/time.h>
 

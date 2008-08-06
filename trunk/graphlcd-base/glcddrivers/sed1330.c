@@ -17,6 +17,8 @@
  * (c) 2003 Roland Praml <praml.roland AT t-online.de>
  */
 
+#include <stdlib.h>
+#include <string.h>
 #include <syslog.h>
 #include <sys/time.h>
 
