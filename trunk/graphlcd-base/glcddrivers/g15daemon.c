@@ -95,7 +95,7 @@ static int open_g15_daemon()
         return -1;
 
     /* we want to use a pixelbuffer */
-    g15_send(g15screen_fd,"GBUF",4);
+    g15_send(g15screen_fd, (char *) "GBUF",4);
 
     return g15screen_fd;
 }
