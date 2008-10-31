@@ -410,7 +410,7 @@ void cBitmap::DrawSlope(int x1, int y1, int x2, int y2, eColor color, int type)
             if (falling)
                 c = -c;
             int x = int((x2 - x1 + 1) * c / 2);
-            if (upper && !falling || !upper && falling)
+            if ((upper && !falling) || (!upper && falling))
                 DrawRectangle(x1, y, (x1 + x2) / 2 + x, y, color, true);
             else
                 DrawRectangle((x1 + x2) / 2 + x, y, x2, y, color, true);
