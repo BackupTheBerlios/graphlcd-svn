@@ -23,6 +23,8 @@
 namespace GLCD
 {
 
+class cFontData;
+
 class cFont
 {
 private:
@@ -32,10 +34,12 @@ private:
     int spaceBetween;
     int lineHeight;
 
-    cBitmap * characters[256];
+    cFontData * mFontData;
+
 protected:
     void Init();
     void Unload();
+
 public:
     cFont();
     ~cFont();
